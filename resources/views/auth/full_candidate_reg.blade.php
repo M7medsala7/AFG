@@ -287,7 +287,7 @@
           
           <div class="divwits">
             <select class="form-control requirments" name="" required="">
-              <option selected=""> type of position</option>
+              <option selected=""> job title</option>
               <option value="4"> type of position</option>
             </select>
           </div>
@@ -298,7 +298,7 @@
           </div>
           <!--divwits-->
           
-          <div class="linksing"> <a href="#" class="skiplink lefttext">if you wwant to coutenue please click here to answer the questions if not click submit </a> </div>
+          
           <div class="divwits">
             <select class="form-control requirments" name="" required="">
               <option selected=""> preferred locations top work at</option>
