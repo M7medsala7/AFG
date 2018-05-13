@@ -47,4 +47,22 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Skills','user_skills','user_id','skill_id')
         ->withTimestamps();
     }
+    
+    public function languages()
+    {
+        return $this->hasMany('App\Language');
+    }
+    public function skills()
+    {
+        return $this->hasMany('App\Skills');
+    }
+    public function preferedLocations()
+    {
+        return $this->hasMany('App\PreferedLocation');
+    }
+    public function employer()
+    {
+        return $this->hasOne('App\EmployerProfile');
+    }
 }
+

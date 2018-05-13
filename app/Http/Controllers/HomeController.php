@@ -44,7 +44,10 @@ class HomeController extends Controller
        
         $CandidateInfo=\Auth::user()->CanInfo()->first();
         $jobName=Job::where('id',$CandidateInfo->job_id)->first();
+        if (\Auth::user()->Birthday !=null)
         $age=\Auth::user()->getAge(\Auth::user()->Birthday);
+        else
+        $age=" ";
         $SKills_Can=\Auth::user()->getUserSkill()->get();
         
         //Recomanded jobs  accoriding to 
@@ -71,9 +74,14 @@ class HomeController extends Controller
 
     public function getjobsbycountry()
     {
-        $CandidateInfo=\Auth::user()->CanInfo()->first(); 
-        $RecommandJobs = PostJob::where('country_id',$CandidateInfo->country_id)
+
+      $CandidateInfo=\Auth::user()->CanInfo()->first(); 
+      $RecommandJobs = PostJob::join('jobs','jobs.id','=','post_jobs.job_id')
+                     ->join('countries','countries.id','=','post_jobs.country_id')
+                      ->where('country_id',$CandidateInfo->country_id)
+                      ->select('job_for','max_salary','min_salary','jobs.name','countries.Lnag','countries.Lat')
                           ->get(); 
+
                           return json_encode(['jobs'=>$RecommandJobs]);
                           
     }

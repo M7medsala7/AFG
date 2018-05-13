@@ -30,6 +30,9 @@
                 
                      <li><a href="/PostJob"><i class="fa fa-calendar" aria-hidden="true" style="    font-size: 16px; float: right;     margin-left: 30px;"></i>الوظائف</a>
                     </li>
+                    <li><a href="/fregister/candidate"><i class="fa fa-calendar" aria-hidden="true" style="    font-size: 16px; float: right;     margin-left: 30px;"></i>الوظائف</a>
+                    </li>
+                    
 
          
           

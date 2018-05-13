@@ -23,18 +23,18 @@
         <ul class="hassle">
           <li>find a job easily</li>
           <li>reach your employer directly</li>
-          <li>forget about agencies hassle</li>
+          <li>forget about agencies hassle,...</li>
         </ul>
-        <a href="/register/candidates" class="largeredbtn">post a job</a> </div>
+        <a href="/register/candidates" class="largeredbtn">Find a job</a> </div>
       <!--innertetxr-->
       <div class="innertetxr">
         <h2 class="textcandidate">i‘m employer</h2>
         <ul class="hassle">
-          <li>find a job easily</li>
-          <li>reach your employer directly</li>
-          <li>forget about agencies hassle</li>
+          <li>Post job you want easily</li>
+          <li>Find the most suitable Maid/Helper</li>
+          <li>forget about costly agencies,...</li>
         </ul>
-        <a href="/register/employer" class="largeredbtn">post a job</a> </div>
+        <a href="/register/employer" class="largeredbtn">post a job </a> </div>
       <!--innertetxr--> 
       
     </div>
@@ -66,6 +66,7 @@
           </ul>
           <div class="tidivbotom"> <a href="#">apply now</a> <span>{{ \Carbon\Carbon::parse($AddJobs->Jobdate)->format('d/M/Y')}}</span></div>
           <!--tidiv--> 
+           <div class="tidivbotom"> <a href="#" onclick="ShowJobDetails($AddJobs->id)" data-toggle="modal" data-target="#myModa2" class="largeredbtn back">  View job</a> </div>
           
         </div>
         <!--inernews--> 
@@ -201,6 +202,10 @@
   <!--cenbottom--> 
   
 </div>
+
+
+
+
 
 <!--//container-->
 

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class EmployerProfile extends Model
 {
     //
+    public $table="employer_profiles";
     protected $fillable = [
         'user_id',
         'first_name',
@@ -14,7 +15,7 @@ class EmployerProfile extends Model
         'type',
         'city_id',
         'address',
-        'nationality',
+        'nationality_id',
         'coins',
     ];
 }

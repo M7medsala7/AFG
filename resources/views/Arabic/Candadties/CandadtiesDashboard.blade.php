@@ -1,5 +1,4 @@
 @extends('Layout.app')
-
 <style type="text/css">
   .header{
     position: relative!important;
@@ -10,7 +9,6 @@
 <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAm3O5N1fP52tnpdSqPt71joqjd9xOkcek"></script>
-
 <script type="text/javascript">  
  
 </script>
@@ -280,16 +278,29 @@
 <!--myModal-->
 @endsection
 <script type="text/javascript"> 
+var map;
  $(document).ready(function(){
-
-   var map;
+   
         map = new google.maps.Map(document.getElementById('map'), {
-          center: new google.maps.LatLng({{$CandidateInfo->country->Lan}},{{$CandidateInfo->country->Lat}}),
+          center:new google.maps.LatLng({{$CandidateInfo->country->Lnag}},{{$CandidateInfo->country->Lat}}),
            mapTypeId: google.maps.MapTypeId.ROADMAP,
           zoom: 8
         });
+
          ajaxCall();
   });
+ </script>
+<script>
+        var markerArr = new Array();
+function clearOverlays() {
+    if (markerArr) {
+      for (i in markerArr) {
+        markerArr[i].setVisible(false)
+        
+      }
+    // console.log("clear");
+    }
+}
 
 function ajaxCall() {
   var marker,i;
@@ -305,14 +316,14 @@ function ajaxCall() {
                   for (i = 0; i < jArray.jobs.length; i++) {
             
                   marker = new google.maps.Marker({
-                      position: new google.maps.LatLng(jArray.jobs[i].Lat, jArray.jobs[i].Long),
+                      position: new google.maps.LatLng(jArray.jobs[i].Lat, jArray.jobs[i].Lnag),
                       map: map
                   });
             
            
        var geocoder = new google.maps.Geocoder();
         var latitude = jArray.jobs[i].Lat;
-        var longitude = jArray.jobs[i].Long;
+        var longitude = jArray.jobs[i].Lnag;
         var address_arr = new Array();
         var latLng = new google.maps.LatLng(latitude,longitude);
         geocoder.geocode({       
@@ -329,8 +340,8 @@ function ajaxCall() {
             }
         );
     google.maps.event.addListener(marker, 'click', (function(marker, i) {
-          return function() {           
-            infowindow.setContent('Name '+jArray.jobs[i].Name+' <br/> Adress '+ jArray.jobs[i].Adress);
+          return function() {
+            infowindow.setContent('job title '+jArray.jobs[i].name+' <br/> Salary '+ jArray.jobs[i].min_salary + ':' + jArray.jobs[i].max_salary +'<br/> Job for' + jArray.jobs[i].job_for);
             infowindow.open(map, marker);
           }
         })(marker, i));
@@ -345,4 +356,3 @@ function ajaxCall() {
 
 
 </script>
-

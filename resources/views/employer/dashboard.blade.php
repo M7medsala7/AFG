@@ -46,7 +46,7 @@
       <div class="col-sm-9 dashboardleft">
         <div class="headtext">
           <h3 class="title-con"> jobs statstics </h3>
-          <a href="#" class="largeredbtn">add new job <i class="fas fa-plus"></i></a> </div>
+          <a href="/addPostJob" class="largeredbtn">add new job <i class="fas fa-plus"></i></a> </div>
         <!--headtext-->
         
         <ul class="nav nav-tabs tebprofile">
@@ -69,22 +69,22 @@
                     <p>views</p>
                   </li>
                   <li>
-                    <h3>50</h3>
+                    <h3>0</h3>
                     <i class="far fa-star"></i>
                     <p>starred</p>
                   </li>
                   <li>
-                    <h3>2</h3>
+                    <h3>0</h3>
                     <i class="fas fa-video"></i>
                     <p>interviewed</p>
                   </li>
                   <li>
-                    <h3>70</h3>
+                    <h3>0</h3>
                     <i class="far fa-hand-point-up"></i>
                     <p>applied</p>
                   </li>
                   <li>
-                    <h3>200</h3>
+                    <h3>0</h3>
                     <i class="far fa-thumbs-up"></i>
                     <p>recommended</p>
                   </li>

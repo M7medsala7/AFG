@@ -1,4 +1,5 @@
 @extends('Layout.app')
+
 <style>
   .select2-selection__rendered{
     background: rgb(0, 1, 1);
@@ -51,7 +52,7 @@ width:300px;
     </ul>
     <!--tabssteps-->
     
-    <form  action="/f_reg/candidate" method="post" id="full_cand_reg" class="formlogin mergform" enctype="multipart/form-data">
+    <form  action="/fregcand" method="post" id="full_cand_reg" class="formlogin mergform" enctype="multipart/form-data">
             {{csrf_field()}}
       <div class="tab-content">
         <div role="tabpanel" class="tab-pane  nonebac active" id="step-1">
@@ -220,8 +221,11 @@ width:300px;
                 
                 <div class="col-sm-12 airports witpostslid">
                   <select class="form-control requirments" name="visa_type" required="" style="width: 90%;">
-                    <option selected=""> emploer-type of visa</option>
-                    <option value="single">single</option>
+                    <option selected=""> Emploer-type of visa</option>
+                    
+                    <option  value="Employed">Employed</option>
+                    <option value="Visit">Visit</option>
+                    <option value="Cancelled">Cancelled</option>
                   </select>
                 </div>
                 <!--witpostslid-->
@@ -293,8 +297,8 @@ width:300px;
             </div>
             <!--witpostslid-->
             
-            <div class="col-sm-12 airports witpostslid">
-              <select class="form-control requirments" name="skill_ids[]" id="skill_ids" multiple="multiple" required="" style="width: 90%;">
+            <div class="col-sm-12 airports witpostslid">    
+              <select class="form-control chosen-select " name="skill_ids[]" id="skill_ids" multiple="multiple" required="" style="width: 90%;">
                 <option selected=""> skills</option>
                 @foreach(\App\Skills::all() as $skill)
                   <option value="{{$skill->id}}">{{$skill->name}}</option>
@@ -750,6 +754,13 @@ $(document).ready(function () {
   $('#emp_nation_id').select2();
   $('#nation_id').select2();
   $('#religion_id').select2();
+
+ $(".types").chosen({ 
+                   width: '100%',
+                   no_results_text: "No Results",
+                   allow_single_deselect: true, 
+                   search_contains:true, });
+ $(".types").trigger("chosen:updated");
 
  
 var player = videojs("myVideo", {

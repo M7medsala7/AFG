@@ -10,7 +10,7 @@ class PostJob extends Model
     //
     use Eloquence;
     protected $fillable = [
-        'job_id', 'job_for','job_descripton','num_of_candidates','phone','created_by','country_id','max_salary','min_salary','visa_statues','living_arrangments','educational_level','religion','experience','martial_status','request_status','seen','currency_id','nationality',
+        'job_id', 'job_for','job_descripton','num_of_candidates','phone','created_by','country_id','max_salary','min_salary','visa_statues','living_arrangments','educational_level','religion','experience','martial_status','request_status','seen','currency_id','nationality_id','industry_id','prefered_gender','job_requirements','availability','industry_id',
     ];
  public function job()
     {

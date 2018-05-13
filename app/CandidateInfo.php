@@ -9,7 +9,7 @@ class CandidateInfo extends Model
     //
     use Eloquence;
     protected $fillable = [
-        'job_id','industry_id','country_id','gender','type','vedio_path','coins','user_id','nationality',
+        'job_id','last_name','phone_number','religion','birthdate','visa_type','visa_expire_date','industry_id','country_id','gender','martial_status','type','vedio_path','cv_path','descripe_yourself','looking_for_job','coins','user_id','nationality',
     ];
 
     public function user()

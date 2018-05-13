@@ -37,7 +37,7 @@
       </ul>
       <!--tabssteps-->
       
-      <form  action="/registercandidate" method="POST" class="formlogin">
+      <form  action="/registercandidate" method="POST" class="formlogin" enctype="multipart/form-data">
         {{csrf_field()}}
         <div class="tab-content">
           <div role="tabpanel" class="tab-pane tabs-inner active" id="step-1">
@@ -263,7 +263,8 @@
 
           <video id="myVideo" class="video-js vjs-default-skin"></video>
           <div class="divwits iconfont">
-            <input type="text" class="form-control" placeholder="Video Tilte">
+            <label style="color: red" id="Sucessrecord"></label>
+           
           </div>
           <!--divwits-->
           
@@ -314,7 +315,12 @@
 
   </script>
 
-  <script>
+<script>
+  $('.file_input').on('click',function(){
+    $('#video_file').click();
+  });
+</script>
+<script>
 
 $(document).ready(function () {
        $.ajaxSetup({
@@ -322,22 +328,18 @@ $(document).ready(function () {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-          console.log('Hadee');
 
 
-  
-
-       
 var player = videojs("myVideo", {
     controls: true,
-    width: 320,
+    width: 580,
     height: 240,
     fluid: false,
     plugins: {
         record: {
             audio: true,
             video: true,
-            maxLength: 10,
+            maxLength: 120,
             debug: true
         }
     }
@@ -362,15 +364,18 @@ player.on('startRecord', function() {
 player.on('finishRecord', function() {
     // the blob object contains the recorded data that
     // can be downloaded by the user, stored on server etc.
-console.log( player.recordedData);
+console.log(player.recordedData.video);
 
      var fd = new FormData();
     fd.append('name', player.recordedData.video.name);
     fd.append('data', player.recordedData.video);
+
     $.ajax({
         type: 'POST',
         url: '/StoreVideo',
-        data: fd
+        processData: false,  // tell jQuery not to process the data
+         contentType: false,
+          data: fd
     }).done(function(data) {
         console.log('data');
     });

@@ -63,10 +63,10 @@
               <div class="divwits">
                 <div class="row">
                   <div class="col-sm-4 binputs">
-                    <input type="text" name="min_salary" class="form-control requirments" placeholder="from">
+                    <input type="number" name="min_salary" class="form-control requirments" placeholder="from">
                   </div>
                   <div class="col-sm-4 binputs">
-                    <input type="text" name="max_salary" class="form-control requirments" placeholder="to">
+                    <input type="number" name="max_salary" class="form-control requirments" placeholder="to">
                   </div>
                   <div class="col-sm-4 binputs">
                     <select class="form-control requirments" name="currency_id" id="currency_id" required="">
