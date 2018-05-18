@@ -66,7 +66,6 @@
           </ul>
           <div class="tidivbotom"> <a href="#">apply now</a> <span>{{ \Carbon\Carbon::parse($AddJobs->Jobdate)->format('d/M/Y')}}</span></div>
           <!--tidiv--> 
-           <div class="tidivbotom"> <a href="#" onclick="ShowJobDetails($AddJobs->id)" data-toggle="modal" data-target="#myModa2" class="largeredbtn back">  View job</a> </div>
           
         </div>
         <!--inernews--> 
@@ -99,16 +98,17 @@
   <div class="container">
     <h3 class="title-con entea"> top Candidates</h3>
     <div class="row">
+      @foreach($TopCandidate as $TopCandi)
       <div class="col-sm-3 company">
-        <div class="ineercompany nonepad"> <a  href="#" class="imgbox"> <img src="images/4.jpg"> <i class="fas fa-play"></i></a>
+        <div class="ineercompany nonepad"> <a  href="{{$TopCandi->vedio_path}}" class="imgbox"> <img src="images/4.jpg"> <i class="fas fa-play"></i></a>
           <div class="padboxs"> <span class="eyeicons"><i class="fas fa-eye"></i> 20,215</span> <span class="eyeicons"><i class="fas fa-flag"></i> 20,215</span>
-            <h4 class="innertitltext">mohamed ahmed</h4>
-            <p class="officer">nanny</p>
+            <h4 class="innertitltext">{{$TopCandi->user->name}}</h4>
+            <p class="officer">{{$TopCandi->job->name}}</p>
             <ul class="hassle salary">
-              <li> 28 years</li>
-              <li>india</li>
+              
+              <li>{{$TopCandi->nationality->name}}</li>
             </ul>
-            <div class="tidivbotom"> <a href="#">know more</a> <span>12 march 2018</span></div>
+            <div class="tidivbotom"> <a href="/candidate/{{$TopCandi->user->id}}">View Profile</a> <span>{{$TopCandi->created_at}}</span></div>
             <!--tidiv--> 
             
           </div>
@@ -120,68 +120,12 @@
       </div>
       <!--bocprod-->
       
-      <div class="col-sm-3 company">
-        <div class="ineercompany nonepad"> <a  href="#" class="imgbox"> <img src="/images/4.jpg"> <i class="fas fa-play"></i></a>
-          <div class="padboxs"> <span class="eyeicons"><i class="fas fa-eye"></i> 20,215</span> <span class="eyeicons"><i class="fas fa-flag"></i> 20,215</span>
-            <h4 class="innertitltext">mohamed ahmed</h4>
-            <p class="officer">nanny</p>
-            <ul class="hassle salary">
-              <li> 28 years</li>
-              <li>india</li>
-            </ul>
-            <div class="tidivbotom"> <a href="#">know more</a> <span>12 march 2018</span></div>
-            <!--tidiv--> 
-            
-          </div>
-          <!--padboxs--> 
-          
-        </div>
-        <!--inernews--> 
-        
-      </div>
-      <!--bocprod-->
+     @endforeach
       
-      <div class="col-sm-3 company">
-        <div class="ineercompany nonepad"> <a  href="#" class="imgbox"> <img src="/images/4.jpg"> <i class="fas fa-play"></i></a>
-          <div class="padboxs"> <span class="eyeicons"><i class="fas fa-eye"></i> 20,215</span> <span class="eyeicons"><i class="fas fa-flag"></i> 20,215</span>
-            <h4 class="innertitltext">mohamed ahmed</h4>
-            <p class="officer">nanny</p>
-            <ul class="hassle salary">
-              <li> 28 years</li>
-              <li>india</li>
-            </ul>
-            <div class="tidivbotom"> <a href="#">know more</a> <span>12 march 2018</span></div>
-            <!--tidiv--> 
-            
-          </div>
-          <!--padboxs--> 
-          
-        </div>
-        <!--inernews--> 
-        
-      </div>
-      <!--bocprod-->
+
       
-      <div class="col-sm-3 company">
-        <div class="ineercompany nonepad"> <a  href="#" class="imgbox"> <img src="images/4.jpg"> <i class="fas fa-play"></i></a>
-          <div class="padboxs"> <span class="eyeicons"><i class="fas fa-eye"></i> 20,215</span> <span class="eyeicons"><i class="fas fa-flag"></i> 20,215</span>
-            <h4 class="innertitltext">mohamed ahmed</h4>
-            <p class="officer">nanny</p>
-            <ul class="hassle salary">
-              <li> 28 years</li>
-              <li>india</li>
-            </ul>
-            <div class="tidivbotom"> <a href="#">know more</a> <span>12 march 2018</span></div>
-            <!--tidiv--> 
-            
-          </div>
-          <!--padboxs--> 
-          
-        </div>
-        <!--inernews--> 
-        
-      </div>
-      <!--bocprod--> 
+     
+      
       
     </div>
     <!--row-->
@@ -202,10 +146,6 @@
   <!--cenbottom--> 
   
 </div>
-
-
-
-
 
 <!--//container-->
 

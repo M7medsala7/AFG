@@ -122,7 +122,7 @@ width:300px;
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                <select class="form-control requirments" name="nationality_id" id="nation_id" required="" style="width: 90%;" >
+                <select class="form-control requirments" name="nation_id" id="nation_id" required="" style="width: 90%;" >
                   <option selected="" >Nationality</option>
                   @foreach(\App\Nationality::all() as $nation)
                     <option value="{{$nation->id}}">{{$nation->name}}</option>
@@ -222,7 +222,7 @@ width:300px;
                 <div class="col-sm-12 airports witpostslid">
                   <select class="form-control requirments" name="visa_type" required="" style="width: 90%;">
                     <option selected=""> Emploer-type of visa</option>
-                    
+                    <option  value="Employed">None</option>
                     <option  value="Employed">Employed</option>
                     <option value="Visit">Visit</option>
                     <option value="Cancelled">Cancelled</option>
@@ -274,7 +274,7 @@ width:300px;
           
           <div class="row">
             <div class="col-sm-12 airports witpostslid">
-              <select class="form-control requirments" name="language_ids[]" id="language_id" multiple="multiple" required="" style="width: 90%;">
+              <select class="form-control requirments" name="language_ids[]" id="language_id" multiple="multiple" required="" style="width: 90%;height:200px">
                 <option selected=""> languages</option>
                 @foreach(\App\Language::all() as $lang)
                   <option value="{{$lang->id}}">{{$lang->name}}</option>
@@ -284,10 +284,16 @@ width:300px;
             <!--witpostslid-->
             
             <div class="col-sm-12 airports witpostslid">
-              <select class="form-control requirments" name="eductional_level" required="" style="width: 90%;">
-                <option selected=""> eduction level</option>
-                <option value="4">eduction level</option>
-                <option value="4">eduction level</option>
+              <select class="form-control requirments" name="eductionallevel" required="" style="width: 90%;">
+
+
+<option selected="">None</option>
+                <option selected="">High school</option>
+<option >Undergraduate </option>
+<option >University Graduate </option>
+<option >Masters</option>
+                
+               
               </select>
             </div>
             <!--witpostslid-->
@@ -298,7 +304,7 @@ width:300px;
             <!--witpostslid-->
             
             <div class="col-sm-12 airports witpostslid">    
-              <select class="form-control chosen-select " name="skill_ids[]" id="skill_ids" multiple="multiple" required="" style="width: 90%;">
+              <select class="form-control chosen-select " name="skill_ids[]" id="skill_ids" multiple="multiple" required="" style="width: 90%;height:200px">
                 <option selected=""> skills</option>
                 @foreach(\App\Skills::all() as $skill)
                   <option value="{{$skill->id}}">{{$skill->name}}</option>
@@ -371,8 +377,15 @@ width:300px;
             <input type="number" class="form-control requirments" name="min_salary" placeholder="what is your minimum salary?">
           </div>
           <!--divwits-->
+           <div class="divwits">
+           <select class="form-control requirments" name="currency_id" id="currency_id" required="">
+           <option selected="" disabled="disabled">currency</option>
+             @foreach(\App\Currency::all() as $currency)
+                   <option value="{{$currency->id}}">{{$currency->name}}</option>
+               @endforeach
+           </select>
           
-          
+          </div>
           <div class="divwits">
             <select class="form-control requirments" name="prefered_location_id" required="" style="width: 90%;">
               <option selected=""> preferred locations top work at</option>
@@ -386,7 +399,7 @@ width:300px;
           <!--divwits-->
           
           <div class="divwits">
-            <select class="form-control requirments" name="prefered_location_ids[]" multiple="multiple" required="" style="width: 90%;">
+            <select class="form-control requirments" name="prefered_location_ids[]" multiple="multiple" required="" style="width: 90%;height:200px">
               <option selected=""> preferred locations top work at</option>
               <option selected=""> Countries</option>
                     @foreach(\App\Country::all() as $country)
@@ -728,9 +741,9 @@ width:300px;
 @endsection
 @section('scripts')
 <script>
-	$('.clear_all').on('click',function(){
-		document.getElementById('full_cand_reg').reset();
-	});
+  $('.clear_all').on('click',function(){
+    document.getElementById('full_cand_reg').reset();
+  });
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 <script>

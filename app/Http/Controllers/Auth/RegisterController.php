@@ -223,6 +223,7 @@ class RegisterController extends Controller
             'email'=>'required|email',
             'password'=>'required',
             'country_id'=>'required',
+            'industry_id'=>'required',
 
         ]);
         $code = 1000;
@@ -241,6 +242,7 @@ class RegisterController extends Controller
         {
             EmployerProfile::create(['type'=>$request['job_for'],'name'=>$request['name'],'last_name'=>'.','user_id'=>$user->id]);
         }
+        \App\Company::create(['name'=>$request['name'],'size'=>'5','country_id'=>$request['country_id'],'lat'=>'0','lang'=>'0','created_by'=>$user->id,'industry_id'=>$request['industry_id']]);
         \Auth::loginUsingId($user->id);
 
         return redirect('/home');
@@ -288,7 +290,7 @@ class RegisterController extends Controller
             // path does not exist
             \File::makeDirectory($path, $mode = 0777, true, true);
         }
-        $success =file_put_contents($destPath,$file);
+        $success =$file->move($path,$filename);
         $destPath = str_replace(public_path(), "", $destPath);
         return $destPath;
     }
@@ -303,7 +305,7 @@ class RegisterController extends Controller
             // path does not exist
             \File::makeDirectory($path, $mode = 0777, true, true);
         }
-        $success =file_put_contents($destPath,$file);
+        $success =$file->move($path,$filename);
         $destPath = str_replace(public_path(), "", $destPath);
         return $destPath;
     }
@@ -340,6 +342,7 @@ class RegisterController extends Controller
             'email'=>'required|email|confirmed|unique:users',
             'password'=>'required',
             'city_id'=>'required',
+            'industry_id'=>'required',
         ]);
         if ($validator->fails()) {
             return \Response::json($validator->messages(), 500);
@@ -365,6 +368,7 @@ class RegisterController extends Controller
         {
             EmployerProfile::create(['city_id'=>$input['city_id'],'type'=>$request['type'],'first_name'=>$request['first_name'],'last_name'=>$request['last_name'],'user_id'=>$user->id]);
         }
+        \App\Company::create(['name'=>$request['name'],'size'=>'5','country_id'=>$request['country_id'],'lat'=>'0','lang'=>'0','created_by'=>$user->id,'industry_id'=>$required]);
         \Auth::loginUsingId($user->id);
         return "true";
     }
@@ -432,7 +436,7 @@ class RegisterController extends Controller
                 \App\UserLanguage::create(['language_id'=>$lang,'user_id'=>$user->id]);
             }
         }
-        if($request['skill_ids'])
+        if(count($request['skill_ids']))
         {
             foreach ($request['skill_ids'] as $key => $skill) {
                 # code...
@@ -445,14 +449,14 @@ class RegisterController extends Controller
         }
 
 
-        $can_experience = ['working_in'=>$request['working_in'],'start_date'=>$request['start_date'],'end_date'=>$request['end_date'],'nationality_id'=>$request['employer_nationality_id'],'company_name'=>$request['company_name'],'country_id'=>$request['work_country_id'],'salary'=>$request['salary'],'role'=>$request['role'],'user_id'=>$user->id];
+        $can_experience = ['working_in'=>$request['working_in'],'start_date'=>$request['start_date'],'end_date'=>$request['end_date'],'employer_nationality_id'=>$request['employer_nationality_id'],'company_name'=>$request['company_name'],'country_id'=>$request['work_country_id'],'salary'=>$request['salary'],'role'=>$request['role'],'user_id'=>$user->id];
         CandidateExperience::create($can_experience);
         $prefered_location = $request['prefered_location_id'];
         if($prefered_location)
         {
             $locations = [];
             array_push($locations,$prefered_location);
-            if($request['prefered_location_ids'])
+            if(count($request['prefered_location_ids']))
             {
                 foreach ($request['prefered_location_ids'] as $key => $prefered) {
                     # code...

@@ -55,10 +55,9 @@ Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Route::get('/home', 'HomeController@index')->name('home');
 
 
-Route::get('/company_profile', function () {
+Route::get('/company_profile/edit/{id}', 'companiesController@create');
+Route::get('/company_profile/{id}', 'companiesController@show');
 
-	    return view('employer.company_profile');
-	});
 //***************************Employer Regestration Facebook and google*************************
 
 Route::get('/auth/facebook/{id}','\App\Http\Controllers\Auth\RegisterController@redirectToProvider')->name('login.facebook');
@@ -79,6 +78,29 @@ Route::get('/search','Home\IndexController@search');
 
 /***********************************Admin routes**************************************/
 Route::get('/PostJob','\App\Http\Controllers\Dashboard\PostJobController@index');
+Route::get('/getjobsbycountry','HomeController@getjobsbycountry');
+Route::get('/fregister/candidate','\App\Http\Controllers\Dashboard\CandidatesController@index');
+Route::post('/fregcand','\App\Http\Controllers\Dashboard\CandidatesController@fregcand');
 
 
 /*************************************************************************/
+Route::group(['middleware'=>'auth'],function(){
+	Route::get('/addPostJob','JobPostController@create');
+	Route::post('/postJob/store','JobPostController@store');
+	Route::get('/getCandidatesStaredJob','JobPostController@getCandidatedStarredJob');
+	Route::get('/next_can/{id}','JobPostController@getNextCan');
+	Route::get('/getApplicants','JobPostController@getApplicants');
+	Route::get('/next_applicants/{id}','JobPostController@getNextApplicants');
+	Route::post('/likeCandidate','CandidatesController@liked');
+	Route::get('/getLikes','CandidatesController@getLikes');
+	Route::get('/next_likes/{id}','CandidatesController@getNextLikes');
+	Route::post('/company_store', 'companiesController@store');
+
+
+
+
+	
+
+});
+
+Route::get('/candidate/{id}','CandidatesController@profile');

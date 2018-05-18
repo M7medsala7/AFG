@@ -17,6 +17,7 @@ class CreateUserLanguagesTable extends Migration
             $table->increments('id');
             $table->integer('language_id')->unsigned();
             $table->integer('user_id')->unsigned();
+            $table->float('degree')->nullable();
             $table->timestamps();
         });
     }

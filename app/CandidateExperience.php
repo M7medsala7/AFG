@@ -12,7 +12,7 @@ class CandidateExperience extends Model
         'working_in',
         'start_date',
         'end_date',
-        'employer_nationality',
+        'employer_nationality_id',
         'company_name',
         'country_id',
         'salary',

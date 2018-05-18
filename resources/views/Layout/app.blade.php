@@ -11,7 +11,7 @@
 <link rel="icon" href="/images/favicon.png" type="image/png">
 <link href="/node_modules/video.js/dist/video-js.min.css" rel="stylesheet">
   <link href="/node_modules/videojs-record/dist/css/videojs.record.css" rel="stylesheet">
- 
+ <link rel="stylesheet" href="/css/chosen.min.css" />
 
 <title>Maid & Helper</title>
 <script type="text/javascript" src="/js/jquery.js"></script>
@@ -23,6 +23,7 @@
 <script src="/node_modules/video.js/dist/video.min.js"></script>
   <script src="/node_modules/recordrtc/RecordRTC.js"></script>
   <script src="/node_modules/webrtc-adapter/out/adapter.js"></script>
+<script type="text/javascript" src="/js/chosen.jquery.min.js"></script>
 
   <script src="/node_modules/videojs-record/dist/videojs.record.js"></script>
 </head>

@@ -17,6 +17,7 @@ class CreateUserSkillsTable extends Migration
             $table->increments('id');
             $table->integer('skill_id')->unsigned();
             $table->integer('user_id')->unsigned();
+            $table->float('degree')->nullable();
             $table->timestamps();
         });
     }

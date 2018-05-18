@@ -19,7 +19,7 @@ class CreateEmployerProfilesTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('type');
-            $table->integer('city_id');
+            $table->integer('city_id')->nullable();
             $table->string('address')->nullable();
             $table->string('nationality')->nullable();
             $table->integer('coins')->nullable();

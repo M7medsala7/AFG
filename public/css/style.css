@@ -410,6 +410,8 @@ end header
 	margin: 0 auto;
 	position: relative;
 	clear: both;
+	border-radius: 60px;
+	background: #fff;
 }
 .input-search .form-control {
 	width: 100%;
@@ -418,9 +420,59 @@ end header
 	box-shadow: none;
 	border: 0;
 	padding: 0px;
-	padding: 2px 65px 2px 15px;
-	border-radius: 60px;
+	padding: 2px 65px 2px 135px;
+}
+.input-search .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+	width: 120px;
+	position: absolute;
+	left: 0;
+	height: 53px;
+	top: 0px;
+	outline: none;
+	outline-style: none;
+	background: #f3f1f1;
+	border-radius: 60px 0px 0px 60px;
+	border: 0;
+}
+.input-search .btn {
+	border-radius: 0;
+	height: 53px;
+	border: 0;
+	border-right: 1px solid #ddd;
+	outline: none;
+	outline-style: none;
+}
+.input-search .open>.dropdown-menu {
+	border-radius: 8px;
 	background: #fff;
+	box-shadow: 0 5px 8px rgba(0,0,0,.25);
+	list-style: none;
+	transition: opacity .3s ease, top .2s ease, bottom .2s ease;
+	white-space: nowrap;
+	box-sizing: border-box;
+	padding: 15px 0px;
+	overflow: inherit !important;
+	border: 0;
+}
+.input-search .open>.dropdown-menu:after {
+	position: absolute;
+	content: "";
+	left: 50%;
+	top: -8px;
+	border-bottom: 8px solid #fff;
+	border-right: 8px solid transparent;
+	border-left: 8px solid transparent;
+	height: 0;
+	width: 0;
+	z-index: 1000;
+}
+.input-search .dropdown-menu {
+	top: 70px;
+	border: 0;
+}
+.input-search .dropdown-menu>li>a:focus, .input-search .dropdown-menu>li>a:hover {
+	background: #009df4;
+	color: #fff;
 }
 .btn-slide {
 	position: absolute;
@@ -451,7 +503,7 @@ end header
 	background: rgba(255, 255, 255, 0.85);
 	margin: 100px 15px 0px 15px;
 	position: relative;
-	padding: 15px;
+	padding: 15px 0px;
 }
 .innertetxr:after {
 	position: absolute;
@@ -511,8 +563,8 @@ end header
 	background: #f9fafa;
 }
 .contactus, .aboutus, .dashboard {
-	padding-bottom: 50px;
-	margin: 20px 0px -50px 0px;
+	padding-bottom: 30px;
+	margin: 20px 0px -35px 0px;
 }
 .title-con {
 	float: left;
@@ -616,7 +668,7 @@ end header
 	color: #009df4;
 	padding: 10px 20px;
 }
-.cenbottom .largeredbtn:hover, .itmonw .largeredbtn:hover {
+.cenbottom .largeredbtn:hover, .itmonw .largeredbtn:hover, .cenbottom.seejobs.linkappley a.largeredbtn:hover {
 	background: #004d9a;
 	border: 1px solid #004d9a;
 	color: #fff;
@@ -989,7 +1041,7 @@ end contant
 	width: 100%;
 	background: #043d77;
 	position: relative;
-	margin-top: 50px;
+	margin-top: 30px;
 	padding: 15px 0px;
 }
 .textlogo {
@@ -1141,8 +1193,8 @@ start index
 }
 .innerphoto {
 	min-height: 800px;
-	margin-bottom: -50px;
-	padding-bottom: 50px;
+	margin-bottom: -30px;
+	padding-bottom: 30px;
 }
 .innerphoto:after {
 	content: "";
@@ -1280,7 +1332,7 @@ start index
 }
 .airports {
 	float: left;
-	font-size: 18px;
+	font-size: 15px;
 	color: #000;
 	margin-bottom: 0px;
 	margin-top: 10px;
@@ -1427,7 +1479,7 @@ transform: scale(1);
 	color: #fe9923;
 }
 .linksing p {
-	font-size: 50px;
+	font-size: 45px;
 }
 i.fa.fa-search.ellips, i.fa.fa-times.ftimes {
 	text-align: center;
@@ -1783,7 +1835,7 @@ label.desired {
 	width: 100%;
 	text-align: center;
 	left: 0;
-	bottom: 10px;
+	bottom: 3px;
 	font-size: 13px;
 }
 .watchvideo i.fas.fa-play {
@@ -1805,6 +1857,9 @@ label.desired {
 	width: 100%;
 	height: 350px;
 }
+.modal-open .modal {
+	padding: 0px 15px !important;
+}
 .modal-content {
 	float: left;
 	width: 100%;
@@ -1814,7 +1869,7 @@ label.desired {
 	font-size: 20px;
 	color: #000;
 }
-.modal-header .close {
+.modal-content .close {
 	margin-top: -2px;
 	position: absolute;
 	left: -10px;
@@ -1827,7 +1882,7 @@ label.desired {
 	opacity: 1;
 	text-shadow: none;
 }
-.modal-header .close:hover {
+.modal-content .close:hover {
 	background: #850336;
 }
 .recordvideo {
@@ -1867,6 +1922,22 @@ label.desired {
 }
 .header-in .searchinner .form-control, .header-in .linktop a {
 	border: 1px solid #ddd;
+	border-radius: 60px;
+}
+.searchinner .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn), .searchinner .btn {
+	height: 44px;
+}
+.searchinner .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+	top: 1px;
+	left: 1px;
+	height: 43px;
+	width: 100px;
+}
+.searchinner .form-control {
+	padding: 2px 42px 2px 105px;
+}
+.searchinner .dropdown-menu {
+	top: 46px;
 }
 .header-in .linktop a:hover, .header-in .linktop a:last-child:hover {
 	background: #009df4;
@@ -1891,7 +1962,7 @@ label.desired {
 	background: #fff;
 	box-shadow: 0 0px 3px rgba(0, 0, 0, 0.18);
 	border-radius: 5px;
-	margin-top: 50px;
+	margin-top: 30px;
 	padding: 0px 15px 30px 15px;
 }
 .textcandidate.conmerg {
@@ -2119,7 +2190,6 @@ label.desired {
 .detalsprofile {
 	text-align: center;
 	padding: 15px;
-	padding-bottom: 0px;
 }
 .detalsprofile .textcandidate {
 	font-size: 20px;
@@ -2243,8 +2313,9 @@ label.desired {
 a.canvasjs-chart-credit {
 	display: none !important;
 }
-div#chartContainer {
+div.chartContainer, div#chartContainer2 {
 	height: 290px !important;
+	width: 100% !important;
 	overflow: hidden !important;
 }
 .topmergline {
@@ -2530,7 +2601,12 @@ form.formlogin {
 .instructionsleft {
 	float: left;
 }
-.instructionsleft .prepare li {
+.agencies {
+	float: left;
+	width: 100%;
+	margin-top: 15px;
+}
+.instructionsleft .prepare li, .agencies li {
 	font-size: 13px;
 	text-align: left;
 	color: #fff;
@@ -2633,7 +2709,7 @@ form.formlogin {
 .candidate-profile {
 	float: left;
 	width: 100%;
-	padding: 80px 0px;
+	padding: 50px 0px;
 	background: #565b69 url(../images/candidate-profile.jpg);
 	background-size: cover;
 	margin-top: 30px;
@@ -2756,10 +2832,8 @@ form.formlogin {
 	color: #009df4;
 }
 .pholeft {
-	position: absolute;
-	left: -50px;
-	bottom: 30px;
-	width: 200px;
+	float: left;
+	width: 100%;
 }
 .pholeft a {
 	float: left;
@@ -2848,7 +2922,7 @@ form.formlogin {
 	display: inline-block;
 }
 .languagelink p span i {
-	color: #CC0;
+	color: #f7ae03;
 	font-size: 13px;
 }
 .education {
@@ -3066,6 +3140,8 @@ form.formlogin {
 	border-radius: 0;
 	color: #fff;
 	position: relative;
+	pointer-events: none;
+	cursor: not-allowed;
 }
 .tabscand > li > a i {
 	position: absolute;
@@ -3335,8 +3411,8 @@ label.desired.looking.merlab {
 	color: #6b6b6b;
 }
 .mh-company {
-	margin-top: -95px !important;
-	padding: 50px 30px;
+	margin-top: -45px !important;
+	padding: 30px;
 	border-right: 50px solid #009df4;
 }
 .companychool img {
@@ -3348,8 +3424,11 @@ label.desired.looking.merlab {
 	padding-left: 130px;
 }
 .companychool .textcandidate {
-	font-size: 25px;
+	font-size: 22px;
 	color: #2d2d2d;
+}
+.imgprof .textcandidate {
+	margin: 15px 0px 10px 0px;
 }
 .seejobs {
 	margin-top: 15px;
@@ -3357,7 +3436,8 @@ label.desired.looking.merlab {
 .seejobs a.largeredbtn {
 	float: left;
 	width: auto;
-	margin: 5px 30px 0px 0px;
+	margin: 0px 15px 0px 0px;
+	padding: 7px 15px;
 }
 .seejobs a.largeredbtn:last-child {
 	margin-right: 0px;
@@ -3373,7 +3453,7 @@ label.desired.looking.merlab {
 	margin-bottom: 15px;
 }
 .aboutcompany .textcandidate {
-	font-size: 22px;
+	font-size: 21px;
 	color: #009df4;
 }
 .aboutcompany .witthtext {
@@ -3539,7 +3619,7 @@ a.tooltip.animate:after, a.tooltip.animate:before {
 	width: 100%;
 }
 .listfilter {
-	height: 377px;
+	height: 402px;
 	overflow: hidden;
 	overflow-y: scroll;
 	margin-top: 15px;
@@ -3700,7 +3780,7 @@ The following are styles purely for the surroundings
 .inner-chat {
 	float: left;
 	width: 106%;
-	height: 355px;
+	height: 380px;
 	overflow: hidden;
 	overflow-y: scroll;
 	border-bottom: 1px solid #efefef;
@@ -3891,6 +3971,286 @@ The following are styles purely for the surroundings
 }
 ul.nav.nav-tabs.tebprofile.employerstebs {
 	margin-top: 50px;
+}
+.paboxs {
+	padding: 15px;
+}
+.paboxs .textcandidate {
+	font-size: 21px;
+	color: #009df4;
+	margin-top: 15px;
+}
+.nonbordimg {
+	margin-top: 15px;
+	box-shadow: 0px 0px 6px #b9e3fb;
+}
+.textabout {
+	float: left;
+	width: 100%;
+	font-size: 14px;
+	margin-top: 5px;
+}
+.nonbordimg .tidiv img {
+	border: 0;
+}
+.nameviwjobs {
+	color: #000;
+}
+.nameviwjobs span {
+	float: right;
+	font-size: 16px;
+	color: #494949;
+}
+.nonbordimg .officer {
+	color: #009df4;
+}
+.imgprof img {
+	border-radius: 50%;
+	border: 1px solid #ddd;
+}
+.timetext {
+	float: left;
+	margin-right: 30px;
+	font-size: 13px;
+	color: #adacac;
+}
+.timetext:last-child {
+	margin: 0;
+}
+.cenbottom.seejobs.linkappley a.largeredbtn {
+	border-radius: 60px;
+	width: 140px;
+	background: #009df4;
+	color: #fff;
+	padding: 10px 15px;
+}
+.discription {
+	border: 0;
+	padding: 0;
+}
+.discription .textabout {
+	margin-top: 10px;
+	padding-left: 50px;
+}
+.cenbottom.seejobs.linkappley.flotingbot {
+	border-bottom: 1px solid #ddd;
+	padding-bottom: 15px;
+}
+.cenbottom.seejobs.linkappley.flotingbot a.largeredbtn {
+	float: right;
+	margin: 0;
+	margin-left: 15px;
+}
+.morecompany {
+	float: left;
+	margin-top: 15px;
+}
+.cenbottom.seejobs.linkappley.viewjobs {
+	text-align: center;
+	margin-top: 30px;
+}
+.cenbottom.seejobs.linkappley.viewjobs a {
+	float: none;
+	padding: 10px 30px;
+	display: inline-block;
+	width: auto;
+}
+.modal-content.dal-conte.dal-conte2.forget {
+	padding: 30px 15px;
+	display: table;
+}
+.modal-content.dal-conte.dal-conte2.forget .textcandidate {
+	margin: 0px 0px 10px 0px;
+}
+.modal-content.dal-conte.dal-conte2 .divwitsforget {
+	text-align: left;
+}
+.divwitsforget label.desired.looking {
+	margin: 15px 0px 5px 0px;
+}
+.resetpassword {
+	text-align: center;
+	margin-top: 30px;
+}
+.resetpassword .largeredbtn {
+	float: none;
+	display: inline-block;
+}
+.modal {
+	background: rgba(0, 0, 0, 0.62);
+}
+.create-maid {
+	margin-top: 15px;
+}
+.create-maid li {
+	width: 25%;
+	padding: 0px 15px;
+	display: inline-block;
+	height: auto;
+}
+.create-maid li a {
+	padding: 10px 0px;
+}
+.create-maid li strong {
+	text-align: center;
+	float: left;
+	width: 100%;
+	font-size: 17px;
+}
+.naoneboxsbac {
+	box-shadow: none;
+	border-radius: 0;
+	padding: 0;
+	margin: 0;
+	background: none;
+}
+.naoneboxsbac .inner-aboutus {
+	margin: 0;
+	padding: 15px;
+}
+.create-maid > li > a.disabled strong, .colorste {
+	color: #9c9c9c;
+}
+.create-maid > li > a.disabled i {
+	background: #9c9c9c;
+}
+.create-maid > li:nth-of-type(1).active i:after, .create-maid > li:nth-of-type(2).active i:after, .create-maid > li:nth-of-type(3).active i:after {
+	display: none;
+}
+.tiltestab {
+	width: 100%;
+	height: auto;
+	padding-bottom: 15px;
+	border-bottom: 1px solid #c8d6e1;
+}
+.tiltestab span {
+	background: #009df4;
+	color: #fff;
+}
+.tiltestab .personalinfo {
+	color: #333;
+	font-size: 20px;
+	margin: 0;
+	margin-top: 2px;
+	text-align: left !important;
+}
+.maidform {
+	float: left;
+	margin-top: 15px;
+}
+.maidform .airports {
+	width: 100% !important;
+}
+.flwit {
+	float: left;
+	width: 100%;
+}
+.maidform label.desired, .maidform .airports, .maidform span.label-text {
+	margin: 0;
+	color: #333;
+}
+.jointhousands p {
+	float: none;
+	width: auto;
+	margin: 0;
+}
+.jointhousands p.descrptext {
+	float: left;
+	width: 100%;
+}
+.jointhousands .itmonw img {
+	margin-top: 5px;
+}
+.backlink .largeredbtn.back {
+	background: rgb(103, 103, 124);
+	color: #fff;
+}
+.backlink .largeredbtn.back:hover {
+	background: #043d77;
+}
+.backlink {
+	margin-top: 15px;
+}
+.padtext {
+	padding-left: 40px;
+}
+.botboxs {
+	background: #009df4;
+	/* float: left; */
+    /* width: 100%; */
+	padding: 10px;
+	text-align: center;
+	margin-bottom: -30px;
+	margin-top: 15px;
+	clear: both;
+	border-radius: 0px 0px 5px 0px;
+}
+.botboxs h2 {
+	color: #fff;
+	font-size: 17px;
+}
+.wipopups {
+	width: 80%;
+}
+.nontex {
+	margin: 0;
+}
+.namesprof {
+	float: left;
+	width: 100%;
+}
+.namesprof li {
+	float: left;
+	width: 50%;
+	margin-bottom: 5px;
+}
+.namesprof li strong {
+	color: #009df4;
+}
+.col-sm-10.divboxs {
+	float: right;
+	position: relative;
+}
+.col-sm-3.divboxs {
+	float: left;
+	margin-left: -80px;
+	margin-top: 15px;
+	margin-bottom: 30px;
+}
+.popvad {
+	margin: 80px auto;
+	width: 500px;
+}
+.chancevedio {
+	float: left;
+	margin-top: 15px;
+}
+.chancevedio .linksing {
+	text-align: left;
+	margin: 0;
+}
+.chancevedio iframe {
+	width: 100%;
+	height: 150px;
+}
+.witbot {
+	float: left;
+	width: 100%;
+}
+.witbot .largeredbtn {
+	border-radius: 60px;
+	margin: 10px 15px 0px 0px;
+	padding: 3px 20px;
+}
+.witbot .largeredbtn:last-child {
+	margin-right: 0px;
+	color: #000;
+}
+.witbot .largeredbtn:last-child:hover {
+	color: #fff;
+}
+.popvad .modal-content {
+	padding-bottom: 10px;
 }
  @media (min-width:1600px) {
 }
@@ -4448,6 +4808,9 @@ p.airports.textlab, .leftdshbord {
 ul.nav.nav-tabs.tebprofile.employerstebs {
 	margin-top: 30px;
 }
+.create-maid li strong {
+	font-size: 15px;
+}
 }
  @media (max-width:767px) {
 form.input-search.searchinner {
@@ -4553,7 +4916,7 @@ form.input-search.searchinner {
 	padding-top: 15px;
 	border-top: 1px solid rgba(115, 115, 115, 0.48);
 }
-.botrg, .formcompany {
+.botrg, .formcompany, .maidform, .chancevedio {
 	width: 100%;
 }
 .cand-2, .congratulations {
@@ -4561,6 +4924,12 @@ form.input-search.searchinner {
 }
 .formcompany .map-iframe {
 	margin-top: 15px;
+}
+.col-sm-3.divboxs {
+	width: 28%;
+}
+.col-sm-10.divboxs {
+	width: 82%;
 }
 }
  @media (max-width:710px) {
@@ -4570,6 +4939,16 @@ form.input-search.searchinner {
 .employerbox {
 	padding: 0;
 	padding-bottom: 15px;
+}
+.col-sm-3.divboxs {
+	width: 40%;
+}
+.namesprof li {
+	width: 100%;
+}
+.col-sm-10.divboxs {
+	width: 70%;
+	margin-bottom: 15px;
 }
 }
  @media (max-width:667px) {
@@ -4675,6 +5054,9 @@ i.fa.fa-search.ellips {
 	width: 100%;
 	text-align: left;
 	padding: 0;
+}
+.create-maid li {
+	width: 50%;
 }
 }
  @media (max-width:550px) {
@@ -4811,6 +5193,43 @@ nav.list-inline.boredrticon, nav.list-inline.rint {
 	float: none;
 	margin: 0 auto;
 }
+.discription .textabout {
+	padding: 0;
+}
+.input-search .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+	width: 90px;
+}
+.input-search .form-control {
+	padding: 2px 65px 2px 100px;
+}
+.col-sm-3.divboxs {
+	width: 100%;
+}
+.col-sm-10.divboxs {
+	width: 100%;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+.col-sm-10.divboxs .imgprof img {
+	float: none;
+}
+.col-sm-3.divboxs {
+	margin-top: 0px;
+}
+.companychool img {
+	float: none;
+}
+.cenbottom.seejobs.linkappley a.largeredbtn {
+	width: 103px;
+	padding: 10px 5px;
+	font-size: 13px;
+	margin-right: 5px;
+}
+.cenbottom.seejobs.linkappley.flotingbot a.largeredbtn {
+	margin: 0;
+	margin-left: 5px;
+}
 }
  @media (max-width:450px) {
 #wowslider-container1 .ws_images img {
@@ -4927,6 +5346,9 @@ nav.list-inline.boredrticon, nav.list-inline.rint {
 	margin: 5px;
 	padding: 5px 10px;
 }
+.create-maid li {
+	margin: 0;
+}
 }
  @media (max-width:380px) {
 .headtop {
@@ -4987,6 +5409,9 @@ nav.list-inline.boredrticon, nav.list-inline.rint {
 .listfilter {
 	width: 114.8%;
 }
+.stapson.tiltestab {
+	margin: 0;
+}
 }
  @media (max-width:373px) {
 .navlink {
@@ -5018,12 +5443,6 @@ nav.list-inline.boredrticon, nav.list-inline.rint {
 .tidivbotom span {
 	font-size: 12px;
 }
-.pholeft {
-	position: relative;
-	left: -65px;
-	bottom: 0px;
-	width: 150px;
-}
 .personalinfo {
 	font-size: 20px;
 }
@@ -5043,5 +5462,8 @@ nav.list-inline.boredrticon, nav.list-inline.rint {
 }
 .itmonw p {
 	font-size: 13px;
+}
+.tiltestab .personalinfo {
+	font-size: 17px;
 }
 }

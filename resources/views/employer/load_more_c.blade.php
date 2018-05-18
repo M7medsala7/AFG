@@ -22,4 +22,4 @@
     <!--inernews--> 
     
   </div>
-@endforeach
+  @endforeach

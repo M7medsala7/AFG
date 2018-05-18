@@ -30,6 +30,14 @@ class PostJob extends Model
         return $this->belongsTo('App\Country');
     }
 
+    public function applicants()
+    {
+        return $this->belongsToMany('App\User','job_applications','job_post_id','user_id');
+    }
+    public function starred()
+    {
+        return $this->belongsToMany('App\User','post_job_starred','post_job_id','user_id');
+    }
 
     public function getTopCandidatesAttribute()
     {

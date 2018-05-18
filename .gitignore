@@ -12,3 +12,5 @@ yarn-error.log
 .env
 public/videos/
 public/images/
+public/uploads/
+public/pictures/

@@ -14,12 +14,12 @@ use Socialite;
 use Session;
 class CandidatesController extends Controller
 {
-	 public function index()
+     public function index()
     { 
         return view('Dashboardadmin.Candidates.FullCandidate');   
      
     }
-     public function saveFile($file, $user){
+  public function saveFile($file, $user){
         $filename = 'video'.time().$file->getClientOriginalName();
         $type = $file->getMimeType();
         $extension = $file->getClientOriginalExtension();
@@ -29,11 +29,12 @@ class CandidatesController extends Controller
             // path does not exist
             \File::makeDirectory($path, $mode = 0777, true, true);
         }
-        $success =file_put_contents($destPath,$file);
+        $success =$file->move($path,$filename);
         $destPath = str_replace(public_path(), "", $destPath);
         return $destPath;
     }
-     public function saveUploadedFile($file, $user){
+
+ public function saveUploadedFile($file, $user){
         $filename = time().$file->getClientOriginalName();
         $type = $file->getMimeType();
         $extension = $file->getClientOriginalExtension();
@@ -43,12 +44,15 @@ class CandidatesController extends Controller
             // path does not exist
             \File::makeDirectory($path, $mode = 0777, true, true);
         }
-        $success =file_put_contents($destPath,$file);
+        $success =$file->move($path,$filename);
         $destPath = str_replace(public_path(), "", $destPath);
         return $destPath;
     }
+
+
      public function fregcand(Request $request)
     {
+    
         //return $request->hasFile('logo')?"true":"pase";
         $this->validate($request,[
             'first_name'=>'required',
@@ -93,7 +97,7 @@ class CandidatesController extends Controller
         }
         if($user)
         {
-            CandidateInfo::create(['last_name'=>$request['last_name'],'phone_number'=>$request['phone_number'],'religion_id'=>$request['religion_id'],'birthdate'=>$request['birthdate'],'visa_type'=>$request['visa_type'],'visa_expire_date'=>$request['visa_expire_date'],'job_id'=>$request['job_id'],'industry_id'=>$request['industry_id'],'country_id'=>$request['country_id'],'gender'=>$request['gender'],'martial_status'=>$request['martial_status'],'descripe_yourself'=>$request['descripe_yourself'],'looking_for_job'=>$request['looking_for_job'],'nationality_id'=>$request['nationality_id'],'vedio_path'=>$video_path, 'cv_path'=>$cv_path, 'user_id'=>$user->id]);
+            CandidateInfo::create(['last_name'=>$request['last_name'],'phone_number'=>$request['phone_number'],'religion_id'=>$request['religion_id'],'birthdate'=>$request['birthdate'],'visa_type'=>$request['visa_type'],'visa_expire_date'=>$request['visa_expire_date'],'job_id'=>$request['job_id'],'industry_id'=>$request['industry_id'],'country_id'=>$request['country_id'],'gender'=>$request['gender'],'martial_status'=>$request['martial_status'],'descripe_yourself'=>$request['descripe_yourself'],'looking_for_job'=>$request['looking_for_job'],'nationality_id'=>$request['nation_id'],'vedio_path'=>$video_path, 'cv_path'=>$cv_path, 'user_id'=>$user->id,'CurrencyId'=>$request['currency_id'],'Eductionlevel'=>$request['eductionallevel']]);
         }
         if($request['language_ids'])
         {
@@ -109,9 +113,9 @@ class CandidatesController extends Controller
                 \App\UserSkill::create(['user_id'=>$user->id, 'skill_id'=>$skill]);
             }
         }
-        if($request['educational_level'])
+        if($request['Eductionlevel'])
         {
-            Educational::create(['level'=>$request['educational_level'],'user_id'=>$user->id]);
+            Educational::create(['level'=>$request['Eductionlevel'],'user_id'=>$user->id]);
         }
 
 

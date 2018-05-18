@@ -20,8 +20,10 @@ class CreatePostJobsTable extends Migration
             $table->string('job_for');
             $table->string('job_descripton');
             $table->integer('country_id');
+            $table->string('job_requirements')->nullable();
             $table->integer('num_of_candidates')->nullable();
             $table->string('phone')->nullable();
+            $table->string('prefered_gender')->nullable();
             $table->decimal('max_salary')->nullable();
             $table->integer('currency_id')->nullable();
             $table->decimal('min_salary')->nullable();
@@ -34,6 +36,8 @@ class CreatePostJobsTable extends Migration
             $table->string('request_status')->nullable();
             $table->string('nationality')->nullable();
             $table->integer('seen')->nullable();
+            $table->date('availability')->nullable();
+            $table->integer('industry_id')->nullable();
             $table->timestamps();
         });
     }

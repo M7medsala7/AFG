@@ -5,40 +5,38 @@
 
 <section class="sliderphoto innerphoto" style="background:url(images/slide5.jpg) fixed center center no-repeat; background-size:cover;">
   <div class="container">
-  <div class="loginbok">
-    <h3 class="title-con enteacolor mertilte"> Welcome </h3>
-    <p class="viewsdriver congrat"> truck driver   congratulations truck driver congratulations <b> Candidates </b>truck driver congratulations truck driver congratulations   truck driver congratulations<b> Employers </b></p>
-    <h3 class="title-con enteacolor mertilte"> Register as </h3>
-    <div class="col-sm-6 inputbox textbotphot"> <img src="images/textbotphot.jpg" >
-      <div class="bowitdiv"> <a href="/f_register/candidate" class="largeredbtn">Candidates</a> </div>
-      <!--bowitdiv-->
+    <div class="loginbok cand-1 register-welcome">
+      <h3 class="createtitle">Welcome </h3>
+      <p class="textprgraf"> truck driver   congratulations truck driver congratulations   Candidates  truck driver congratulations truck driver congratulations   truck driver congratulations Employers </p>
+      <h4 class="title-con enteacolor mertilte"> Register as </h4>
+      <div class="row">
+        <div class="col-sm-6 congratulations"> <i class="fas fa-users"></i> <a href="/f_register/candidate" class="largeredbtn"> Candidates </a>
+          <ul class="hassl agencies">
+            <li>find a job easily</li>
+            <li>reach your employer directly</li>
+            <li>forget about agencies hassle</li>
+          </ul>
+        </div>
+        <!--textbotphot-->
+        
+        <div class="col-sm-6 congratulations"> <i class="fas fa-recycle"></i> <a href="/register/employeer" class="largeredbtn">Employers </a>
+          <ul class="hassl agencies">
+            <li>find a job easily</li>
+            <li>reach your employer directly</li>
+            <li>forget about agencies hassle</li>
+          </ul>
+        </div>
+        <!--textbotphot--> 
+        
+      </div>
+      <!--row--> 
       
-      <ul class="hassle">
-        <li>find a job easily</li>
-        <li>reach your employer directly</li>
-        <li>forget about agencies hassle</li>
-      </ul>
     </div>
-    
-    <!--inputbox-->
-    <div class="col-sm-6 inputbox textbotphot"> <img src="images/textbotphot2.jpg" >
-      <div class="bowitdiv"> <a href="/register/employeer" class="largeredbtn">Employers</a> </div>
-      <!--bowitdiv-->
-      
-      <ul class="hassle">
-        <li>find a job easily</li>
-        <li>reach your employer directly</li>
-        <li>forget about agencies hassle</li>
-      </ul>
-    </div>
-    
-    <!--inputbox--> 
+    <!--cand-1--> 
     
   </div>
   <!--container--> 
   
 </section>
-<!--section-->
-
 <!--section-->
 @endsection

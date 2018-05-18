@@ -16,10 +16,12 @@ class CreateCandidateExperiencesTable extends Migration
         Schema::create('candidate_experiences', function (Blueprint $table) {
             $table->increments('id');
             $table->string('working_in')->nullable();
-            $table->string('employer_nationality')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->integer('employer_nationality_id')->nullable();
             $table->string('company_name')->nullable();
             $table->integer('country_id');
-            $table->deciaml('salary')->nullable();
+            $table->decimal('salary')->nullable();
             $table->string('role')->nullable();
             $table->integer('user_id')->unsigned();
             $table->timestamps();

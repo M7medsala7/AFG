@@ -28,7 +28,7 @@ class User extends Authenticatable
     ];
   public function getAge($asd){
 
-        $timestemp = $asd."00:00:00";
+        $timestemp = $asd." 00:00:00";
         $year =Carbon::createFromFormat('Y-m-d H:i:s', $timestemp)->year;
         $Myage=Carbon::createFromDate($year)->diff(Carbon::now())->format('%y');
         return $Myage;
@@ -40,7 +40,7 @@ class User extends Authenticatable
     }
      public function CanInfo()
     {
-        return $this->hasMany('App\CandidateInfo','user_id');
+        return $this->hasOne('App\CandidateInfo','user_id');
     }
      public function getUserSkill()
     {
@@ -50,19 +50,36 @@ class User extends Authenticatable
     
     public function languages()
     {
-        return $this->hasMany('App\Language');
+        return $this->belongsToMany('App\Language','user_languages')->withPivot('degree');
     }
     public function skills()
     {
-        return $this->hasMany('App\Skills');
+        return $this->belongsToMany('App\Skills','user_skills','user_id','skill_id');
     }
+
     public function preferedLocations()
     {
         return $this->hasMany('App\PreferedLocation');
     }
+    public function educational()
+    {
+        return $this->hasOne('App\Educational');
+    }
+    public function experience()
+    {
+        return $this->hasMany('App\CandidateExperience');
+    }
     public function employer()
     {
         return $this->hasOne('App\EmployerProfile');
+    }
+    public function company()
+    {
+        return $this->hasOne('App\Company','created_by');
+    }
+    public function likes()
+    {
+        return $this->belongsToMany('App\User','user_like_candidates','employer_id','user_id');
     }
 }
 

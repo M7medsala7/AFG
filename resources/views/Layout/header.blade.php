@@ -1,4 +1,4 @@
-<header class="header">
+<header class="header {{(\Auth::user())?' header-in':''}}">
   <div class="container">
     <div class="logo"> <a href="/"> <img src="/images/logo.png" title="Maid & Helper"> </a> </div>
     <div class="logo scroldis"> <a href="#"> <img src="/images/logologin.png" title="Maid & Helper"> </a> </div>

@@ -108,51 +108,39 @@
 </div>--}}
 <section class="sliderphoto innerphoto" style="background:url(images/slide5.jpg) fixed center center no-repeat; background-size:cover;">
   <div class="container">
-  <div class="loginbok">
-    <h3 class="title-con  signwith"> sign in with </h3>
-    <div class="col-sm-6 inputbox">
-      <form  action="{{ route('login') }}" method="post" class="formlogin">
+    <div class="modal-content dal-conte dal-conte2 forget">
+      <h2 class="textcandidate ">sign in with</h2>
+      <form action="{{ route('login') }}" method="post">
       {{ csrf_field() }}
-        <div class="divwits iconfont">
-          <label class="desired"> email address</label>
-          <input id="email" type="email" name="email" class="form-control" placeholder="email address">
-        </div>
-        <!--divwits-->
-        
-        <div class="divwits iconfont">
-          <label class="desired"> password</label>
-          <input id="password" type="password" class="form-control" name="password" required placeholder="password">
-        </div>
-        <!--divwits-->
-        
-        <div class="divwits">
-          <div class="row"> 
-            <!-- <div class="col-sm-6 botrg">
-              <button type="submit" class="largeredbtn back"> <i class="fas fa-long-arrow-alt-left"></i> back</button>
-            </div>-->
-            <div class="col-sm-6 botrg col-sm-offset-3">
-              <button type="submit" class="largeredbtn"> login</button>
-            </div>
+        <div class="divwitsforget">
+          <label class="desired looking">email address</label>
+          <input type="email" name="email" class="form-control requirments" placeholder="email address">
+          <input type="password" class="form-control requirments" name="password" required placeholder="password">
+          <div class="resetpassword">
+            <button type="submit" class="largeredbtn"> login now</button>
           </div>
-          <!--row--> 
-          
         </div>
         <!--divwits-->
         
       </form>
+      <div class="registerwith"> <span>or</span>
+        <p>Register With</p>
+        <nav class="iconrgest"> <a href="#" class="fab fa-facebook-f" title="facebook"></a> <a href="#" class="fab fa-twitter" title="twitter"></a> <a href="#" class="fab fa-instagram" title="instagram"></a> <a href="#" class="fab fa-google-plus-g" title="google-plus"></a> 
+        </nav>
+      </div>
+      <div> <a class="btn btn-link" href="{{ route('password.request') }}">
+                Forgot Your Password?
+            </a></div>
+      <!--registerwith--> 
+      
     </div>
-    <!--inputbox-->
-    
-    <div class="col-sm-6 inputbox">
-      <nav class="iconsoch">
-        <p class="ortext">or</p>
-        <a href="#" title="facebook" style="    background: #3c579e;"><i class="fab fa-facebook-f"></i> sign up with Facebook</a> <a href="#" title="twitter" style="background: #55acee;"><i class="fab fa-twitter"></i> sign up with twitter</a> <a href="#" title="instagram" style="background: #a46b58;"><i class="fab fa-instagram"></i> sign up with instagram</a> </nav>
-    </div>
-    <!--inputbox--> 
+    <!--dal-conte2--> 
     
   </div>
   <!--container--> 
   
 </section>
+<!--section-->
+
 
 @endsection

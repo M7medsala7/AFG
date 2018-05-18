@@ -1,7 +1,7 @@
-@extends('layouts.app')
+@extends('Layout.app')
 
 @section('content')
-<div class="container">
+{{--<div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
@@ -43,5 +43,30 @@
             </div>
         </div>
     </div>
-</div>
+</div>--}}
+<section class="sliderphoto innerphoto" style="background:url(/images/slide5.jpg) fixed center center no-repeat; background-size:cover;">
+  <div class="container">
+    <div class="modal-content dal-conte dal-conte2 forget">
+      <h2 class="textcandidate ">forger your password ?</h2>
+      <p class="viewsdriver"> truck driver congratulations truck driver congratulations truck </p>
+      <form method="POST" action="{{ route('password.email') }}">
+      {{ csrf_field() }}
+        <div class="divwitsforget">
+          <label class="desired looking">email address</label>
+          <input id="email" type="email" class="form-control requirments" name="email" value="{{ old('email') }}" required placeholder="Enter address">
+          <div class="resetpassword">
+            <button type="submit" class="largeredbtn"> reset password</button>
+          </div>
+        </div>
+        <!--divwits-->
+        
+      </form>
+    </div>
+    <!--dal-conte2--> 
+    
+  </div>
+  <!--container--> 
+  
+</section>
+<!--section-->
 @endsection

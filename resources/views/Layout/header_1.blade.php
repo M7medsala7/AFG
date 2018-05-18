@@ -1,4 +1,4 @@
-<header class="header">
+<header class="header {{(\Auth::user())?' header-in':''}}">
   <div class="container">
     <div class="logoinner"> <a href="/"> <img src="/images/logoinner.png" title="Maid & Helper"> </a> </div>
     <form action="#" method="" class="input-search searchinner">
