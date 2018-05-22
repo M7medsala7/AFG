@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\PostJob;
 use App\JobLanguage;
+use Auth;
 class JobPostController extends Controller
 {
     //
@@ -117,5 +118,19 @@ class JobPostController extends Controller
         }
         $html = view('employer.starred',compact('topCandidates'))->render();
         return $html;
+    }
+    public function ViewJob($id)
+    {
+
+      $job = PostJob::where('id',$id)->first(); 
+
+      $jobforcompany = PostJob::where('created_by',$job->created_by)->get();
+      $jobCan=null;
+     
+      if(Auth::user() !=null && Auth::user()->CanInfo !=null)
+      {
+        $jobCan=PostJob::where('job_id',Auth::user()->CanInfo->job_id)->get();
+      }
+      return view('Arabic.Jobs.ViewJob',compact('job','jobforcompany','jobCan'));
     }
 }

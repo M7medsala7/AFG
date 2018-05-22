@@ -10,4 +10,5 @@ class PostJobController extends Controller
       return view('Dashboardadmin.Postjob.index');
     }
     
+    
 }

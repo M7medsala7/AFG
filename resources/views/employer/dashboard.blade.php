@@ -165,10 +165,10 @@
                   <!--tidiv-->
                   
                   <h4 class="innertitltext"> {{$sJob->user->name}} </h4>
-                  <p class="officer">safely officer</p>
+                  <p class="officer">{{$sJob->job->name}}</p>
                   <ul class="hassle salary">
                     <li> <strong>loc.</strong> {{$sJob->country->name}}</li>
-                    <li> <strong>salary.</strong> {{$sJob->min_salary}}-{{$sJob->max_salary}} omr</li>
+                    <li> <strong>salary.</strong> {{$sJob->min_salary}}-{{$sJob->max_salary}} {{($job->Currency)?$job->Currency->name:""}}</li>
                   </ul>
                   <div class="tidivbotom"> <a href="#">apply now</a> <span>{{$sJob->created_at}}</span>
                   </div>

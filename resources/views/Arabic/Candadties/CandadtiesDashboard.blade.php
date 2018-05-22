@@ -1,9 +1,4 @@
 @extends('Layout.app')
-<style type="text/css">
-  .header{
-    position: relative!important;
-  }
-</style>
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>  
 <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
@@ -97,8 +92,8 @@
                 <h4 class="innertitltext">Al Salam Auto Show </h4>
                 <p class="officer">{{$val->job->name}}</p>
                 <ul class="hassle salary">
-                  <li> <strong>loc.</strong>{{$val->country->name}} </li>
-                  <li> <strong>salary.</strong>{{$val->min_salary}}-{{$val->max_salary}} {{$val->Currency->name}}</li>
+                <li> <strong>loc.</strong>{{$val->country->name}} </li>
+                <li> <strong>salary.</strong>{{$val->min_salary}}-{{$val->max_salary}} {{$val->Currency->name}}</li> 
                 </ul>
                 <div class="tidivbotom"> <a href="#">apply now</a> <span>{{$val->created_at}}</span></div>
                 <!--tidiv--> 
@@ -188,8 +183,8 @@
                 <h4 class="innertitltext">Al Salam Auto Show </h4>
                 <p class="officer">{{$val->job->name}}</p>
                 <ul class="hassle salary">
-                  <li> <strong>loc.</strong>{{$val->country->name}} </li>
-                  <li> <strong>salary.</strong>{{$val->min_salary}}-{{$val->max_salary}} {{$val->Currency->name}}</li>
+                   <li> <strong>loc.</strong>{{$val->country->name}} </li>
+                  <li> <strong>salary.</strong>{{$val->min_salary}}-{{$val->max_salary}} {{$val->Currency->name}}</li> 
                 </ul>
                 <div class="tidivbotom"> <a href="#">apply now</a> <span>{{$val->created_at}}</span></div>
                 <!--tidiv--> 
@@ -261,21 +256,20 @@
 </section>
 <!--section-->
 
-<div id="myModal" class="modal fade">
+ <div id="myModal" class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header"> watch demo video
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
-      <div class="textbox">
-       
-      </div>
+      <video style="text-align: center;" width="auto" height="auto" controls>
+        <source src="{{$CandidateInfo->vedio_path}}" type="video/{{File::extension($CandidateInfo->vedio_path)}}">
+      </video>
       <!--textbox--> 
       
     </div>
   </div>
 </div>
-<!--myModal-->
 @endsection
 <script type="text/javascript"> 
 var map;

@@ -342,7 +342,6 @@ class RegisterController extends Controller
             'email'=>'required|email|confirmed|unique:users',
             'password'=>'required',
             'city_id'=>'required',
-            'industry_id'=>'required',
         ]);
         if ($validator->fails()) {
             return \Response::json($validator->messages(), 500);
@@ -368,7 +367,7 @@ class RegisterController extends Controller
         {
             EmployerProfile::create(['city_id'=>$input['city_id'],'type'=>$request['type'],'first_name'=>$request['first_name'],'last_name'=>$request['last_name'],'user_id'=>$user->id]);
         }
-        \App\Company::create(['name'=>$request['name'],'size'=>'5','country_id'=>$request['country_id'],'lat'=>'0','lang'=>'0','created_by'=>$user->id,'industry_id'=>$required]);
+        \App\Company::create(['name'=>$request['first_name'],'size'=>'5','country_id'=>$request['country_id'],'lat'=>'0','lang'=>'0','created_by'=>$user->id,'industry_id'=>0]);
         \Auth::loginUsingId($user->id);
         return "true";
     }

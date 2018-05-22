@@ -222,9 +222,9 @@
       <div class="modal-header"> watch demo video
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
-      <div class="textbox">
-        <iframe  src="{{$candidate->vedio_path}}" frameborder="0" allowfullscreen></iframe>
-      </div>
+      <video style="text-align: center;" width="auto" height="auto" controls>
+        <source src="{{$candidate->CanInfo->vedio_path}}" type="video/{{File::extension($candidate->CanInfo->vedio_path)}}">
+      </video>
       <!--textbox--> 
       
     </div>
@@ -236,6 +236,11 @@
 @endsection
 
 @section('scripts')
+<script>
+   $(function(){
+    $('header').addClass('header-in');
+  });
+</script>
 <script>
 $.ajaxSetup({
   headers: {

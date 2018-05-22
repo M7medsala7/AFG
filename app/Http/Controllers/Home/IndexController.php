@@ -26,7 +26,7 @@ class IndexController extends Controller
 		->join('jobs','jobs.id','=','post_jobs.job_id')
 		->join('countries','countries.id','=','post_jobs.country_id')
 		->orderBy('post_jobs.created_at', 'DEC')->limit(4)
-		->select('jobs.name AS JobName','users.name AS CompanyName','users.type','post_jobs.max_salary','countries.name AS CountryName','post_jobs.created_at AS Jobdate')->get();
+		->select('jobs.name AS JobName','users.name AS CompanyName','users.type','post_jobs.max_salary','countries.name AS CountryName','post_jobs.created_at AS Jobdate','post_jobs.id')->get();
 
 		$SuccessStories =DB::table('success_stories')->join('users','users.id','=','success_stories.user_id')->orderBy('success_stories.created_at', 'DEC')->limit(4)->get();
 

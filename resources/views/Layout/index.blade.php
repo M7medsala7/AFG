@@ -64,7 +64,7 @@
             <li> <strong>loc.</strong> {{$AddJobs->CountryName}}</li>
             <li> <strong>salary.</strong> {{$AddJobs->max_salary}}</li>
           </ul>
-          <div class="tidivbotom"> <a href="#">apply now</a> <span>{{ \Carbon\Carbon::parse($AddJobs->Jobdate)->format('d/M/Y')}}</span></div>
+          <div class="tidivbotom"> <a href="/ViewJob/{{$AddJobs->id}}">View job</a> <span>{{ \Carbon\Carbon::parse($AddJobs->Jobdate)->format('d/M/Y')}}</span></div>
           <!--tidiv--> 
           
         </div>
@@ -106,7 +106,7 @@
             <p class="officer">{{$TopCandi->job->name}}</p>
             <ul class="hassle salary">
               
-              <li>{{$TopCandi->nationality->name}}</li>
+              <li>{{($TopCandi->nationality)?$TopCandi->nationality->name:"Nationality is not set"}}</li>
             </ul>
             <div class="tidivbotom"> <a href="/candidate/{{$TopCandi->user->id}}">View Profile</a> <span>{{$TopCandi->created_at}}</span></div>
             <!--tidiv--> 
@@ -221,6 +221,11 @@
 </div>
  @stop
 @section('scripts')
+<script>
+   $(function(){
+    $('header').removeClass('header-in');
+  });
+</script>
 <script>
   var searchtype = $('#search_type').val();
   if(searchtype == "")

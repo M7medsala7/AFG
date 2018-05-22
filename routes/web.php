@@ -104,3 +104,4 @@ Route::group(['middleware'=>'auth'],function(){
 });
 
 Route::get('/candidate/{id}','CandidatesController@profile');
+Route::get('/ViewJob/{id}','JobPostController@ViewJob');

@@ -25,6 +25,10 @@ class PostJob extends Model
         return $this->belongsTo('App\User','created_by');
     }
 
+public function Industry()
+    {
+        return $this->belongsTo('App\Industry');
+    }
     public function country()
     {
         return $this->belongsTo('App\Country');
