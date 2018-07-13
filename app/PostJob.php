@@ -37,6 +37,11 @@ public function Industry()
     public function applicants()
     {
         return $this->belongsToMany('App\User','job_applications','job_post_id','user_id');
+       
+    }
+    public function likejob()
+    {
+        return $this->belongsToMany('App\User','user_like_jobs','job_id','user_id');
     }
     public function starred()
     {

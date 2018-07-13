@@ -23,14 +23,14 @@ class CandidatesController extends Controller
         $filename = 'video'.time().$file->getClientOriginalName();
         $type = $file->getMimeType();
         $extension = $file->getClientOriginalExtension();
-        $path = public_path().'/videos/'.$user->id;
-        $destPath = public_path().'/videos/'.$user->id.'/'.$filename;
+        $path = 'videos/'.$user->id;
+        $destPath = 'videos/'.$user->id.'/'.$filename;
         if(!\File::exists($path)) {
             // path does not exist
             \File::makeDirectory($path, $mode = 0777, true, true);
         }
         $success =$file->move($path,$filename);
-        $destPath = str_replace(public_path(), "", $destPath);
+       // $destPath = str_replace(public_path(), "", $destPath);
         return $destPath;
     }
 
@@ -38,29 +38,28 @@ class CandidatesController extends Controller
         $filename = time().$file->getClientOriginalName();
         $type = $file->getMimeType();
         $extension = $file->getClientOriginalExtension();
-        $path = public_path().'/uploads/'.$user->id;
-        $destPath = public_path().'/uploads/'.$user->id.'/'.$filename;
+        $path = 'uploads/'.$user->id;
+        $destPath = 'uploads/'.$user->id.'/'.$filename;
         if(!\File::exists($path)) {
             // path does not exist
             \File::makeDirectory($path, $mode = 0777, true, true);
         }
         $success =$file->move($path,$filename);
-        $destPath = str_replace(public_path(), "", $destPath);
+       // $destPath = str_replace(public_path(), "", $destPath);
         return $destPath;
     }
 
 
      public function fregcand(Request $request)
     {
-    
+ 
         //return $request->hasFile('logo')?"true":"pase";
         $this->validate($request,[
             'first_name'=>'required',
             'email' => 'email|required',
             'gender' =>'required',
             'visa_type'=>'required',
-            'looking_for_job'=>'required',
-            'agreeBox' => 'required',
+            'looking_for_job'=>'required'
             ]);
     /***
     ***increment code for the new user***
@@ -89,6 +88,8 @@ class CandidatesController extends Controller
         }
         if($request->hasFile('video_file'))
         {
+        //to store video
+        
             $video_path = $this->saveFile($request['video_file'],$user);
         }
         if($request->hasFile('cv_path'))
@@ -144,6 +145,148 @@ class CandidatesController extends Controller
         return redirect('/fregister/candidate');
 
     }
+
+
+
+    public function  updateimage( Request $request)
+
+        {
+          
+        $file = $request['file'];
+            
+           $images = $request->file('images');
+          
+  
+            $id =  $request->get('id');
+
+           $imageName = $images->getClientOriginalName();
+
+
+                $path=("upload/imgageslogo").$imageName;
+               
+              // notation octale : valeur du mode correcte
+                  
+
+                if (!file_exists($path)) {
+                  $images->move(("upload/imgageslogo"),$imageName);
+                  
+                $q =User::join('candidate_infos','candidate_infos.user_id','users.id')->where('candidate_infos.id', $id)
+                ->select('users.id AS UID','users.logo')->first();
+               
+
+ if ($q)
+ {
+    $user = User::find($q->UID);
+
+
+      $user->logo = "upload/imgageslogo/".$imageName;
+
+      $user->save();
+      
+ }
+                }
+                else
+                {
+                   $random_string = md5(microtime());
+                   $images->move(public_path("upload/imgageslogo"),$random_string.".jpg");
+                   
+                     $q =User::join('candidate_infos','candidate_infos.user_id','users.id')->where('candidate_infos.id', $id) ->select('users.id AS UID','users.logo')->first();
+                    
+ if ($q)
+ {
+    $user = User::find($q->UID);
+
+
+      $user->logo = "/upload/imgageslogo/".$random_string.".jpg";
+
+      $user->save();
+      
+ }
+                
+                }
+        }
+
+
+
+        public function EditStoreVideo(request $request)
+        {
+             try
+        {
+            $blobInput = $request->file('data');
+
+            $VideoName =  $request->get('name');
+            $id=$request->get('id');
+
+            $path=("upload/video").$VideoName;
+            if (!file_exists($path)) {
+            $random_string = md5(microtime());
+
+            $blobInput->move(("upload/video"),$VideoName);
+           $q= CandidateInfo::
+        where('id', $id)  // find your user by their email
+        ->limit(1)  // optional - to ensure only one record is updated.
+        ->update(array('vedio_path' => "/upload/video/".$VideoName));
+            }
+            else
+            {
+            $random_string = md5(microtime());
+            $blobInput->move(public_path("/upload/video"),$random_string.".webm");
+
+               $q= CandidateInfo::
+        where('id', $id)  // find your user by their email
+        ->limit(1)  // optional - to ensure only one record is updated.
+        ->update(array('vedio_path' => "/upload/video/".$random_string.".webm "));
+
+           
+            }
+        }    
+    catch(Exception $e) 
+        {
+           return redirect('/home');
+        } 
+        }
+
+
+
+          public function EditUploadVideo(request $request)
+        {
+             try
+        {
+          
+            $blobInput = $request->file('video');
+           
+          
+            $id=$request->get('id');
+           
+         $VideoName= $blobInput->getClientOriginalName();
+
+            $path=("upload/video").$VideoName;
+            if (!file_exists($path)) {
+            $random_string = md5(microtime());
+            $blobInput->move(("upload/video"),$VideoName);
+           $q= CandidateInfo::
+        where('id', $id)  // find your user by their email
+        ->limit(1)  // optional - to ensure only one record is updated.
+        ->update(array('vedio_path' => "upload/video/".$VideoName));
+            }
+            else
+            {
+            $random_string = md5(microtime());
+            $blobInput->move(("upload/video"),$random_string.".webm");
+
+               $q= CandidateInfo::
+        where('id', $id)  // find your user by their email
+        ->limit(1)  // optional - to ensure only one record is updated.
+        ->update(array('vedio_path' => "upload/video/".$random_string.".webm "));
+
+           
+            }
+        }    
+    catch(Exception $e) 
+        {
+           return redirect('/home');
+        } 
+        }
 
     
 }

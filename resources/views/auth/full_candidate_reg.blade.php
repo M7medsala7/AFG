@@ -1,4 +1,5 @@
 @extends('Layout.app')
+@section('content')
 <style>
   .select2-selection__rendered{
     background: rgb(0, 1, 1);
@@ -14,12 +15,16 @@
     margin-top: 10px;
         color: white!important;
   }
+ 
   .select2 select2-container select2-container 
   {
 width:300px;
   }
+ 
+
   .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 57px!important;}
+    height: 57px!important;
+   }
   .select2-container .select2-selection--single
   {
     height: 0px!important;
@@ -27,6 +32,7 @@ width:300px;
   .select2-container--default .select2-selection--single{    background-color: 0!important;border: 0!important}
   .watchvideo img{
     height: 20%!important;
+    width:100%
   }
   .select2 select2-container select2-container--default
   {
@@ -37,7 +43,7 @@ width:300px;
     width:300px;
   }
 </style>
-@section('content')
+
 <section class="sliderphoto innerphoto" style="background:url(/images/slide5.jpg) fixed center center no-repeat; background-size:cover;">
   <div class="container"> 
     <ul class="nav nav-tabs  tabssteps">
@@ -111,17 +117,17 @@ width:300px;
             <div class="col-sm-6 leftinput">
               <div class="row">
                 <div class="col-sm-12 airports witpostslid">
-                  <input type="text" class="form-control requirments" name="first_name" placeholder="full name">
+                  <input type="text" class="form-control requirments" id="first_name"  name="first_name" placeholder="full name" onblur="processForm(this.form)">
                 </div>
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                  <input type="text" class="form-control requirments" name="last_name" placeholder="last name">
+                  <input type="text" class="form-control requirments" name="last_name" placeholder="last name" onblur="processForm(this.form)">
                 </div>
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                <select class="form-control requirments" name="nationality_id" id="nation_id" required="" style="width: 90%;" >
+                <select class="form-control requirments" name="nationality_id" id="nation_id" required="" style="width: 90%;" onblur="processForm(this.form)">
                   <option selected="" >Nationality</option>
                   @foreach(\App\Nationality::all() as $nation)
                     <option value="{{$nation->id}}">{{$nation->name}}</option>
@@ -131,8 +137,8 @@ width:300px;
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                  <select class="form-control requirments" name="country_id" id="country_id" required="" style="width: 90%;">
-                    <option selected=""> Countries</option>
+                  <select class="form-control requirments" name="country_id" id="country_id" required="" style="width: 90%;" onblur="processForm(this.form)">
+                    <option selected=""> Current Location</option>
                     @foreach(\App\Country::all() as $country)
                       <option value="{{$country->id}}">{{$country->name}}</option>
                     @endforeach
@@ -141,22 +147,23 @@ width:300px;
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                  <input type="text" class="form-control requirments" name="phone_number" placeholder=" phone no">
+                  <input type="text" class="form-control requirments" name="phone_number" placeholder=" phone no" onblur="processForm(this.form)">
                 </div>
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                  <input type="email" class="form-control requirments" name="email" placeholder="email">
+                  <input type="email" class="form-control requirments" name="email" placeholder="email" onblur="processForm(this.form)">
                 </div>
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                  <input type="password" class="form-control requirments" name="password"  placeholder="password">
+                  <input type="password" class="form-control requirments" name="password"  placeholder="password" onblur="processForm(this.form)">
                 </div>
                 <!--witpostslid-->
                 
-                <div class="col-sm-12 airports witpostslid">
-                  <select class="form-control requirments" name="gender" required="">
+                <div class="col-sm-12 airports witpostslid" style"width:100%">
+                
+                  <select class="form-control requirments" name="gender" id="gender" required="" style="width: 90%;" onblur="processForm(this.form)">
                     <option selected="" style="width: 90%;"> gender</option>
                     <option value="0">Male</option>
                     <option value="1">female</option>
@@ -173,8 +180,10 @@ width:300px;
             <div class="col-sm-6 leftinput">
               <div class="row">
                 <div class="col-sm-12 airports witpostslid">
-                  <select class="form-control requirments" name="martial_status" required="" style="width: 90%;">
+                  <select class="form-control requirments" id ="martial_status" name="martial_status" required="" style="width: 90%;" onblur="processForm(this.form)">
                     <option selected=""> marital status</option>
+
+                    
                     <option value="single">single</option>
                     <option value="married">married</option>
                     <option value="devorced">devorced</option>
@@ -196,7 +205,8 @@ width:300px;
                   
                   <!--             <label class="desired">birth date</label>
 -->
-                  <input type="date" class="form-control requirments calendar" name="birthdate"  placeholder="birth date">
+<input required="" type="text" style="background-color: transparent;" class="form-control requirments calendar" name="birthdate" placeholder="birth date" onfocus="(this.type='date')"/>
+                             
                 </div>
                 <!--witpostslid-->
                 
@@ -211,7 +221,7 @@ width:300px;
                 
                 <div class="col-sm-12 airports witpostslid">
                   <div class="input-group input-file" name="cv_path">
-                    <input type="text" class="form-control requirments"  placeholder='cv...' />
+                    <input type="text" class="form-control requirments"  placeholder='cv...' /> 
                     <span class="input-group-btn">
                     <button class="btn btn-default btn-choose largeredbtn brows" type="button">upload</button>
                     </span> </div>
@@ -219,9 +229,12 @@ width:300px;
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                  <select class="form-control requirments" name="visa_type" required="" style="width: 90%;">
-                    <option selected=""> emploer-type of visa</option>
-                    <option value="single">single</option>
+                  <select class="form-control requirments" id="visa_type"  name="visa_type" required="" style="width: 90%;">
+                     <option selected=""> Emploer-type of visa</option>
+                    <option  value="None">None</option>
+                    <option  value="Employed">Employed</option>
+                    <option value="Visit">Visit</option>
+                    <option value="Cancelled">Cancelled</option>
                   </select>
                 </div>
                 <!--witpostslid-->
@@ -229,7 +242,11 @@ width:300px;
                 <div class="col-sm-12 airports witpostslid"> 
                   <!--      <label class="desired">expired date visa</label>-->
                   
-                  <input type="date" class="form-control requirments calendar" name="visa_expire_date" placeholder="expired date visa">
+
+                  <input required="" type="text" style="background-color: transparent;" class="form-control requirments calendar" name="visa_expire_date" placeholder="expired date visa" onfocus="(this.type='date')"/>
+               
+             
+             
                 </div>
                 <!--witpostslid-->
                 
@@ -237,7 +254,7 @@ width:300px;
                   <div class="row">
                     <div class="col-sm-6  stepotw">
                       <div class="linksing textcand-1">
-                        <p>10</p>
+                        <p  id="Points">0</p>
                         <span>earn points <i class="fas fa-trophy"></i><br>
                         with each step</span> </div>
                     </div>
@@ -270,41 +287,49 @@ width:300px;
           
           <div class="row">
             <div class="col-sm-12 airports witpostslid">
-              <select class="form-control requirments" name="language_ids[]" id="language_id" multiple="multiple" required="" style="width: 90%;">
-                <option selected=""> languages</option>
+              <select class="form-control chosen-select types" name="language_ids[]" id="language_id" multiple="multiple" required="" style="width: 90%;">
+                <option value="" disabled selected>Choose your languages</option>
                 @foreach(\App\Language::all() as $lang)
                   <option value="{{$lang->id}}">{{$lang->name}}</option>
                 @endforeach
               </select>
             </div>
             <!--witpostslid-->
-            
-            <div class="col-sm-12 airports witpostslid">
-              <select class="form-control requirments" name="eductional_level" required="" style="width: 90%;">
-                <option selected=""> eduction level</option>
-                <option value="4">eduction level</option>
-                <option value="4">eduction level</option>
+           
+            <div class="col-sm-12 airports witpostslid" style="padding-bottom: 13px;padding-top: 13px:width:100%">
+              <select class="form-control requirments" id="eductional_level" name="eductional_level" required="" style="width: 90%;">
+               <option selected="">Eduction</option>
+                <option >High school</option>
+                <option >Undergraduate </option>
+                <option >University Graduate </option>
+                <option >Masters</option>
               </select>
             </div>
+           
+            <!--witpostslid-->
+            
+          
             <!--witpostslid-->
             
             <div class="col-sm-12 airports witpostslid">
-              <input type="text" class="form-control requirments" placeholder="note:other">
-            </div>
-            <!--witpostslid-->
-            
-            <div class="col-sm-12 airports witpostslid">
-              <select class="form-control requirments" name="skill_ids[]" id="skill_ids" multiple="multiple" required="" style="width: 90%;">
-                <option selected=""> skills</option>
+              <select class="form-control chosen-select types" name="skill_ids[]" id="skill_ids" multiple="multiple" required="" style="width: 90%;">
+              <option value="" disabled selected>Choose your Skills</option>
                 @foreach(\App\Skills::all() as $skill)
                   <option value="{{$skill->id}}">{{$skill->name}}</option>
                 @endforeach
               </select>
             </div>
+
+            <div class="col-sm-12 airports witpostslid">
+              <input type="text" class="form-control requirments" placeholder="other skills">
+            </div>
+
             <!--witpostslid-->
             
             <div class="col-sm-12 airports witpostslid">
-              <input type="text" class="form-control requirments" name="descripe_yourself" placeholder="describe your self in one sentence">
+
+            <textarea class="form-control requirments"  name="descripe_yourself" placeholder="describe your self in one sentence"></textarea>
+              
             </div>
             <!--witpostslid-->
             
@@ -312,7 +337,7 @@ width:300px;
               <div class="row">
                 <div class="col-sm-6  stepotw">
                   <div class="linksing textcand-1">
-                    <p>20</p>
+                    <p id="Points2">0</p>
                     <span>earn points <i class="fas fa-trophy"></i><br>
                     with each step</span> </div>
                 </div>
@@ -364,15 +389,23 @@ width:300px;
           <!--divwits-->
           
           <div class="divwits">
-            <input type="number" class="form-control requirments" name="min_salary" placeholder="what is your minimum salary?">
+            <input type="number" class="form-control requirments" name="min_salary" placeholder="what is your Expected salary?">
           </div>
           <!--divwits-->
           
-          
           <div class="divwits">
-            <select class="form-control requirments" name="prefered_location_id" required="" style="width: 90%;">
-              <option selected=""> preferred locations top work at</option>
-              <option selected=""> Countries</option>
+            <select class="form-control requirments" id="currency_id" name="currency_id" required="" style="width: 90%;">
+              <option selected=""> currency</option>
+                  @foreach(\App\Currency::all() as $currency)
+                    <option value="{{$currency->id}}">{{$currency->name}}</option>
+                  @endforeach
+                </select>
+            </select>
+          </div>
+          <!--divwits-->
+          <div class="divwits" style="margin-bottom: 15px;">
+            <select class="form-control requirments" id="prefered_location_id" name="prefered_location_id" required="" style="width: 90%;">
+              <option selected="">where do you wish to work at ?</option>
                   @foreach(\App\Country::all() as $country)
                     <option value="{{$country->id}}">{{$country->name}}</option>
                   @endforeach
@@ -381,10 +414,10 @@ width:300px;
           </div>
           <!--divwits-->
           
-          <div class="divwits">
-            <select class="form-control requirments" name="prefered_location_ids[]" multiple="multiple" required="" style="width: 90%;">
-              <option selected=""> preferred locations top work at</option>
-              <option selected=""> Countries</option>
+          <div class="divwits" style="margin-bottom: 15px;">
+            <select class="form-control chosen-select types" name="prefered_location_ids[]" multiple="multiple" required="" style="width: 90%;">
+              
+                <option value="" disabled selected>you can select multicountries you wish to work at</option>
                     @foreach(\App\Country::all() as $country)
                       <option value="{{$country->id}}">{{$country->name}}</option>
                     @endforeach
@@ -393,9 +426,7 @@ width:300px;
           </div>
           <!--divwits-->
           
-          <div class="divwits">
-            <input type="text" disabled="disabled" class="form-control requirments" placeholder=" uou can select mulicountries you wish to work at">
-          </div>
+        
           <!--divwits-->
           
           <div class="divwits">
@@ -410,7 +441,7 @@ width:300px;
             <div class="row">
               <div class="col-sm-6  stepotw">
                 <div class="linksing textcand-1">
-                  <p>30</p>
+                  <p id="Points3">0</p>
                   <span>earn points <i class="fas fa-trophy"></i><br>
                   with each step</span> </div>
               </div>
@@ -436,23 +467,49 @@ width:300px;
           
           <div class="divwits">
             <div class="row">
+             
               <div class="col-sm-6 binputs">
-                <input type="text" class="form-control requirments" name="working_in" placeholder="wrking in">
+              <input required="" type="text" style="background-color: transparent;" class="form-control requirments calendar" name="start_date" placeholder="from" onfocus="(this.type='date')"/>
+ 
+               
               </div>
-              <div class="col-sm-3 binputs">
-                <input type="date" class="form-control requirments" name="start_date" placeholder="from">
+            
+                <div class="col-sm-6 binputs">
+              <input required="" type="text" style="background-color: transparent;" class="form-control requirments calendar" name="end_date" placeholder="to" onfocus="(this.type='date')"/>
+ 
+             
+             
               </div>
-              <div class="col-sm-3 binputs">
-                <input type="date" class="form-control requirments" name="end_date" placeholder="to">
-              </div>
+
+
+
             </div>
             <!--row--> 
           </div>
           <!--divwits-->
           
+       
+          <!--divwits-->
+          
           <div class="divwits">
+            <input type="text" class="form-control requirments" name="company_name" placeholder="   company/family name">
+          </div>
+          <!--divwits-->
+          
+          <div class="divwits">
+           <select class="form-control requirments" id="work_country_id" name="work_country_id" required="" style="width: 90%;">
+             
+              <option selected=""> Countries</option>
+                    @foreach(\App\Country::all() as $country)
+                      <option value="{{$country->id}}">{{$country->name}}</option>
+                    @endforeach
+                  </select>
+            </select>
+          </div>
+
+             <div class="divwits">
           <select class="form-control requirments" name="employer_nationality_id" id="emp_nation_id" required="" style="width: 90%;">
-              <option selected=""> Nationality</option>
+              <option selected="">Employer Nationality</option>
                   @foreach(\App\Nationality::all() as $nation)
                     <option value="{{$nation->id}}">{{$nation->name}}</option>
                   @endforeach
@@ -462,29 +519,13 @@ width:300px;
           <!--divwits-->
           
           <div class="divwits">
-            <input type="text" class="form-control requirments" name="company_name" placeholder="   company name">
+            <input type="text" class="form-control requirments" name="salary" placeholder="salary may be">
           </div>
           <!--divwits-->
           
           <div class="divwits">
-           <select class="form-control requirments" name="work_country_id" required="">
-              <option selected="" style="width: 90%;"> preferred locations top work at</option>
-              <option selected=""> Countries</option>
-                    @foreach(\App\Country::all() as $country)
-                      <option value="{{$country->id}}">{{$country->name}}</option>
-                    @endforeach
-                  </select>
-            </select>
-          </div>
-          <!--divwits-->
-          
-          <div class="divwits">
-            <input type="text" class="form-control requirments" name="salary" placeholder="slary may be">
-          </div>
-          <!--divwits-->
-          
-          <div class="divwits">
-            <input type="text" class="form-control requirments" name="role" placeholder=" what is your tasks in company">
+          <textarea class="form-control requirments" name="role" placeholder=" what is your tasks in company"></textarea>
+ 
           </div>
           <!--divwits-->
           
@@ -492,7 +533,7 @@ width:300px;
             <div class="row">
               <div class="col-sm-6  stepotw">
                 <div class="linksing textcand-1">
-                  <p>40</p>
+                  <p id="Points">0</p>
                   <span>earn points <i class="fas fa-trophy"></i><br>
                   with each step</span> </div>
               </div>
@@ -510,8 +551,8 @@ width:300px;
         
         <div role="tabpanel" class="tab-pane nonebac witsteptow" id="step-6">
           <div class="inputbox margmadia nonmegtext nonmerg">
-            <h4 class="title-con entea ">broadcst your talent</h4>
-            <h5 class="title-con entea">upload/record video gallary of your work</h5>
+            <h4 class="title-con entea ">Broadcast your talent</h4>
+            <h5 class="title-con entea">Introduce yourself through a video,raise your chance of getting hired fast </h5>
           </div>
           <!--nonmegtext-->
           
@@ -520,7 +561,7 @@ width:300px;
               <div class="col-sm-4 prerare"> <i class="iconnamer">1</i>
                 <div class="padtext">
                   <h4>prerare it beforehand</h4>
-                  <p>prerare it beforehand prerare it beforehand prerare it beforehand</p>
+                  <p>Prepare the script first and practice it, try to choose clear background and isolated from the  other sounds</p>
                 </div>
                 <!--padtext--> 
               </div>
@@ -528,8 +569,8 @@ width:300px;
               
               <div class="col-sm-4 prerare"> <i class="iconnamer">2</i>
                 <div class="padtext">
-                  <h4>record the vedio</h4>
-                  <p>prerare it beforehand prerare it beforehand prerare it beforehand</p>
+                  <h4>Record the vedio</h4>
+                  <p>Record the vedio (don't exceed 2 mins)</p>
                 </div>
                 <!--padtext--> 
                 
@@ -538,8 +579,8 @@ width:300px;
               
               <div class="col-sm-4 prerare"> <i class="iconnamer">3</i>
                 <div class="padtext">
-                  <h4>double chech before upload</h4>
-                  <p>prerare it beforehand prerare it beforehand prerare it beforehand</p>
+                  <h4>Double check before upload</h4>
+                  <p>Double check the quality before uploading</p>
                 </div>
                 <!--padtext--> 
                 
@@ -554,19 +595,19 @@ width:300px;
           
           <div class="divwits">
             <div class="row">
-              <div class="col-sm-6 clickupload"><input type="file" id="video_file" style="display: none;" name="video_file"> <a href="#" data-toggle="modal" data-target="#myMo" class="file_input largeredbtn">click here to upload</a> </div>
-              <div class="col-sm-6 clickupload"> <a href="#" data-toggle="modal" data-target="#myModa2" class="largeredbtn">click here to upload</a> </div>
+              <div class="col-sm-6 clickupload"><input type="file" id="video_file" style="display: none;" name="video_file"> <a href="#" data-toggle="modal" data-target="#myMo" class="file_input largeredbtn">Upload Video</a> </div>
+              <div class="col-sm-6 clickupload"> <a href="#" data-toggle="modal" data-target="#myModa2" class="largeredbtn">Record Video</a> </div>
             </div>
             <!--row--> 
             
           </div>
-          <!--divwits-->
+          <!--divwits--> 
           
           <div class="divwits">
             <div class="row">
               <div class="col-sm-8  stepotw">
                 <div class="linksing textcand-1">
-                  <p>50</p>
+                  <p id="Points4"></p>
                   <span>earn points <i class="fas fa-trophy"></i><br>
                   with each step</span> </div>
               </div>
@@ -662,7 +703,7 @@ width:300px;
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="textbox">
-        <iframe  src="https://www.youtube.com/embed/BFrLL5w9UGQ?autoplay=0" frameborder="0" allowfullscreen></iframe>
+ <iframe width="560" height="315" src="https://www.youtube.com/embed/whMCdOkI2CU" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
       </div>
       <!--textbox--> 
       
@@ -678,7 +719,7 @@ width:300px;
         <button type="button" class="close" data-dismiss="modal">أ—</button>
       </div>
       <div class="textbox">
-        <form action="#" method="" class="formlogin video-rc">
+        <form action="#" method="" class="formlogin video-rc" id="MyFormInput">
          
           <video id="myVideo" class="video-js vjs-default-skin"></video>
           <div class="divwits iconfont">
@@ -702,7 +743,7 @@ width:300px;
 <div id="myModa3" class="modal fade">
   <div class="modal-content dal-conte dal-conte2"> <i class="fas fa-check-circle"></i>
     <h2 class="textcandidate">congratulations</h2>
-    <p class="viewsdriver"> truck driver congratulations truck driver congratulations truck driver congratulations truck driver congratulations</p>
+     <p class="viewsdriver">your application is now available for employers to view, please stay tuned , you may get an invitation for interview soon</p>
     <div class="sk-circle">
       <div class="sk-circle1 sk-child"></div>
       <div class="sk-circle2 sk-child"></div>
@@ -717,16 +758,16 @@ width:300px;
       <div class="sk-circle11 sk-child"></div>
       <div class="sk-circle12 sk-child"></div>
     </div>
-    <div class="linksing"> rediricling you to the profile page in <span class="nambers">7</span> seconds</div>
+     <div class="linksing"> rediricling you to the profile page in <span class="nambers">7</span> seconds</div>
   </div>
 </div>
 <!--myModa3-->
 @endsection
 @section('scripts')
 <script>
-	$('.clear_all').on('click',function(){
-		document.getElementById('full_cand_reg').reset();
-	});
+  $('.clear_all').on('click',function(){
+    document.getElementById('full_cand_reg').reset();
+  });
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
 <script>
@@ -743,14 +784,37 @@ $(document).ready(function () {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
-         
+      
   $('#job_id').select2();
   $('#industry_id').select2();
   $('#country_id').select2();
   $('#emp_nation_id').select2();
   $('#nation_id').select2();
   $('#religion_id').select2();
+  $("#gender").select2({
+  });
+  $("#currency_id").select2({
+  });
+  $("#work_country_id").select2({
+  });
+  
+  $("#prefered_location_id").select2({
+  });
+$("#martial_status").select2({
+});
+$("#visa_type").select2({
+});
+$("#eductional_level").select2({
+});
 
+
+ $(".types").chosen({ 
+                   width: '100%',
+                   color:'red',
+                   no_results_text: "No Results",
+                   allow_single_deselect: true, 
+                   search_contains:true, });
+ $(".types").trigger("chosen:updated");
  
 var player = videojs("myVideo", {
     controls: true,
@@ -809,7 +873,54 @@ console.log( player.recordedData);
 
 
  });
+// function default_value($m)
+// {
+//  //var N=document.getElementById($m).innerHTML;
+//  var check = $("#"+$m).val();
 
+//     if(check !="")
+//     {
+//       alert("dddd");
+//       document.getElementById("Points").innerHTML = 5+parseInt(document.getElementById("Points").innerHTML);
+//     }
+    
+ 
+
+// }
+function processForm(form) {
+  
+  document.getElementById("Points").innerHTML=0;
+  document.getElementById("Points2").innerHTML=0;
+  document.getElementById("Points3").innerHTML=0;
+  document.getElementById("Points4").innerHTML=0;
+  var control, controls = form.elements;
+  for (var i=0, iLen=controls.length; i<iLen; i++) {
+    control = controls[i];
+ 
+if(control.value !="" && control.value !=0)
+{
+if(control.name=="logo" || control.name=="cv_path" )
+{
+  document.getElementById("Points").innerHTML = 10+parseInt(document.getElementById("Points").innerHTML);
+  document.getElementById("Points2").innerHTML = 10+parseInt(document.getElementById("Points").innerHTML);
+  document.getElementById("Points3").innerHTML = 10+parseInt(document.getElementById("Points").innerHTML);
+  document.getElementById("Points4").innerHTML = 10+parseInt(document.getElementById("Points").innerHTML);
+  document.getElementById("Points5").innerHTML = 10+parseInt(document.getElementById("Points").innerHTML);
+}
+else
+{
+
+  document.getElementById("Points").innerHTML = 5+parseInt(document.getElementById("Points").innerHTML);
+  document.getElementById("Points2").innerHTML = 5+parseInt(document.getElementById("Points").innerHTML);
+  document.getElementById("Points3").innerHTML = 5+parseInt(document.getElementById("Points").innerHTML);
+  document.getElementById("Points4").innerHTML = 5+parseInt(document.getElementById("Points").innerHTML);
+  document.getElementById("Points5").innerHTML = 10+parseInt(document.getElementById("Points").innerHTML);
+}
+
+ }   // Do something with the control
+   // console.log(control.name + ': ' + control.value);
+  }
+}
 
 </script>
 @endsection

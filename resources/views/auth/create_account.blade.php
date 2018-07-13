@@ -113,6 +113,7 @@
   });
   $('#country_id').on('change',function(){
     var country_id = $('#country_id').val();
+     $('#city_id').find('option').remove().end();
      $.get("/getCities/"+country_id, function(data, status){
 
       $.each(data, function(key, item) {   

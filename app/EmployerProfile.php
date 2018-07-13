@@ -15,7 +15,7 @@ class EmployerProfile extends Model
         'type',
         'city_id',
         'address',
-        'nationality_id',
+        'nationality',
         'coins',
     ];
 }

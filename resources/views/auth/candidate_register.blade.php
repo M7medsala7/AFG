@@ -191,7 +191,7 @@
                 </div>
                 <div class="col-sm-3  stepotw"> <a href="#" id="step-2-back" class="largeredbtn back"> <i class="fas fa-long-arrow-alt-left"></i> back</a> </div>
                 <div class="col-sm-3  stepotw">
-                  <button type="submit" class="largeredbtn"> next <i class="fas fa-long-arrow-alt-right"></i></button>
+                  <button type="submit" class="largeredbtn"> finish <i class="fas fa-check"></i></button></button>
                 </div>
               </div>
               <!--row--> 
@@ -243,7 +243,7 @@
         <button type="button" class="close" data-dismiss="modal">أ—</button>
       </div>
       <div class="textbox">
-        <iframe src="https://www.youtube.com/embed/BFrLL5w9UGQ?autoplay=0" frameborder="0" allowfullscreen=""></iframe>
+         <iframe width="560" height="315" src="https://www.youtube.com/embed/whMCdOkI2CU" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
       </div>
       <!--textbox--> 
       

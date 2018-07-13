@@ -81,5 +81,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany('App\User','user_like_candidates','employer_id','user_id');
     }
+      public function likesjob()
+    {
+        return $this->belongsToMany('App\User','user_like_jobs','job_id','user_id');
+    }
 }
 

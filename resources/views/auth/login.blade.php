@@ -69,7 +69,7 @@
                             <label for="password" class="col-md-4 control-label">Password</label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" required>
+                                <input id="password" type="password" class="form-control" style="margin-top: 25px" name="password" required >
 
                                 @if ($errors->has('password'))
                                     <span class="help-block">
@@ -83,7 +83,7 @@
                             <div class="col-md-6 col-md-offset-4">
                                 <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember Me
+                                        <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }} > Remember Me
                                     </label>
                                 </div>
                             </div>
@@ -113,9 +113,9 @@
       <form action="{{ route('login') }}" method="post">
       {{ csrf_field() }}
         <div class="divwitsforget">
-          <label class="desired looking">email address</label>
+          
           <input type="email" name="email" class="form-control requirments" placeholder="email address">
-          <input type="password" class="form-control requirments" name="password" required placeholder="password">
+          <input type="password" style="margin-top: 25px" class="form-control requirments" name="password" required placeholder="password">
           <div class="resetpassword">
             <button type="submit" class="largeredbtn"> login now</button>
           </div>
@@ -125,9 +125,13 @@
       </form>
       <div class="registerwith"> <span>or</span>
         <p>Register With</p>
-        <nav class="iconrgest"> <a href="#" class="fab fa-facebook-f" title="facebook"></a> <a href="#" class="fab fa-twitter" title="twitter"></a> <a href="#" class="fab fa-instagram" title="instagram"></a> <a href="#" class="fab fa-google-plus-g" title="google-plus"></a> 
+        <nav class="iconrgest"> <a href="/auth/facebook/" class="fab fa-facebook-f" title="facebook"></a> <a href="/auth/facebook/1" class="fab fa-twitter" title="twitter"></a> <a href="#" class="fab fa-instagram" title="instagram"></a> <a href="/auth/google/1" class="fab fa-google-plus-g" title="google-plus"></a> 
         </nav>
       </div>
+      <div> <a class="btn btn-link" href="/register/candidates">
+           create new account in 3 Steps
+            </a></div>
+
       <div> <a class="btn btn-link" href="{{ route('password.request') }}">
                 Forgot Your Password?
             </a></div>

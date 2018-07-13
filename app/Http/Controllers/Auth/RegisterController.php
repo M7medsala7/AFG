@@ -14,6 +14,7 @@ use App\Educational;
 use App\CandidateExperience;
 use Socialite;
 use Session;
+use Mail;
 
 class RegisterController extends Controller
 {
@@ -57,38 +58,29 @@ class RegisterController extends Controller
 
     Public function StoreVideo(request $request)
     {
-    $blobInput = $request->file('data');
-
-   
+     try
+        {
+            $blobInput = $request->file('data');
             $VideoName =  $request->get('name');
+            $path=public_path("/assets/video").$VideoName;
+            if (!file_exists($path)) {
+            $random_string = md5(microtime());
+            $blobInput->move(("/assets/video"),$VideoName);
+            Session::put('VideoPath',"/assets/video".$random_string.".webm ");
+            }
+            else
+            {
+            $random_string = md5(microtime());
+            $blobInput->move(public_path("/assets/video"),$random_string.".webm");
 
+            Session::put('VideoPath',"/assets/video".$random_string.".webm ");
 
-                $path=public_path("/assets/video").$VideoName;
-              // notation octale : valeur du mode correcte
-                  
-
-                if (!file_exists($path)) {
-                     $random_string = md5(microtime());
-                  $blobInput->move(public_path("/assets/video"),$VideoName);
-                
-                   // $video = New Video();
-                    Session::put('VideoPath',"/assets/video".$random_string.".webm ");
-                    // $video->save();
-                    }
-                else
-                {
-                   $random_string = md5(microtime());
-                   $blobInput->move(public_path("/assets/video"),$random_string.".webm");
-
-                   Session::put('VideoPath',"/assets/video".$random_string.".webm ");
-                   // $video=new Video();
-                 // $video->path="/assets/video".$random_string.".webm ";
-                 
-                  // $video->save();
-                
-                }
-               
-                 
+            }
+        }    
+    catch(Exception $e) 
+        {
+           return redirect('/home');
+        }        
     }
 
 
@@ -115,7 +107,20 @@ class RegisterController extends Controller
 
            
         $user = User::create(['name'=>$userDataFace->name,'email'=>$userDataFace->email,'password' =>$userDataFace->token,'type'=>$type]);
-           
+        if($type==2)
+        {
+          CandidateInfo::create(['user_id'=>$user->id]);
+            
+        }
+        else
+        {
+            \App\Company::create(['name'=>$user->name,'size'=>'5','lat'=>'0','lang'=>'0','created_by'=>$user->id,'industry_id'=>0]);
+
+          
+        }
+       
+   
+
                 unset($userDataFace->name,$userDataFace->email,$userDataFace->token);
               
                 \Auth::loginUsingId($user->id);
@@ -215,15 +220,16 @@ class RegisterController extends Controller
 
     public function emplyReg(Request $request)
     {
+    try
+    {
         $this->validate($request, [
             'job_id' => 'required',
             'job_for'=>'required',
             'name'=>'required',
             'phone'=>'required',
-            'email'=>'required|email',
+            'email'=>'required|email|unique:users',
             'password'=>'required',
             'country_id'=>'required',
-            'industry_id'=>'required',
 
         ]);
         $code = 1000;
@@ -242,13 +248,40 @@ class RegisterController extends Controller
         {
             EmployerProfile::create(['type'=>$request['job_for'],'name'=>$request['name'],'last_name'=>'.','user_id'=>$user->id]);
         }
-        \App\Company::create(['name'=>$request['name'],'size'=>'5','country_id'=>$request['country_id'],'lat'=>'0','lang'=>'0','created_by'=>$user->id,'industry_id'=>$request['industry_id']]);
+        \App\Company::create(['name'=>$request['name'],'size'=>'5','country_id'=>$request['country_id'],'lat'=>'0','lang'=>'0','created_by'=>$user->id,'industry_id'=>0]);
+
+        //Sending Mail after regestration
+       $data=array('Email'=>$request['email']);
+        Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
+        $message->to($data['Email']);
+       $message->subject('registeration completed');
+
+      });
+
         \Auth::loginUsingId($user->id);
 
         return redirect('/home');
+        
+            }    
+    catch(Exception $e) 
+        {
+         return redirect('/');
+         }
     }
     public function candReg(Request $request)
     {
+          try
+          {
+       
+         $data=array('Email'=>$request['email']);
+
+        Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
+        $message->to($data['Email']);
+        $message->subject('registeration completed');
+
+        });
+
+      
         $this->validate($request, [
             'job_id' => 'required',
             'industry_id'=>'required',
@@ -266,8 +299,10 @@ class RegisterController extends Controller
         {
             $code = $lastUser->code++;
         }
+
         $user = User::create(['name'=>$request['name'],'email'=>$request['email'],'password' => bcrypt($request['password']),'type'=>'candidate','code'=>$code]);
         $input = $request->all();
+
         if($request->hasFile('video_file'))
         {
             $vedio_path = $this->saveFile($request['video_file'],$user);
@@ -276,37 +311,59 @@ class RegisterController extends Controller
         unset($input['name'],$input['email'],$input['password']);
         $input['user_id']= $user->id;
         CandidateInfo::create($input);
+         //Sending Mail after regestration
+        $data=array('Email'=>$request['email']);
+        Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
+        $message->to($data['Email']);
+        $message->subject('registeration completed');
+
+        });
+
         \Auth::loginUsingId($user->id);
         return redirect('/home');
+            }    
+    catch(Exception $e) 
+        {
+         return redirect('/');
+         }
     }
 
     public function saveFile($file, $user){
+        try
+        {
+
+
         $filename = 'video'.time().$file->getClientOriginalName();
         $type = $file->getMimeType();
         $extension = $file->getClientOriginalExtension();
-        $path = public_path().'/videos/'.$user->id;
-        $destPath = public_path().'/videos/'.$user->id.'/'.$filename;
+        $path = 'videos/'.$user->id;
+        $destPath ='videos/'.$user->id.'/'.$filename;
         if(!\File::exists($path)) {
             // path does not exist
             \File::makeDirectory($path, $mode = 0777, true, true);
         }
         $success =$file->move($path,$filename);
-        $destPath = str_replace(public_path(), "", $destPath);
+       // $destPath = str_replace( $destPath);
         return $destPath;
+          }    
+    catch(Exception $e) 
+        {
+           return redirect('/home');
+        }
     }
 
     public function saveUploadedFile($file, $user){
         $filename = time().$file->getClientOriginalName();
         $type = $file->getMimeType();
         $extension = $file->getClientOriginalExtension();
-        $path = public_path().'/uploads/'.$user->id;
-        $destPath = public_path().'/uploads/'.$user->id.'/'.$filename;
+        $path = 'uploads/'.$user->id;
+        $destPath ='uploads/'.$user->id.'/'.$filename;
         if(!\File::exists($path)) {
             // path does not exist
             \File::makeDirectory($path, $mode = 0777, true, true);
         }
         $success =$file->move($path,$filename);
-        $destPath = str_replace(public_path(), "", $destPath);
+       // $destPath = str_replace( $destPath);
         return $destPath;
     }
 
@@ -327,7 +384,8 @@ class RegisterController extends Controller
 
     public function f_reg_emp(Request $request)
     {
-    
+    try
+    {
     /**
     **Validation 
     **/
@@ -368,8 +426,25 @@ class RegisterController extends Controller
             EmployerProfile::create(['city_id'=>$input['city_id'],'type'=>$request['type'],'first_name'=>$request['first_name'],'last_name'=>$request['last_name'],'user_id'=>$user->id]);
         }
         \App\Company::create(['name'=>$request['first_name'],'size'=>'5','country_id'=>$request['country_id'],'lat'=>'0','lang'=>'0','created_by'=>$user->id,'industry_id'=>0]);
+ //Sending Mail after regestration
+        $data=array('Email'=>$request['email']);
+        Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
+        $message->to($data['Email']);
+        $message->subject('registeration completed');
+
+        });
+
+
         \Auth::loginUsingId($user->id);
         return "true";
+        
+          }    
+    catch(Exception $e) 
+        {
+         return redirect('/');
+         }
+        
+        
     }
 
 
@@ -381,20 +456,30 @@ class RegisterController extends Controller
 
     public function f_reg_cand(Request $request)
     {
+ try{
+ 
+
         //return $request->hasFile('logo')?"true":"pase";
         $this->validate($request,[
             'first_name'=>'required',
-            'email' => 'email|required',
+            'email' => 'email|required|unique:users',
             'gender' =>'required',
             'visa_type'=>'required',
-            'visa_expire_date'=>'required',
             'looking_for_job'=>'required',
             'agreeBox' => 'required',
             ]);
     /***
     ***increment code for the new user***
     ***/
+    $videopoint=0;
+    $logopoint=0;
+    $cvgpoint=0;
+    $skillpoint=0;
+    $langpoint=0;
+    $edupoint=0;
+    $points=0;
         $code = 1000;
+      
         //get the code value;
         $lastUser =  \DB::table('users')->orderBy('id', 'desc')->first();
         if($lastUser)
@@ -406,47 +491,75 @@ class RegisterController extends Controller
 
     //**create user
         $user = User::create(['name'=>$request['first_name'],'email'=>$request['email'],'password' => bcrypt($request['password']),'type'=>'candidate','code'=>$code]);
+
     //**user created
         $video_path = Session::get('VideoPath');
         $cv_path = "";
         $logo = "";
+
         if($request->hasFile('logo'))
         {
             $logo = $this->saveUploadedFile($request['logo'],$user);
             $user->logo=$logo;
             $user->save();
+
+            $logopoint=5;
         }
         if($request->hasFile('video_file'))
         {
             $video_path = $this->saveFile($request['video_file'],$user);
+            $videopoint=12;
         }
         if($request->hasFile('cv_path'))
         {
             $cv_path = $this->saveUploadedFile($request['cv_path'],$user);
+
+            $cvgpoint=5;
         }
-        if($user)
-        {
-            CandidateInfo::create(['last_name'=>$request['last_name'],'phone_number'=>$request['phone_number'],'religion_id'=>$request['religion_id'],'birthdate'=>$request['birthdate'],'visa_type'=>$request['visa_type'],'visa_expire_date'=>$request['visa_expire_date'],'job_id'=>$request['job_id'],'industry_id'=>$request['industry_id'],'country_id'=>$request['country_id'],'gender'=>$request['gender'],'martial_status'=>$request['martial_status'],'descripe_yourself'=>$request['descripe_yourself'],'looking_for_job'=>$request['looking_for_job'],'nationality_id'=>$request['nationality_id'],'vedio_path'=>$video_path, 'cv_path'=>$cv_path, 'user_id'=>$user->id]);
-        }
+    
         if($request['language_ids'])
         {
             foreach ($request['language_ids'] as $key => $lang) {
                 # code...
                 \App\UserLanguage::create(['language_id'=>$lang,'user_id'=>$user->id]);
             }
+            $langpoint=1;
         }
         if(count($request['skill_ids']))
         {
             foreach ($request['skill_ids'] as $key => $skill) {
                 # code...
                 \App\UserSkill::create(['user_id'=>$user->id, 'skill_id'=>$skill]);
+
             }
+            $skillpoint=1;
         }
         if($request['educational_level'])
         {
             Educational::create(['level'=>$request['educational_level'],'user_id'=>$user->id]);
+            $edupoint=1;
         }
 
+
+
+        $countcoins=['name'=>$request['first_name'],'email'=>$request['email'],'password' => bcrypt($request['password']),'last_name'=>$request['last_name'],'phone_number'=>$request['phone_number'],'religion_id'=>$request['religion_id'],'birthdate'=>$request['birthdate'],'visa_type'=>$request['visa_type'],'visa_expire_date'=>$request['visa_expire_date'],'job_id'=>$request['job_id'],'industry_id'=>$request['industry_id'],'country_id'=>$request['country_id'],'gender'=>$request['gender'],'martial_status'=>$request['martial_status'],'descripe_yourself'=>$request['descripe_yourself'],'looking_for_job'=>$request['looking_for_job'],'nationality_id'=>$request['nationality_id'],'working_in'=>$request['working_in'],'start_date'=>$request['start_date'],'end_date'=>$request['end_date'],'employer_nationality_id'=>$request['employer_nationality_id'],'company_name'=>$request['company_name'],'country_id'=>$request['work_country_id'],'salary'=>$request['salary'],'role'=>$request['role'],$request['prefered_location_id']
+];
+ // dd($countcoins);
+foreach ( $countcoins as   $value) {
+
+    if($value != null && $value !="0")
+    {
+
+        $points ++;
+    }
+
+}
+
+$totalpoints=$points+$cvgpoint+$logopoint+$edupoint+$skillpoint+$videopoint+$langpoint;
+    if($user)
+        {
+            CandidateInfo::create(['last_name'=>$request['last_name'],'phone_number'=>$request['phone_number'],'religion_id'=>$request['religion_id'],'birthdate'=>$request['birthdate'],'visa_type'=>$request['visa_type'],'visa_expire_date'=>$request['visa_expire_date'],'job_id'=>$request['job_id'],'industry_id'=>$request['industry_id'],'country_id'=>$request['country_id'],'gender'=>$request['gender'],'martial_status'=>$request['martial_status'],'descripe_yourself'=>$request['descripe_yourself'],'looking_for_job'=>$request['looking_for_job'],'nationality_id'=>$request['nationality_id'],'vedio_path'=>$video_path, 'cv_path'=>$cv_path, 'user_id'=>$user->id,'coins'=>$totalpoints]);
+        }
 
         $can_experience = ['working_in'=>$request['working_in'],'start_date'=>$request['start_date'],'end_date'=>$request['end_date'],'employer_nationality_id'=>$request['employer_nationality_id'],'company_name'=>$request['company_name'],'country_id'=>$request['work_country_id'],'salary'=>$request['salary'],'role'=>$request['role'],'user_id'=>$user->id];
         CandidateExperience::create($can_experience);
@@ -469,9 +582,27 @@ class RegisterController extends Controller
             
         }
 
+
+
+
+         //Sending Mail after regestration
+        $data=array('Email'=>$request['email']);
+     Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
+        $message->to($data['Email']);
+        $message->subject('registeration completed');
+
+        });
+
         \Auth::loginUsingId($user->id);
         return redirect('/home');
 
-    }
+   
 
+    }    
+    catch(Exception $e) 
+        {
+         return redirect('/');
+         }
+
+}
 }

@@ -24,26 +24,26 @@
       <div class="button"></div>
       <ul>
         <li><a href="/" class="active">Home </a></li>
-        <li><a href="#">jobs </a> </li>
-        <li> <a href="#"> Candidates </a>
-          <ul>
+        <li><a href="/search?type=I+am+Candidate&words=">All jobs </a> </li>
+        <li> <a href="/search?type=I+Am+Employer&words=">All Candidates </a>
+        <!--   <ul>
+            <li><a href="#" class="active">Home </a></li>
+            <li><a href="#">jobs </a> </li>
+            <li> <a href="#"> Candidates </a></li>
+            <li> <a href="#">Employers </a></li>
+            <li> <a href="/aboutus"> About Us</a> </li>
+          </ul> -->
+        </li>
+        <li> <a href="/search?type=I+Am+Employer&words=">Our Services </a>
+        <!--   <ul>
             <li><a href="#" class="active">Home </a></li>
             <li><a href="#">jobs </a> </li>
             <li> <a href="#"> Candidates </a></li>
             <li> <a href="#">Employers </a></li>
             <li> <a href="#"> Pricing</a> </li>
-          </ul>
+          </ul> -->
         </li>
-        <li> <a href="#">Employers </a>
-          <ul>
-            <li><a href="#" class="active">Home </a></li>
-            <li><a href="#">jobs </a> </li>
-            <li> <a href="#"> Candidates </a></li>
-            <li> <a href="#">Employers </a></li>
-            <li> <a href="#"> Pricing</a> </li>
-          </ul>
-        </li>
-        <li> <a href="#"> Pricing</a> </li>
+        <li> <a href="/aboutus"> About Us</a> </li>
       </ul>
     </nav>
     @else
@@ -56,7 +56,7 @@
         <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"> <img src="images/callto-action.png"> <i class="fa fa-angle-down" aria-hidden="true"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a href="#"><i class="far fa-user"></i> Account </a></li>
+          <li><a href="/home"><i class="far fa-user"></i> Account </a></li>
           <li><a href="#"><i class="far fa-edit"></i> Edit </a></li>
           <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Log out </a></li>
         </ul>
@@ -69,8 +69,9 @@
       <div id="head-mobile"></div>
       <div class="button"></div>
       <ul>
-        <li><a href="#" class="active">Home </a></li>
-        <li><a href="#">jobs </a> </li>
+        <li><a href="/" class="active">Home </a></li>
+         <li><a href="/search?type=I+am+Candidate&words=">All jobs </a> </li>
+      
         <!-- <li> <a href="#"> Candidates </a>
           <ul>
             <li><a href="#" class="active">Home </a></li>

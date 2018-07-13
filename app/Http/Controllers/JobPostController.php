@@ -6,6 +6,11 @@ use Illuminate\Http\Request;
 use App\PostJob;
 use App\JobLanguage;
 use Auth;
+use DB;
+use Session;
+use App\User;
+
+use App\CandidateInfo;
 class JobPostController extends Controller
 {
     //
@@ -13,6 +18,99 @@ class JobPostController extends Controller
     {
     	return view('employer.post_job');
     }
+    public function likejob($id)
+    {
+
+   if(\Auth::user()==null)
+        {
+            return redirect('/login');
+        }
+        else
+        {
+             $post_job=PostJob::find($id);
+            $Like=DB::table('user_like_jobs')
+                     ->where('job_id',$id)
+                      ->where('user_id',\Auth::user()->id)
+                     ->first();
+
+            if($Like==null)
+            {
+              $post_job->likejob()->attach($id,['user_id'=>\Auth::user()->id]);
+            }
+            else
+            {
+               
+    $post_job->likejob()->detach(['user_id'=>\Auth::user()->id]);
+             
+            }
+$link='/ViewJob/'.$id; 
+return redirect ($link);           
+
+             
+        }
+
+    }
+    public function ApplyOk()
+    {
+
+   if(\Auth::user()==null)
+        {
+            return redirect('/login');
+        }
+        else
+        {
+             return redirect ('/home');
+        }
+
+    }
+
+     public function ApplyJob($id)
+    {
+
+        if(\Auth::user()==null)
+        {
+            return redirect('/login');
+        }
+        else
+        {
+          //Record in apply job
+            $post_job=PostJob::find($id);
+           
+            $getApplied=DB::table('job_applications')->where('job_post_id',$id)
+            ->where('user_id',\Auth::user()->id)->first();
+           
+              if($getApplied == null)
+              {
+                
+              $post_job->applicants()->attach($id,['user_id'=>\Auth::user()->id]);
+
+               Session::flash('flash_message', 'Applied Sucessfully');
+              }
+              else
+              {
+                 Session::flash('flash_message', 'you already applied thanks');
+              }
+             //if indeed
+
+              // if us 
+              if($post_job->link == null) 
+              {
+                $link='/ViewJob/'.$id;
+               
+              }
+              else
+              {
+                $link=$post_job->link;
+              }
+              return redirect ($link);
+
+            
+            
+        }
+        
+    }
+
+    
     public function store(Request $request)
     {
     	// return $request->all();
@@ -126,11 +224,67 @@ class JobPostController extends Controller
 
       $jobforcompany = PostJob::where('created_by',$job->created_by)->get();
       $jobCan=null;
-     
+      $color='black';
+     // Like or Not 
+
+if(Auth::user() !=null)
+{
+ $Like=DB::table('user_like_jobs')
+                     ->where('job_id',$id)
+                      ->where('user_id',\Auth::user()->id)
+                     ->first();
+            if($Like!=null)
+            {
+             $color='red';
+             
+            }
+}
       if(Auth::user() !=null && Auth::user()->CanInfo !=null)
       {
         $jobCan=PostJob::where('job_id',Auth::user()->CanInfo->job_id)->get();
+
+    
+          
+
+
       }
-      return view('Arabic.Jobs.ViewJob',compact('job','jobforcompany','jobCan'));
+      return view('Arabic.Jobs.ViewJob',compact('job','jobforcompany','jobCan','color'));
+    }
+
+
+
+
+
+
+
+
+
+    public function empolyerCount(Request $request)
+    {
+       
+$id=$request->selected;
+
+
+
+$resultQuery=CandidateInfo::join('nationalities','nationalities.id','candidate_infos.nationality_id')
+->where('candidate_infos.job_id',$id)
+->select( DB::raw('count(candidate_infos.nationality_id) as count ,nationalities.name') )
+->groupBy('candidate_infos.nationality_id')->get();
+
+$dataresult=[];
+  foreach ($resultQuery as $resultQu) {
+                                        array_push($dataresult,array(
+                                          'label' => $resultQu->name,
+                                          'y' => $resultQu->count
+                                          ));
+                                       
+                                      }
+
+
+
+                                        return Response::json($dataresult,  200, [], JSON_NUMERIC_CHECK);
+
+
+
     }
 }

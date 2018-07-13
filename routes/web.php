@@ -75,12 +75,17 @@ Route::get('/twitter/callback','\App\Http\Controllers\Auth\RegisterController@ha
 **Search**
 **********/
 Route::get('/search','Home\IndexController@search');
+Route::any('/filtersearch', 'Home\IndexController@filtersearch');
 
 /***********************************Admin routes**************************************/
 Route::get('/PostJob','\App\Http\Controllers\Dashboard\PostJobController@index');
 Route::get('/getjobsbycountry','HomeController@getjobsbycountry');
 Route::get('/fregister/candidate','\App\Http\Controllers\Dashboard\CandidatesController@index');
 Route::post('/fregcand','\App\Http\Controllers\Dashboard\CandidatesController@fregcand');
+////eidtindasboardcandidate
+Route::any('/updateimage', '\App\Http\Controllers\Dashboard\CandidatesController@updateimage');
+Route::any('/EditStoreVideo', '\App\Http\Controllers\Dashboard\CandidatesController@EditStoreVideo');
+Route::any('/EditUploadVideo', '\App\Http\Controllers\Dashboard\CandidatesController@EditUploadVideo');
 
 
 /*************************************************************************/
@@ -96,12 +101,27 @@ Route::group(['middleware'=>'auth'],function(){
 	Route::get('/next_likes/{id}','CandidatesController@getNextLikes');
 	Route::post('/company_store', 'companiesController@store');
 
-
-
-
-	
-
 });
 
 Route::get('/candidate/{id}','CandidatesController@profile');
 Route::get('/ViewJob/{id}','JobPostController@ViewJob');
+Route::get('/ApplyJob/{id}','JobPostController@ApplyJob');
+Route::get('/ApplyOk','JobPostController@ApplyOk');
+Route::get('/likejob/{id}','JobPostController@likejob');
+//
+
+
+/*************************************************************************/
+
+
+Route::get('/contact', function () {
+    return view('Arabic.CompanyInfo.contact');
+});
+
+Route::get('/aboutus', function () {
+    return view('Arabic.CompanyInfo.aboutus');
+}); 
+
+/************************chartempolyerdashboard*************************************************/
+
+Route::post('/empolyerCount','JobPostController@empolyerCount');

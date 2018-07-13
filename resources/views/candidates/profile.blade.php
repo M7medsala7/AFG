@@ -1,6 +1,14 @@
 @extends('Layout.app')
 
 @section('content')
+<style type="text/css">
+.namesprof li {
+
+    width: 100%;
+
+}
+</style>
+
 <section class="candidate-profile">
   <h1>candidate profile </h1>
 </section>
@@ -10,12 +18,36 @@
       <div class="col-sm-4 dashboardleft">
         <div class="inner-aboutus topmergline padbotnm">
           <div class="detalsprofile ecome">
-            <h4 class="textcandidate">watch demo video</h4>
+            <h4 class="textcandidate">watch {{$candidate->name}} video</h4>
           </div>
           <!--detalsprofile-->
-          <div class="videoprofy"> <a href="#" data-toggle="modal" data-target="#myModal" class="watchvideo wipopups"> <img src="/images/slide5.jpg"> <i class="fas fa-play"></i> </a>
+          <div class="videoprofy"> 
+            <a href="#" data-toggle="modal" data-target="#myModal" class="watchvideo wipopups"> 
+        
+
+               @if($candidate->CanInfo->vedio_path != null)
+              <video  src="/{{($candidate->CanInfo->vedio_path)}}" type="video/{{File::extension($candidate->CanInfo->vedio_path)}}">  </a> 
+                @else
+
+
+<img src="/{{($candidate->logo)?$candidate->logo :'/images/blue-pass-onw.jpg'}}" > <i class="fas fa-play"></i> </a>
+                
+                @endif
+
+
+           
+
+          </a>
           <div>
-            <button class="like like_button" user-id="{{$candidate->id}}"> <i class="fas fa-heart"></i> </button> <span>like</span></div>
+            @if($color=='black')
+            <button class="like like_button" user-id="{{$candidate->id}}" > <i class="fas fa-heart"></i> </button> <span>like</span>
+            @endif
+            @if($color=='red')
+            <button class="like like_button" user-id="{{$candidate->id}}" > <i class="fas fa-heart" style="color: red"></i> </button> <span>like</span>
+            @endif
+
+            
+          </div>
           </div>
           <!--videoprofy-->
           
@@ -28,7 +60,7 @@
                                 </div>
                                 <!--blue-pass-->
                                 
-                                <div class="blue-pass-onw"> <img src="images/blue-pass-onw.jpg"> </div>
+                                <div class="blue-pass-onw"> <img src="/images/blue-pass-onw.jpg"> </div>
                                 <!--blue-pass--> 
                                 
                               </div>--}}
@@ -37,7 +69,7 @@
           <div class="profilelink">
             <h4 class="textcandidate">profile</h4>
             <div class="navlink">
-              <div  class="form-control">{{url('/candidate/'.$candidate->id)}}</div>
+              <div  class="form-control">{{('maidandhelper.com/candidate/'.$candidate->id)}}</div>
               <a href="#" class="btn-slide"> copy link</a> </div>
             <!--navlink--> 
             
@@ -48,7 +80,7 @@
             <h4 class="textcandidate">Similar candidates</h4>
             @if($simialr_candidates)
               @foreach($simialr_candidates as $cand)
-                <div class="itmonw"> <img src="{{($cand->user->logo)?$cand->user->logo :'/images/blue-pass-onw.jpg'}}">
+                <div class="itmonw"> <img src="/{{($cand->user->logo)?$cand->user->logo :'/images/blue-pass-onw.jpg'}}" >
                   <h5>{{$cand->user->name}}</h5>
                   <p>{{$cand->job->name}}</p>
                   <a href="/candidate/{{$cand->user->id}}" class="largeredbtn">view profile </a> 
@@ -73,14 +105,29 @@
         
         <div class="inner-aboutus massandphone">
           <div class="col-sm-10 divboxs">
-            <div class="com-proftow companychool imgprof"> <img src="{{($candidate->logo)?$candidate->logo :'/images/blue-pass-onw.jpg'}}">
+            <div class="com-proftow companychool imgprof"> <img src="/{{($candidate->logo)?$candidate->logo :'/images/blue-pass-onw.jpg'}}" >
               <div class="comitm">
                 <h5 class="textcandidate">{{$candidate->name}} {{($candidate->CanInfo->last_name)?$candidate->CanInfo->last_name:""}}</h5>
                 <ul class="namesprof">
                   <li> {{$candidate->CanInfo->job->name}} </li>
-                  <li> <strong>male : </strong> 30 </li>
-                  <li> <strong>current loaction : </strong>{{($candidate->CanInfo->country)?$candidate->CanInfo->country->name:""}}</li>
-                  <li> <strong>visa status : </strong>avaliable</li>
+                  <li> <strong>
+
+                    @if($candidate->CanInfo->gender==0)
+                    Male
+                     @endif
+                     @if($candidate->CanInfo->gender==1)
+                    Female
+                    @endif
+                     :
+                   </strong>
+                   {{$age}} 
+                  
+                   </li>
+                  <li> <strong>current loaction : </strong>{{($candidate->CanInfo->country)?$candidate->CanInfo->country->name:"No Country"}}
+                  </li>
+                  <li> <strong>visa status : </strong>{{($candidate->CanInfo->visa_type)?$candidate->CanInfo->visa_type:"No Visa type"}}</li>
+                 
+                  <li> <strong> Nationality: </strong> {{($candidate->CanInfo->Nationality)?$candidate->CanInfo->Nationality->name:"Nationality is not set"}}</li>
                 </ul>
               </div>
               <!--comitm--> 
@@ -90,12 +137,13 @@
           <!--divboxs-->
           
           <div class="col-sm-3 divboxs">
-            <nav class="pholeft"> <a href="#"> <i class="fas fa-phone"></i> call</a> <a href="#"><i class="far fa-envelope"></i> message</a> </nav>
+            <nav class="pholeft"> <a href="#" data-toggle="modal" data-target="#myModa2"> <i class="fas fa-phone" ></i> call</a> <a href="#" ><i class="far fa-envelope"></i> message</a> </nav>
           </div>
           <!--divboxs-->
+      
           
           <div class="row botboxs" >
-            <h2>{{$candidate->descripe_yourself}}</h2>
+            <h2>{{($candidate->CanInfo->descripe_yourself)?$candidate->CanInfo->descripe_yourself:"No Description"}}</h2>
           </div>
           <!--resultstext--> 
           
@@ -117,6 +165,7 @@
         
         <!--inner-aboutus-->
         
+
         <div class="inner-aboutus topmergline">
           <div class="currencytext resultstext">
             <h2>skills</h2>
@@ -151,7 +200,7 @@
                 </span></p>
               @endforeach
             @else
-              No Languages Selected
+             <p> No Languages Selected</p>
             @endif
             </div>
             <!--languagelink--> 
@@ -184,7 +233,7 @@
                 <h5 class="titlewebs">
                {{$experience->role}}
                 </h4>
-                <img src="images/titlewebs.png">
+                <img src="/images/titlewebs.png">
                 <div class="languagelink">
                   <p>from <span>{{$experience->start_date}}</span></p>
                   <p>to <span>{{$experience->end_date}}</span></p>
@@ -219,11 +268,32 @@
   <div id="myModal" class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header"> watch demo video
+      <div class="modal-header"> watch {{$candidate->name}} video
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
-      <video style="text-align: center;" width="auto" height="auto" controls>
-        <source src="{{$candidate->CanInfo->vedio_path}}" type="video/{{File::extension($candidate->CanInfo->vedio_path)}}">
+ 
+     @if($candidate->CanInfo->vedio_path != null)
+
+  <video style="
+    text-align: center;
+    width: 100%;"  controls>
+        <source src="/{{($candidate->CanInfo->vedio_path)}}" type="video/{{File::extension($candidate->CanInfo->vedio_path)}}">
+      </video>
+
+
+
+              
+                @else
+                <p style="    text-align: center;
+    font-size: x-large;
+    padding-top: 30px;
+    padding-bottom: 30px;">Sorry,No video </p>
+                
+                @endif
+      
+      
+       </a> 
+       
       </video>
       <!--textbox--> 
       
@@ -231,16 +301,26 @@
   </div>
 </div>
 <!--myModal-->
+
+
+<div id="myModa2" class="modal fade" aria-hidden="false">
+  <div class="modal-dialog popvad">
+    <div class="modal-content">
+      <button type="button" class="close" data-dismiss="modal">×</button>
+      <div class="linksing">
+        <h2 class="callnow">call now </h2>
+        {{($candidate->CanInfo->phone_number)?$candidate->CanInfo->phone_number:"No phone number"}}</div>
+    </div>
+  </div>
+</div>
+
+
 </section>
 <!--section-->
 @endsection
 
 @section('scripts')
-<script>
-   $(function(){
-    $('header').addClass('header-in');
-  });
-</script>
+
 <script>
 $.ajaxSetup({
   headers: {
@@ -255,13 +335,50 @@ $.ajaxSetup({
         url:'/likeCandidate',
         data:"user_id="+user_id,
         success: function(data){
-          console.log(data);
-          if(data=='true')
+
+
+         if(data=='true')
+      
+
             $('.like_button').css('color','red');
-          else
-            $('.like_button').css('color','');       
-        }
+         
+          else 
+            $('.like_button').css('color','');  
+
+               
+        },
+                    error: function(response)
+                    {
+                      
+                       window.location = '/login'; 
+                    }
+
+
       });
+  });
+</script>
+<script>
+   $(function(){
+    $('header').addClass('header-in');
+  });
+</script>
+<script>
+  var searchtype = $('#search_type').val();
+  if(searchtype == "")
+  {
+    $('.input-search').on('click',function(){
+      $('.select_search_type').css('display','block');
+      console.log(searchtype);
+    });
+  }
+  else
+  {
+
+  }
+$('.select_type').on('click',function(){
+    $('.select_search_type').remove();
+    searchtype=$(this).attr('type_val');
+    $('#search_type').val(searchtype);
   });
 </script>
 @endsection

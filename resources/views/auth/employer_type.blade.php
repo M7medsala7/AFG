@@ -7,7 +7,7 @@
   <div class="container">
     <div class="loginbok cand-1 register-welcome">
       <h3 class="createtitle">Welcome </h3>
-      <p class="textprgraf"> truck driver   congratulations truck driver congratulations   Candidates  truck driver congratulations truck driver congratulations   truck driver congratulations Employers </p>
+    
       <h4 class="title-con enteacolor mertilte"> Register as </h4>
       <div class="row">
         <div class="col-sm-4 congratulations"> <i class="fas fa-users"></i> <a href="type?type=family" class="largeredbtn">family</a> </div>

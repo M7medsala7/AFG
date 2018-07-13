@@ -13,7 +13,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        if (request()->server('HTTP_X_FORWARDED_PROTO')) {
+\URL::forceScheme('https');
+}
+
     }
 
     /**

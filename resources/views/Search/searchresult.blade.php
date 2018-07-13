@@ -1,167 +1,140 @@
-@extends('Layout.Master')
+@extends('Layout.app')
 
 @section('content')
+
+<style type="text/css">
+.hidden {
+  display: none;
+  visibility: hidden;
+}
+
+  .ineercompany {
+    min-height: 350px;
+  }
+</style>
 <section class="dashboard">
   <div class="container">
     <div class="row">
-      <div class="col-sm-3 dashboardleft">
+            @if($jobcheck !=0)
+            <div class="col-sm-3 dashboardleft">
         <div class="inner-aboutus">
+<input type="hidden" name="words" value={{$words}} id="words">
           <h2 class="textcandidate colormerg">filters</h2>
-          <div class="filterbottom">
-            <h4 class="contenttype">content type </h4>
-            <ul class="divhidslid">
-              <li>
+       <input type="hidden" name="jobcheck" class="jobcheck" value="1" id="jobcheck">
+                 <div class="filterbottom">
+            <h4 class="contenttype">Job Title </h4>
+            <ul class="divhidslid" id="myList">
+              <li class="always">
+               
                 <label>
-                  <input type="checkbox" name="check">
+                  <input type="checkbox" name="Jobtitle" value="all"  class="checkboxalltow" onchange="Doaaasd()">
                   <span class="label-text">all</span> </label>
+                  
               </li>
-              <li>
-                <label>
-                  <input type="checkbox" name="check">
-                  <span class="label-text"> jobs</span> </label>
+                @for($i=0;$i< count($jobtitle);$i++ )
+             
+
+              @if($i >= 3)
+
+    <li class="hidden">
+             <label>
+
+                  <input type="checkbox" name="Jobtitle" value="{{$jobtitle[$i]->job->id}}" class="disabledtow" onchange="Doaaasd()">
+                  <span class="label-text">{{$jobtitle[$i]->job->name}}</span> </label>
+                  
               </li>
-              <li>
-                <label>
-                  <input type="checkbox" name="check">
-                  <span class="label-text"> Candidates </span> </label>
+             
+
+              @else
+                 <li class="always">
+             <label>
+
+                  <input type="checkbox" name="Jobtitle" value="{{$jobtitle[$i]->job->id}}" class="disabledtow" onchange="Doaaasd()">
+                  <span class="label-text">{{$jobtitle[$i]->job->name}}</span> </label>
+                  
               </li>
-              <li>
-                <label>
-                  <input type="checkbox" name="check">
-                  <span class="label-text"> Employers </span> </label>
-              </li>
+               @endif
+
+               @endfor
             </ul>
-          </div>
+ <div class="show-more">
+  <a href="#">Show more</a>
+</div>
+             </div>
           <!--filterbottom-->
           
           <div class="filterbottom">
             <h4 class="contenttype">employer type </h4>
             <ul class="divhidslid">
-              <li>
+              <li class="always">
                 <label>
-                  <input type="checkbox" name="check">
+                  <input type="checkbox" name="employertype" value="all" class="checkboxallthree"
+                  onchange="Doaaasd()">
                   <span class="label-text">all</span> </label>
               </li>
-              <li>
+              @foreach($jobfor as $jobfo)
+              <li class="always">
                 <label>
-                  <input type="checkbox" name="check">
-                  <span class="label-text"> family</span> </label>
+                  <input type="checkbox" name="employertype" value ="{{$jobfo->job_for}}" class="disabledthree" onchange="Doaaasd()">
+                  <span class="label-text"> {{$jobfo->job_for}}</span> </label>
               </li>
-              <li>
-                <label>
-                  <input type="checkbox" name="check">
-                  <span class="label-text"> company </span> </label>
-              </li>
-              <li>
-                <label>
-                  <input type="checkbox" name="check">
-                  <span class="label-text"> agency </span> </label>
-              </li>
+
+              @endforeach
+             
+             
             </ul>
           </div>
           <!--filterbottom-->
+
+
+
           
           <div class="filterbottom">
-            <h4 class="contenttype">cuntry </h4>
-            <ul class="divhidslid">
-              <li>
-                <label>
-                  <input type="checkbox" name="check">
-                  <span class="label-text">all</span> </label>
-              </li>
-              <li>
-                <label>
-                  <input type="checkbox" name="check">
-                  <span class="label-text"> uae</span> </label>
-              </li>
-              <li>
-                <label>
-                  <input type="checkbox" name="check">
-                  <span class="label-text"> saudi arabia </span> </label>
-              </li>
-              <li>
-                <label>
-                  <input type="checkbox" name="check">
-                  <span class="label-text"> oman</span> </label>
-              </li>
-            </ul>
-            <div class="hidebox-coun"> <span class="skiplink"> more countries</span>
-              <ul class="divhidslid hidecountries">
-                <li>
-                  <label>
-                    <input type="checkbox" name="check">
-                    <span class="label-text">all</span> </label>
-                </li>
-                <li>
-                  <label>
-                    <input type="checkbox" name="check">
-                    <span class="label-text"> uae</span> </label>
-                </li>
-                <li>
-                  <label>
-                    <input type="checkbox" name="check">
-                    <span class="label-text"> saudi arabia </span> </label>
-                </li>
-                <li>
-                  <label>
-                    <input type="checkbox" name="check">
-                    <span class="label-text"> oman</span> </label>
-                </li>
-              </ul>
-            </div>
-            <!--hidebox-coun--> 
+            <h4 class="contenttype">Desired Location </h4>
+          <select class="form-control chosen" name="country_id" id="country_id"  required=""  onchange="Doaaasd()">
+                  <option selected=""  value="0">None</option>
+                   @foreach(\App\Country::all() as $country)
+                      <option value="{{$country->id}}" name="country" id="country">{{$country->name}}</option>
+                    @endforeach
+                </select>
+            <!--bfh-selectbox--> 
             
           </div>
           <!--filterbottom-->
           
           <div class="filterbottom">
-            <h4 class="contenttype">industry </h4>
+            <h4 class="contenttype">experince</h4>
             <ul class="divhidslid">
-              <li>
+              <li class="always">
                 <label>
-                  <input type="checkbox" name="check">
+                  <input type="checkbox"  name="experince" value="all" class="checkboxallfive" onchange="Doaaasd()">
                   <span class="label-text">all</span> </label>
               </li>
-              <li>
+              <li class="always">
                 <label>
-                  <input type="checkbox" name="check">
-                  <span class="label-text"> manufacturing</span> </label>
+                  <input type="checkbox"  name="experince" value="1-2" class="disabledfive" onchange="Doaaasd()">
+                  <span class="label-text"> 1-2</span> </label>
               </li>
-              <li>
+              <li class="always">
                 <label>
-                  <input type="checkbox" name="check">
-                  <span class="label-text"> production </span> </label>
+                  <input type="checkbox"  name="experince" value="2-3" class="disabledfive" onchange="Doaaasd()">
+                  <span class="label-text"> 2-3 </span> </label>
               </li>
-              <li>
+              <li class="always">
                 <label>
-                  <input type="checkbox" name="check">
-                  <span class="label-text"> transportaion</span> </label>
+                  <input type="checkbox"  name="experince" value="3-4" class="disabledfive" onchange="Doaaasd()">
+                  <span class="label-text"> 3-4 </span> </label>
+              </li>
+              <li class="always">
+                <label>
+                  <input type="checkbox" name="experince" class="disabledfive">
+                  <span class="label-text">
+                  <input type="text" class="from-salary disabledfive" placeholder="from" name="fromexperince" id="fromexperince"  onchange="Doaaasd()" >
+                  <input type="text" class="from-salary disabledfive" placeholder="to" name="toexperince" id="toexperince"  onchange="Doaaasd()">
+                  </span> </label>
               </li>
             </ul>
-            <div class="hidebox-coun"> <span class="skiplink"> more countries</span>
-              <ul class="divhidslid hidecountries">
-                <li>
-                  <label>
-                    <input type="checkbox" name="check">
-                    <span class="label-text">all</span> </label>
-                </li>
-                <li>
-                  <label>
-                    <input type="checkbox" name="check">
-                    <span class="label-text"> manufacturing</span> </label>
-                </li>
-                <li>
-                  <label>
-                    <input type="checkbox" name="check">
-                    <span class="label-text"> production </span> </label>
-                </li>
-                <li>
-                  <label>
-                    <input type="checkbox" name="check">
-                    <span class="label-text"> transportaion</span> </label>
-                </li>
-              </ul>
-            </div>
+           
             <!--hidebox-coun--> 
             
           </div>
@@ -169,46 +142,56 @@
           
           <div class="filterbottom">
             <h4 class="contenttype">salary</h4>
-            <div class="currencytext">
-              <h5>currency</h5>
-              <select class="select-currency" name="birth_date" required="">
-                <option selected="">aed</option>
-                <option value="4">le</option>
-                <option value="4">ar</option>
-              </select>
-            </div>
+        
             <!--currencytext-->
             
             <ul class="divhidslid">
-              <li>
+              <li class="always">
                 <label>
-                  <input type="checkbox" name="check">
+                  <input type="checkbox"  name="salary" value="all" class="checkboxallsix" onchange="Doaaasd()">
                   <span class="label-text">all</span> </label>
               </li>
-              <li>
+              <li class="always">
                 <label>
-                  <input type="checkbox" name="check">
+                  <input type="checkbox"  name="salary" value="500-1000" class="disabledsix" onchange="Doaaasd()">
                   <span class="label-text"> 500-1000</span> </label>
               </li>
-              <li>
+              <li class="always">
                 <label>
-                  <input type="checkbox" name="check">
+                  <input type="checkbox"  name="salary" value="1000-5000" class="disabledsix" onchange="Doaaasd()">
                   <span class="label-text"> 1000-5000 </span> </label>
               </li>
-              <li>
+              <li class="always">
                 <label>
-                  <input type="checkbox" name="check">
+                  <input type="checkbox"  name="salary" value="5000-10000" class="disabledsix" onchange="Doaaasd()">
                   <span class="label-text"> 5000-10000 </span> </label>
               </li>
-              <li>
+              <li class="always">
                 <label>
-                  <input type="checkbox" name="check">
+                  <input type="checkbox" name="salary" class="disabledsix">
                   <span class="label-text">
-                  <input type="text" class="from-salary" placeholder="from">
-                  <input type="text" class="from-salary" placeholder="to">
+                  <input type="text" class="from-salary disabledsix" placeholder="from" name="fromsalary" id="fromsalary" onchange="Doaaasd()">
+                  <input type="text" class="from-salary disabledsix" placeholder="to" name="tosalary" id="tosalary" onchange="Doaaasd()">
                   </span> </label>
               </li>
             </ul>
+
+
+
+                <div class="currencytext">
+              <h5>currency</h5>
+
+               <select class="form-control chosen" name="currencyID" id="currencyID"  required=""  onchange="Doaaasd()">
+                
+                   @foreach(\App\Currency::all() as $Curren)
+                      <option value="{{$Curren->id}}" name="currency" id="currency">{{$Curren->name}}</option>
+                    @endforeach
+                </select>
+
+
+
+              
+            </div>
           </div>
           <!--filterbottom--> 
           
@@ -217,91 +200,178 @@
         
       </div>
       <!--dashboardleft-->
-      
-      <div class="col-sm-9 dashboardleft">
+     @else
+
+
+
+
+      <div class="col-sm-3 dashboardleft">
         <div class="inner-aboutus">
-          <div class="currencytext resultstext">
-            <h2>{{$count}} results {{$words}}</h2>
-            <div class="rightselect">
-              <p>sort by : </p>
-              <select class="select-currency" name="birth_date" required="">
-                <option selected="">most recent</option>
-                <option value="4">most recent</option>
-                <option value="4">most recent</option>
-              </select>
-            </div>
-            <!--rightselect--> 
+
+          <h2 class="textcandidate colormerg">filters</h2>
+
+          <div class="filterbottom">
+            <h4 class="contenttype">Job Title </h4>
+            <ul class="divhidslid" id="myList">
+              <li class="always">
+               
+                <label>
+                  <input type="checkbox" name="Jobtitle" value="all" onchange="Doaaasd()"  class="checkboxall">
+                  <span class="label-text">all</span> </label>
+                  
+              </li>
+                @for($i=0;$i< count($jobtitle);$i++ )
+             
+
+              @if($i >= 3)
+
+    <li class="hidden">
+             <label>
+
+                  <input type="checkbox" name="Jobtitle" value="{{$jobtitle[$i]->job->id}}" onchange="Doaaasd()" class="disabled">
+                  <span class="label-text">{{$jobtitle[$i]->job->name}}</span> </label>
+                  
+              </li>
+             
+
+              @else
+                 <li class="always">
+             <label>
+
+                  <input type="checkbox" name="Jobtitle" value="{{$jobtitle[$i]->job->id}}" onchange="Doaaasd()" class="disabled">
+                  <span class="label-text">{{$jobtitle[$i]->job->name}}</span> </label>
+                  
+              </li>
+               @endif
+
+               @endfor
+            </ul>
+ <div class="show-more">
+  <a href="#">Show more</a>
+</div>
+             </div>
+          <!--filterbottom-->
+          
+       <div class="filterbottom">
+            <h4 class="contenttype">Nationality </h4>
+          <select class="form-control chosen" name="nationality_id" id="nationality_id"  required=""  onchange="Doaaasd()">
+                  <option selected=""  value="0">None</option>
+                   @foreach(\App\Nationality::all() as $nationality)
+                      <option value="{{$nationality->id}}" name="nationality" id="nationality">{{$nationality->name}}</option>
+                    @endforeach
+                </select>
+            <!--bfh-selectbox--> 
             
           </div>
-          <!--resultstext-->
+          <!--filterbottom-->
+
+
+
           
-          <div class="row">
-          	@if($jobcheck !=0)
-          	@foreach($jobs  as $job)
-            <div class="col-sm-4 company com-dashboard">
-              <div class="ineercompany">
-                <div class="tidiv"> <img src="images/car1.jpg"> <span>{{$job->job_for}}</span></div>
-                <!--tidiv-->
-                
-                <h4 class="innertitltext">{{$job->user->name}} </h4>
-                <p class="officer">{{$job->job->name}}</p>
-                <ul class="hassle salary">
-                  <li> <strong>loc.</strong> {{$job->country->name}}</li>
-                  <li> <strong>salary.</strong>{{$job->max_salary}}</li>
-              
-                </ul>
-                <div class="tidivbotom"> <a href= 'https://www.indeed.com/viewjob.{{$job->link}}' >apply now</a> <span>{{$job->created_at}}</span></div>
-                <!--tidiv--> 
-                
-              </div>
-              <!--inernews--> 
-              
-            </div>
-            @endforeach
-            <!--com-dashboard-->
-            
-           @else
-           @foreach($candidates  as $candidate)
-              <div class="col-sm-4 company com-dashboard">
-              <div class="ineercompany">
-                <div class="tidiv"> <img src="images/car1.jpg"> <span>{{$candidate['0']['job_for']}}</span></div>
-                <!--tidiv-->
-                
-                <h4 class="innertitltext"> {{$candidate['0']['UserName']}}</h4>
-                <p class="officer">{{$candidate['0']['JobName']}} </p>
-                <ul class="hassle salary">
-                  <li> <strong>loc.</strong>{{$candidate['0']['CountryName']}} </li>
-                  <li> <strong>salary.</strong>{{$candidate['0']['max_salary']}}</li>
-                   
-                </ul>
-                <div class="tidivbotom"> <a href= 'https://www.indeed.com/viewjob/' >apply now</a> <span></span></div>
-                <!--tidiv--> 
-                
-              </div>
-              <!--inernews--> 
-              
-            </div>
-             @endforeach
-            @endif
-            
-   
-       
+          <div class="filterbottom">
+            <h4 class="contenttype">Candidate Location </h4>
+          <select class="form-control chosen" name="country_id" id="country_id"  required=""  onchange="Doaaasd()">
+                  <option selected=""  value="0">None</option>
+                   @foreach(\App\Country::all() as $country)
+                      <option value="{{$country->id}}" name="country" id="country">{{$country->name}}</option>
+                    @endforeach
+                </select>
+            <!--bfh-selectbox--> 
             
           </div>
-          <!--row-->
+          <!--filterbottom-->
           
-          <div class="cenbottom nomergbotm"> <a href="#" class="largeredbtn">load more</a> </div>
+
+          <!--filterbottom-->
+          
+          <div class="filterbottom">
+            <h4 class="contenttype">salary</h4>
+            <div class="currencytext">
+        
+            <!--currencytext-->
+            
+            <ul class="divhidslid">
+              <li class="always">
+                <label>
+                  <input type="checkbox"  name="salary" value="all"  class="checkboxallfor" onchange="Doaaasd()">
+                  <span class="label-text">all</span> </label>
+              </li>
+              <li class="always">
+                <label>
+                  <input type="checkbox"  name="salary" value="500-1000" class="disabledfor" onchange="Doaaasd()">
+                  <span class="label-text"> 500-1000</span> </label>
+              </li>
+              <li class="always">
+                <label>
+                  <input type="checkbox"  name="salary" value="1000-5000" class="disabledfor" onchange="Doaaasd()">
+                  <span class="label-text"> 1000-5000 </span> </label>
+              </li>
+              <li class="always">
+                <label>
+                  <input type="checkbox"  name="salary" value="5000-10000" class="disabledfor" onchange="Doaaasd()">
+                  <span class="label-text"> 5000-10000 </span> </label>
+              </li>
+              <li class="always">
+                <label>
+                  <input type="checkbox" name="salary" class="disabledfor">
+                  <span class="label-text">
+                  <input type="text" class="from-salary disabledfor" placeholder="from" name="fromsalary" id="fromsalary"  onchange="Doaaasd()">
+                  <input type="text" class="from-salary disabledfor" placeholder="to" name="tosalary" id="tosalary" onchange="Doaaasd()">
+                  </span> </label>
+              </li>
+            </ul>
+
+                  <h5>currency</h5>
+
+               <select class="form-control chosen" name="currencyID" id="currencyID"  required=""  onchange="Doaaasd()">
+              
+                   @foreach(\App\Currency::all() as $Curren)
+                      <option value="{{$Curren->id}}" name="currency" id="currency">{{$Curren->name}}</option>
+                    @endforeach
+                </select>
+
+
+
+              
+            </div>
+          </div>
+          <!--filterbottom--> 
+
+
+
+
+            <div class="filterbottom">
+            <h4 class="contenttype">Skills </h4>
+          <select class="form-control chosen" name="skills_id" id="skills_id"  required=""  onchange="Doaaasd()">
+                  <option selected=""  value="0">None</option>
+                   @foreach(\App\Skills::all() as $skills)
+                      <option value="{{$skills->id}}" name="skills" id="skills">{{$skills->name}}</option>
+                    @endforeach
+                </select>
+            <!--bfh-selectbox--> 
+            
+          </div>
+          
         </div>
         <!--inner-aboutus--> 
         
       </div>
+      <!--dashboardleft-->
+
+
+      @endif
+          <!--row-->
+          @include('Search.searchpartial')
+       
+        </div>
+        <!--inner-aboutus--> 
+        
+      </div>
+
       
       <!--dashboardleft--> 
       
-    </div>
-    <!--row--> 
-    
-  </div>
+  
   
   <!--container--> 
   
@@ -311,11 +381,11 @@
 <div id="myModal" class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header"> watch demo video
+      <div class="modal-header"> Watch Video
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
-      <div class="textbox">
-        <iframe  src="https://www.youtube.com/embed/BFrLL5w9UGQ?autoplay=0" frameborder="0" allowfullscreen></iframe>
+      <div class="textbox" id="v1">
+      
       </div>
       <!--textbox--> 
       
@@ -323,7 +393,173 @@
   </div>
 </div>
 <!--myModal-->
+@stop
 
+<script type="text/javascript"></script>
+@section('scripts')
+<script>
+  $(document).ready(function () {
+   $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+ 
+    $('.chosen').chosen({width: "95%"});     
+
+
+
+});
+ 
+$(document).on("click", ".show-more a", function(e) {
+    e.preventDefault();
+    if($(this).text() == "Show more"){
+        $(this).text("Show less")
+        $('li.hidden').removeClass('hidden')
+    } else {
+        $(this).text("Show more")
+        $('li:not(.always)').addClass('hidden')
+    };
+
+    $this.text(linkText);
+});
+
+
+
+  function Doaaasd()
+  {
+
+
+     var jobcheck= $('#jobcheck').val();
+ var words= $('#words').val();
+
+  var jobs = $('input:hidden.jobs').serialize();
+
+
+
+
+
+
+
+var Jobtitle = [];
+   $("input:checkbox[name='Jobtitle']:checked").each(function() {
+
+   Jobtitle.push($(this).val());
+
+});
+
+ var candidate = [];
+   $("input:hidden.candidate").each(function() {
+
+   candidate.push($(this).val());
+
+});
+    
+ var employertype = [];
+   $("input:checkbox[name='employertype']:checked").each(function() {
+
+   
+   employertype.push($(this).val());
+
+});
+
+ var salary = [];
+   $("input:checkbox[name='salary']:checked").each(function() {
+
+
+   salary.push($(this).val());
+
+});
+
+
+   var experince = [];
+   $("input:checkbox[name='experince']:checked").each(function() {
+
+
+   experince.push($(this).val());
+
+});
+        var fromsalary= $("#fromsalary").val();
+ var tosalary= $('#tosalary').val();
+ var fromexperince= $("#fromexperince").val();
+ var toexperince= $('#toexperince').val();
+
+
+
+var country=$('#country_id').find(":selected").val();   //tested in Chrome, safar, FF.
+
+var currency=$('#currencyID').find(":selected").val(); 
+
+var nationality=$('#nationality_id').find(":selected").val(); 
+
+var skills=$('#skills_id').find(":selected").val(); 
+// console.log(country);
+
+     Jobtitle=JSON.stringify(Jobtitle);
+      candidate=JSON.stringify(candidate);
+      employertype=JSON.stringify(employertype); 
+      salary=JSON.stringify(salary); 
+     experince=JSON.stringify(experince); 
+
+var dataString = "Jobtitle="+Jobtitle+"&country="+country+"&jobcheck="+jobcheck+"&jobs="+jobs+"&candidate="+candidate+"&words="+words+"&employertype="+employertype+"&salary="+salary+"&fromsalary="+fromsalary+"&tosalary="+tosalary+"&currency="+currency+"&experince="+experince+"&fromsexperince="+fromexperince+"&toexperince="+toexperince+"&nationality="+nationality+"&skills="+skills;
+    $.ajax({
+        type: 'POST',
+        url: '/filtersearch',
+        data: dataString,
+  
+           success:function(response)
+            {
+                            $('#myPartialDiv').html(response);
+
+            // $('#asd').hidden=fal
+         
+             
+        }
+   });
+ }
+
+     
+
+</script>
+<Script>
+function ShowVideo($id,$type)
+{
+  console.log($id);
+  $typeM='video/'+$type;
+var int="";
+$("#v1").html('');
+
+$("#v1").html('<video style="text-align: center;width: 100%;" controls><source src="'+$id+'" type='+$typeM+'></source></video>' );
+
+ $('#myModal').modal('show');
+}
+
+</script>
+
+<script>
+   $(function(){
+    $('header').addClass('header-in');
+  });
+</script>
+<script>
+  var searchtype = $('#search_type').val();
+  if(searchtype == "")
+  {
+    $('.input-search').on('click',function(){
+      $('.select_search_type').css('display','block');
+      console.log(searchtype);
+    });
+  }
+  else
+  {
+
+  }
+$('.select_type').on('click',function(){
+    $('.select_search_type').remove();
+    searchtype=$(this).attr('type_val');
+    $('#search_type').val(searchtype);
+  });
+</script>
 @endsection
 
 

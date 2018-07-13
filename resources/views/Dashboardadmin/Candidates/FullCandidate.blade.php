@@ -222,7 +222,7 @@ width:300px;
                 <div class="col-sm-12 airports witpostslid">
                   <select class="form-control requirments" name="visa_type" required="" style="width: 90%;">
                     <option selected=""> Emploer-type of visa</option>
-                    <option  value="Employed">None</option>
+                    <option  value="None">None</option>
                     <option  value="Employed">Employed</option>
                     <option value="Visit">Visit</option>
                     <option value="Cancelled">Cancelled</option>
@@ -274,7 +274,7 @@ width:300px;
           
           <div class="row">
             <div class="col-sm-12 airports witpostslid">
-              <select class="form-control requirments" name="language_ids[]" id="language_id" multiple="multiple" required="" style="width: 90%;height:200px">
+              <select class="form-control  chosen-select types" name="language_ids[]" id="language_id" multiple="multiple" required="" style="width: 90%;height:200px">
                 <option selected=""> languages</option>
                 @foreach(\App\Language::all() as $lang)
                   <option value="{{$lang->id}}">{{$lang->name}}</option>
@@ -304,7 +304,7 @@ width:300px;
             <!--witpostslid-->
             
             <div class="col-sm-12 airports witpostslid">    
-              <select class="form-control chosen-select " name="skill_ids[]" id="skill_ids" multiple="multiple" required="" style="width: 90%;height:200px">
+              <select class="form-control chosen-select types " name="skill_ids[]" id="skill_ids" multiple="multiple" required="" style="width: 90%;height:200px">
                 <option selected=""> skills</option>
                 @foreach(\App\Skills::all() as $skill)
                   <option value="{{$skill->id}}">{{$skill->name}}</option>
@@ -399,7 +399,7 @@ width:300px;
           <!--divwits-->
           
           <div class="divwits">
-            <select class="form-control requirments" name="prefered_location_ids[]" multiple="multiple" required="" style="width: 90%;height:200px">
+            <select class="form-control chosen-select types" name="prefered_location_ids[]" multiple="multiple" required="" style="width: 90%;height:200px">
               <option selected=""> preferred locations top work at</option>
               <option selected=""> Countries</option>
                     @foreach(\App\Country::all() as $country)
@@ -608,40 +608,9 @@ width:300px;
           <div class="row">
             <div class="col-sm-8 sendvad">
               <div class="innertabs">
-                <div class="divwits">
-                  <label class="airports cololabox personal-in">
-                    <input type="checkbox" name="checkbox">
-                    <span class="label-text">personal information</span> </label>
-                </div>
-                <!--divwits-->
-                
-                <div class="divwits">
-                  <label class="airports cololabox personal-in">
-                    <input type="checkbox" name="checkbox">
-                    <span class="label-text"> job expectations</span> </label>
-                </div>
-                <!--divwits-->
-                
-                <div class="divwits">
-                  <label class="airports cololabox personal-in">
-                    <input type="checkbox" name="checkbox">
-                    <span class="label-text"> work  expectations</span> </label>
-                </div>
-                <!--divwits-->
-                
-                <div class="divwits">
-                  <label class="airports cololabox personal-in">
-                    <input type="checkbox" name="checkbox">
-                    <span class="label-text"> upload / record video</span> </label>
-                </div>
-                <!--divwits-->
-                
-                <div class="divwits">
-                  <label class="airports cololabox personal-in">
-                    <input type="checkbox" value="true" name="agreeBox">
-                    <span class="label-text"> iagree with the <a href="#" class="termsagreements">terms & agreements</a></span> </label>
-                </div>
-                <!--divwits--> 
+              
+            
+
                 
               </div>
               <!--innertabs--> 
@@ -755,6 +724,8 @@ width:300px;
     <script>
 
 $(document).ready(function () {
+
+
        $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

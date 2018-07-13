@@ -43,34 +43,51 @@ class HomeController extends Controller
     {
        
         $CandidateInfo=\Auth::user()->CanInfo()->first();
-        $jobName=Job::where('id',$CandidateInfo->job_id)->first();
+       
+       
         if (\Auth::user()->Birthday !=null)
         $age=\Auth::user()->getAge(\Auth::user()->Birthday);
         else
         $age=" ";
         $SKills_Can=\Auth::user()->getUserSkill()->get();
-        
-        //Recomanded jobs  accoriding to 
-        $RecommandJobs = PostJob::where('job_id',$CandidateInfo->job_id)
-                          ->orwhere('country_id',$CandidateInfo->country_id)
-                          ->get();
+      
+        if($CandidateInfo->job_id!=null)
+        {
+                    //Recomanded jobs  accoriding to 
+                    $jobName=Job::where('id',$CandidateInfo->job_id)->first();
+                    $RecommandJobs = PostJob::where('job_id',$CandidateInfo->job_id)
+                    ->orwhere('country_id',$CandidateInfo->country_id)
+                    ->get();
 
-                         // dd($RecommandJobs);
-                         //Skills ->orwhere('country_id',$CandidateInfo->country_id) 
-        //Candidates Looking For The Same Job
-        $Candidates=CandidateInfo::where('job_id',$CandidateInfo->job_id)
-                                   ->where('user_id','!=',\Auth::user()->id)
-                                   ->get();                  
+                
+                    //Skills ->orwhere('country_id',$CandidateInfo->country_id) 
+                    //Candidates Looking For The Same Job
+                    $Candidates=CandidateInfo::where('job_id',$CandidateInfo->job_id)
+                    ->where('user_id','!=',\Auth::user()->id)
+                    ->get();                  
 
-        //Matching job 
-      $MatchingJobs = PostJob::where('job_id',$CandidateInfo->job_id)
-                       ->get(); 
+                    //Matching job 
+                    $MatchingJobs = PostJob::where('job_id',$CandidateInfo->job_id)
+                    ->get(); 
+        }
+        else
+        {
+            $jobName=null;
+            $RecommandJobs=null;
+            $Candidates=null;
+            $MatchingJobs=null;
+
+        }
+       
 
         //Prefered Country
 
             return view('Arabic.Candadties.CandadtiesDashboard',compact('age','MatchingJobs','Candidates','RecommandJobs','jobName','CandidateInfo'));
     }
-
+public function ContactShow()
+    {
+        return view('Arabic.CompanyInfo.contact');
+    }
 
     public function getjobsbycountry()
     {

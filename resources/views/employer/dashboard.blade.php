@@ -51,7 +51,7 @@
         
         <ul class="nav nav-tabs tebprofile">
           @foreach($employerJobs as $job)
-            <li class="{{($job->id == $employerJobs->first()->id)?'active':''}}"><a data-toggle="tab" href="#{{$job->job->name}}_{{$job->id}}">{{$job->job->name}}</a></li>
+            <li class=" selecttab tab" value="{{$job->job->id}}"><a data-toggle="tab" href="#{{$job->job->name}}_{{$job->id}}">{{$job->job->name}}</a></li>
           @endforeach
         </ul>
         <div class="tab-content">
@@ -93,7 +93,7 @@
               <!--leftprofile-->
               
               <div class="col-sm-4 leftprofile">
-                <div id="chartContainer"></div>
+                <div id="chartContainerTest"></div>
               </div>
               <!--leftprofile--> 
               
@@ -105,7 +105,7 @@
             </div>
             <!--resultstext-->
             
-            <div class="row topCanDiv_{{$job->id}}">
+            <div class="row topCanDiv_{{$job->id}}" >
               @if($job->getTopCandidatesAttribute()->first())
                 @foreach($job->getTopCandidatesAttribute() as $candidate)
                   <div class="col-sm-4 company com-dashboard ">
@@ -447,5 +447,54 @@
         }
       });
     });
+
+$(document).ready(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+ 
+$(".tab").click(function () {
+    $(".tab").removeClass("active");
+    // $(".tab").addClass("active"); // instead of this do the below 
+    $(this).addClass("active");  
+
+
+
+
+
+  var selected= this.value;
+   
+
+console.log(selected);
+$.ajax({
+
+type: "POST",
+    url: "/empolyerCount",
+    data:{'selected':selected },
+    
+    success:function(data) {
+
+var chart = new CanvasJS.Chart("chartContainerTest",
+{
+  title: {
+    text: "Candidate"
+  },
+  data: [{
+      type: "pie",
+      startAngle: 45,
+      showInLegend: "true",
+      legendText: "{label}",
+      indexLabel: "{label} ({y})",
+      yValueFormatString:"#,##0.#"%"",
+      dataPoints:data
+  }]
+});
+chart.render();
+}
+});
+});
+});
 </script>
 @endsection

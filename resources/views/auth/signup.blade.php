@@ -7,7 +7,7 @@
   <div class="container">
     <div class="loginbok cand-1 register-welcome">
       <h3 class="createtitle">Welcome </h3>
-      <p class="textprgraf"> truck driver   congratulations truck driver congratulations   Candidates  truck driver congratulations truck driver congratulations   truck driver congratulations Employers </p>
+      <p class="textprgraf">If you want to help you find a job,register as <strong style="color:white">candidate</strong>. But if you are looking for help to get candidate for you register as <strong style="color:white">Employer</strong> </p>
       <h4 class="title-con enteacolor mertilte"> Register as </h4>
       <div class="row">
         <div class="col-sm-6 congratulations"> <i class="fas fa-users"></i> <a href="/f_register/candidate" class="largeredbtn"> Candidates </a>
