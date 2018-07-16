@@ -13,6 +13,7 @@
     <meta property="og:image:height" content="349">
 
 <link rel="stylesheet" href="/css/bootstrap.min.css" />
+
 <!--<link rel="stylesheet" href="css/bootstrap-rtl.css" />-->
 <link rel="stylesheet" href="css/style.css" />
 <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
@@ -24,6 +25,7 @@
 <script type="text/javascript" src="/js/jquery.js"></script>
 <script type="text/javascript" src="/js/bootstrap.min.js"></script>
 
+<script type="text/javascript" src="/js/slick.min.js"></script>
 <script type="text/javascript" src="/js/count-number.js"></script>
 <script type="text/javascript" src="/js/jquery.canvasjs.min.js"></script>
 <script type="text/javascript" src="/js/moment.js"></script>

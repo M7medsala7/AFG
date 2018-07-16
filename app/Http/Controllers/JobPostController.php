@@ -27,89 +27,106 @@ class JobPostController extends Controller
         }
         else
         {
-             $post_job=PostJob::find($id);
+            $post_job=PostJob::find($id);
             $Like=DB::table('user_like_jobs')
-                     ->where('job_id',$id)
-                      ->where('user_id',\Auth::user()->id)
-                     ->first();
+            ->where('job_id',$id)
+            ->where('user_id',\Auth::user()->id)
+            ->first();
 
             if($Like==null)
             {
-              $post_job->likejob()->attach($id,['user_id'=>\Auth::user()->id]);
+            $post_job->likejob()->attach($id,['user_id'=>\Auth::user()->id]);
             }
             else
             {
-               
-    $post_job->likejob()->detach(['user_id'=>\Auth::user()->id]);
-             
+
+            $post_job->likejob()->detach(['user_id'=>\Auth::user()->id]);
+
             }
-$link='/ViewJob/'.$id; 
-return redirect ($link);           
+            $link='/ViewJob/'.$id; 
+            return redirect ($link);           
 
-             
-        }
 
-    }
-    public function ApplyOk()
-    {
+            }
 
-   if(\Auth::user()==null)
-        {
+            }
+            public function ApplyOk()
+            {
+
+            if(\Auth::user()==null)
+            {
             return redirect('/login');
-        }
-        else
-        {
-             return redirect ('/home');
-        }
+            }
+            else
+            {
+            return redirect ('/home');
+            }
 
-    }
+            }
 
-     public function ApplyJob($id)
-    {
+            public function ApplyJob($id)
+            {
 
-        if(\Auth::user()==null)
-        {
+            if(\Auth::user()==null)
+            {
             return redirect('/login');
-        }
-        else
-        {
-          //Record in apply job
+            }
+            else
+            {
+            //Record in apply job
             $post_job=PostJob::find($id);
-           
+
             $getApplied=DB::table('job_applications')->where('job_post_id',$id)
             ->where('user_id',\Auth::user()->id)->first();
-           
-              if($getApplied == null)
-              {
+
+            if($getApplied == null)
+            {
+
+                if(Auth::user()->type=="employer")
+                {
+                Session::flash('flash', "you employer,you must register as candidate ".'<a href="/register/candidates">View cart</a>');
                 
-              $post_job->applicants()->attach($id,['user_id'=>\Auth::user()->id]);
-
-               Session::flash('flash_message', 'Applied Sucessfully');
-              }
-              else
-              {
-                 Session::flash('flash_message', 'you already applied thanks');
-              }
-             //if indeed
-
-              // if us 
-              if($post_job->link == null) 
-              {
                 $link='/ViewJob/'.$id;
-               
-              }
-              else
-              {
+                return redirect ($link);
+   
+            }
+                else
+                {
+                $post_job->applicants()->attach($id,['user_id'=>\Auth::user()->id]);
+                Session::flash('flash_message', 'Applied Sucessfully');
+                if($post_job->link == null) 
+                {
+                $link='/ViewJob/'.$id;
+    
+                }
+                else
+                {
                 $link=$post_job->link;
-              }
-              return redirect ($link);
+                }
+                return redirect ($link);
+                }
+
+            }
+            else
+            {
+            Session::flash('flash_message', 'you already applied thanks');
+            }
+            //if indeed
+
+            // if us 
+           
 
             
             
         }
         
     }
-
+public function logoutandregister()
+{
+    auth()->logout();
+    return redirect('/register/candidates');
+    
+}
     
     public function store(Request $request)
     {

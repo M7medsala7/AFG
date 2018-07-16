@@ -25,12 +25,12 @@ div.desc {
 </style>
 </head>
 <body>
-<table style="  border-collapse:collapse; border: 1px solid black;">
+<table style="  border-collapse:collapse;">
 <tr>
 <td>
 <div class="gallery">
   <a target="_blank" href="https://www.maidandhelper.com/">
-    <img src="/images/p7.png" alt="5Terre" width="600" height="400">
+    <img src="https://www.maidandhelper.com/images/P7.PNG" alt="5Terre" width="600" height="400">
   </a>
  
 </div>
@@ -38,7 +38,7 @@ div.desc {
 <td>
 <div class="gallery">
   <a target="_blank" href="https://www.maidandhelper.com/">
-    <img src="/images/p6.png" alt="Forest" width="600" height="400">
+    <img src="https://www.maidandhelper.com/images/P6.PNG" alt="Forest" width="600" height="400">
   </a>
   
 </div>
@@ -56,7 +56,7 @@ div.desc {
 <td>
 <div class="gallery">
   <a target="_blank" href="https://www.maidandhelper.com/">
-    <img src="/images/c1.png" alt="5Terre" width="600" height="400">
+    <img src="https://www.maidandhelper.com/images/c1.PNG" alt="5Terre" width="600" height="400">
   </a>
  
 </div>
@@ -64,7 +64,7 @@ div.desc {
 <td>
 <div class="gallery">
   <a target="_blank" href="https://www.maidandhelper.com/">
-    <img src="/images/c2.png" alt="Forest" width="600" height="400">
+    <img src="https://www.maidandhelper.com/images/c2.PNG" alt="Forest" width="600" height="400">
   </a>
   
 </div>
@@ -72,7 +72,7 @@ div.desc {
 <td>
 <div class="gallery">
   <a target="_blank" href="https://www.maidandhelper.com/">
-    <img src="/images/c7.png" alt="Northern Lights" width="600" height="400">
+    <img src="https://www.maidandhelper.com/images/c7.PNG" alt="Northern Lights" width="600" height="400">
   </a>
  
 </div>

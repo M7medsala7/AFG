@@ -3,11 +3,8 @@
 <head>
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <meta name="viewport" content="width=device-width, initial-scale=1">
- <meta property="og:image:type" content="image/jpg">
-<meta property="og:image:type" content="image/jpeg">
-<meta property="og:image:type" content="image/png">
-    <meta property="og:image:width" content="2200px">
-    <meta property="og:image:height" content="349px">
+@yield('share')
+
 
  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="/css/bootstrap.min.css" />

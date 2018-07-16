@@ -121,7 +121,10 @@ Route::get('/contact', function () {
 Route::get('/aboutus', function () {
     return view('Arabic.CompanyInfo.aboutus');
 }); 
+Route::post('/sendemail', 'CompanyInfoController@fn_sendmail')->name('sendemail');
+
 
 /************************chartempolyerdashboard*************************************************/
 
+Route::any('/logoutandregister','JobPostController@logoutandregister');
 Route::post('/empolyerCount','JobPostController@empolyerCount');

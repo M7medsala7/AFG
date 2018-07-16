@@ -233,6 +233,7 @@ class RegisterController extends Controller
 
         ]);
         $code = 1000;
+        //dd($request['email']);
         //get the code value;
         $lastUser =  \DB::table('users')->orderBy('id', 'desc')->first();
         if($lastUser)
@@ -251,6 +252,7 @@ class RegisterController extends Controller
         \App\Company::create(['name'=>$request['name'],'size'=>'5','country_id'=>$request['country_id'],'lat'=>'0','lang'=>'0','created_by'=>$user->id,'industry_id'=>0]);
 
         //Sending Mail after regestration
+      
        $data=array('Email'=>$request['email']);
         Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
         $message->to($data['Email']);
@@ -273,13 +275,7 @@ class RegisterController extends Controller
           try
           {
        
-         $data=array('Email'=>$request['email']);
-
-        Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
-        $message->to($data['Email']);
-        $message->subject('registeration completed');
-
-        });
+     
 
       
         $this->validate($request, [

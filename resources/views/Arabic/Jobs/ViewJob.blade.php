@@ -16,7 +16,13 @@
         {{ Session::get('flash_message') }}<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
     </div>
 @endif
+@if(Session::has('flash'))
+    <div class="alert alert-success">
 
+    you employer,you must register as candidate<a href="/logoutandregister">  Register Now</a>
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    </div>
+@endif
 
 
 
@@ -237,7 +243,7 @@
 <div id="myModal" class="modal fade in" aria-hidden="false">
   <div class="modal-dialog popvad">
     <div class="modal-content">
-      <button type="button" class="close" data-dismiss="modal">Ã—</button>
+      <button type="button" class="close" data-dismiss="modal">X</button>
       <div class="col-sm-6 chancevedio">
         <div class="linksing"> did you know that your <span class="nambers">chance</span> will be inncreased <span class="nambers">9</span> times when
           employer watch your vedio </div>

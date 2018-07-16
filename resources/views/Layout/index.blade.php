@@ -67,7 +67,7 @@
        @foreach($RecentlyAddedJobs as $AddJobs)
       <div class="col-sm-3 company">
         <div class="ineercompany">
-          <div class="tidiv"> <img src="/images/car1.jpg"> <span>{{$AddJobs->type}}</span></div>
+          <div class="tidiv"> <img src="/images/car1.jpg"> <span>{{$AddJobs->job_for}}</span></div>
           <!--tidiv-->
           
           <h4 class="innertitltext">{{$AddJobs->CompanyName}} </h4>
@@ -195,11 +195,20 @@ app_id=1112718265559949
 </div>
 
 <!--//container-->
+<br>
+
+
+
+
 
 <section class="success" style="background:url(images/slide5.jpg) fixed center center no-repeat; background-size:cover;">
   <div class="container">
     <h3 class="title-con entea"> success stories</h3>
-    <div class="your-stud">
+    
+
+
+
+<div class="your-stud">
 @foreach($SuccessStories as $SuccessStor)
       <div>
         <h4 class="titltop"><span>finding a maid was never that easy and less expensive,thanks</span><br>
@@ -214,13 +223,22 @@ app_id=1112718265559949
       </div>
       <!--div-->
       @endforeach
-    
+
+
+
+      
+
+      
+      <div>
+        <h4 class="titltop"><span>finding a maid was never that easy and less expensive,thanks</span><br>
+          maid and helper</h4>
+        <img src="images/callto-action.png">
+        <h5 class="gebox-tit">mohamed ahmed</h5>
+        <p class="viewsdriver"> Office boy</p>
+      </div>
       <!--div-->
       
-    
-      <!--div-->
       
-     
       <!--div--> 
       
     </div>
@@ -230,7 +248,7 @@ app_id=1112718265559949
   </div>
   <!--container--> 
 </section>
-<!--slidevnt-->
+
 <div class="container">
   <h3 class="title-con enteacolor mergtext"> insights</h3>
   <div class="row">
@@ -285,7 +303,35 @@ app_id=1112718265559949
 
  @stop
 @section('scripts')
+
+<script type="text/javascript" src="/js/slick.min.js"></script>
+
+
+
+
 <script>
+
+
+$('.your-stud').slick({
+dots: true,
+infinite: true,
+speed: 2000,
+slidesToShow:1,
+slidesToScroll: 1,
+autoplay: true,
+autoplaySpeed: 3000,
+responsive: [
+{
+breakpoint: 550,
+settings: {
+slidesToShow: 1,
+slidesToScroll: 1
+}
+},
+
+]
+});
+
   var searchtype = $('#search_type').val();
   if(searchtype == "")
   {
