@@ -24,6 +24,11 @@ class PostJob extends Model
     {
         return $this->belongsTo('App\User','created_by');
     }
+   public function getjobSkill()
+    {
+        return $this->belongsToMany('App\Skills','job_skills','job_id','skill_id')
+        ->withTimestamps();
+    }
 
 public function Industry()
     {
@@ -47,6 +52,7 @@ public function Industry()
     {
         return $this->belongsToMany('App\User','post_job_starred','post_job_id','user_id');
     }
+    
 
     public function getTopCandidatesAttribute()
     {

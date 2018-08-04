@@ -17,7 +17,7 @@
       </div>-->
       <!--dropdown-->
       
-      <nav class="linktop"> <a href="/login"> login</a> <a href="/signup"> Register</a> </nav>
+     <nav class="linktop"> <a href="/login"> login</a> <a href="/signup"> Register</a> </nav>
     </div>
     <nav id='cssmenu'>
       <div id="head-mobile"></div>
@@ -53,11 +53,10 @@
         <p class="award"><i class="fas fa-trophy"></i> <br/>
           <span>10</span>
         </p>
-        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"> <img src="images/callto-action.png"> <i class="fa fa-angle-down" aria-hidden="true"></i>
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"> <img src="{{(\Auth::user()->logo)?(\Auth::user()->logo):'images/callto-action.png'}}"> <i class="fa fa-angle-down" aria-hidden="true"></i>
         </button>
         <ul class="dropdown-menu">
           <li><a href="/home"><i class="far fa-user"></i> Account </a></li>
-          <li><a href="#"><i class="far fa-edit"></i> Edit </a></li>
           <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Log out </a></li>
         </ul>
       </div>

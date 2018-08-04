@@ -9,17 +9,18 @@
 }
 </style>
 
-<section class="candidate-profile">
-  <h1>candidate profile </h1>
-</section>
+
 <section class="dashboard candidate-pro">
+<section style="text-align:center;height:60px;width:84%;background-color:#F5F5F5;margin-left:8%;margin-top:20px;">
+  <h1 ><span style="color:#6495ED;">Note:</span>if you forget anything or want to change some information you can <a href="#" style="color:#6495ED;">edite </a>your profile so easy  </h1>
+</section>
   <div class="container">
     <div class="row">
       <div class="col-sm-4 dashboardleft">
         <div class="inner-aboutus topmergline padbotnm">
           <div class="detalsprofile ecome">
-            <h4 class="textcandidate">watch {{$candidate->name}} video</h4>
-          </div>
+            <h4 class="textcandidate" >watch {{$candidate->name}} video</h4>
+ </div>
           <!--detalsprofile-->
           <div class="videoprofy"> 
             <a href="#" data-toggle="modal" data-target="#myModal" class="watchvideo wipopups"> 
@@ -75,16 +76,15 @@
             
           </div>
           <!--profilelink-->
-          
+       
           <div class="namecandidates">
             <h4 class="textcandidate">Similar candidates</h4>
-             
             @if($simialr_candidates)
               @foreach($simialr_candidates as $cand)
                 <div class="itmonw"> <img src="/{{($cand->user->logo)?$cand->user->logo :'/images/blue-pass-onw.jpg'}}" >
                   <h5>{{$cand->user->name}}</h5>
                   <p>{{$cand->job->name}}</p>
-                  <a href="/candidate/{{$cand->user->id}}" class="largeredbtn">view profile </a> 
+                  <a href="/EditCandidate/{{$cand->user->id}}" class="largeredbtn">view profile </a> 
                 </div>
               @endforeach
             @endif
@@ -108,7 +108,10 @@
           <div class="col-sm-10 divboxs">
             <div class="com-proftow companychool imgprof"> <img src="/{{($candidate->logo)?$candidate->logo :'/images/blue-pass-onw.jpg'}}" >
               <div class="comitm">
+              <span>
                 <h5 class="textcandidate">{{$candidate->name}} {{($candidate->CanInfo->last_name)?$candidate->CanInfo->last_name:""}}</h5>
+                <button type="button"  style="border-radius: 20px;margin-top:3%;margin-left:70%;width:85px;background-color:white;border-color:#1E90FF;"  ><a href="/full_register/candidate/{{$candidate->id}}">  Edite </a> </button>
+             </span>
                 <ul class="namesprof">
                   <li> {{$candidate->CanInfo->job->name}} </li>
                   <li> <strong>
@@ -144,7 +147,8 @@
       
           
           <div class="row botboxs" >
-            <h2>{{($candidate->CanInfo->descripe_yourself)?$candidate->CanInfo->descripe_yourself:"No Description"}}</h2>
+            <h2  style="float:left;">{{($candidate->CanInfo->descripe_yourself)?$candidate->CanInfo->descripe_yourself:"No Description"}}</h2>
+       <button type="button"  style="float:left;border-radius: 20px;margin-left:80%;width:85px;margin-top:-20px;background-color:#1E90FF;color:white;border-color:white;"  > <a href="/full_register/candidate/{{$candidate->id}}">  Edite </a>  </button>
           </div>
           <!--resultstext--> 
           
@@ -170,6 +174,8 @@
         <div class="inner-aboutus topmergline">
           <div class="currencytext resultstext">
             <h2>skills</h2>
+            <button type="button"  style="border-radius: 20px;margin-top:-13%;margin-left:75%;width:85px;background-color:white;border-color:#1E90FF;"  >  <a href="/full_register/candidate/{{$candidate->id}}">  Edite </a>  </button>
+           
           </div>
           <!--resultstext-->
           
@@ -187,7 +193,10 @@
           <!--driver-->
           
           <div class="language">
-            <h4 class="textcandidate information">language</h4>
+          <div>
+            <h4 class="textcandidate information" > language</h4>
+            <button type="button"  style="border-radius: 20px;margin-top:-60%;margin-left:82%;width:85px;background-color:white;border-color:#1E90FF;"  > <a href="/full_register/candidate/{{$candidate->id}}">  Edite </a>  </button>
+           </div>
             <div class="languagelink">
               @if($candidate->languages)
               @foreach($candidate->languages as $lang)
@@ -212,7 +221,12 @@
           <div class="language">
             <div class="row">
               <div class="col-sm-2 education">
-                <h4 class="textcandidate information">education :</h4>
+              <div >
+              <h4 class="textcandidate information" >education :</h4>
+              <button type="button"  style="border-radius: 20px;float:left;margin-top:-20%;margin-left:590px;width:85px;background-color:white;border-color:#1E90FF;"  > <a href="/full_register/candidate/{{$candidate->id}}">  Edite </a> </button>
+             
+
+                </div>
               </div>
               <div class="col-sm-10 education">
                 <p> <p>{{$candidate->CanInfo->Eductionlevel}}</p></p>
@@ -227,6 +241,9 @@
             <div class="row">
               <div class="col-sm-3 education">
                 <h4 class="textcandidate information">work experience : </h4>
+                <button type="button"  style="border-radius: 20px;margin-top:-20%;float:left;margin-left:590px;width:85px;background-color:white;border-color:#1E90FF;"  > <a href="/full_register/candidate/{{$candidate->id}}">  Edite </a> </button>
+             
+
               </div>
                 @if($candidate->experience)
                   @foreach($candidate->experience as $experience)

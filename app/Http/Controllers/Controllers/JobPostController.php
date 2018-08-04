@@ -9,11 +9,14 @@ use Auth;
 use DB;
 use Session;
 use App\User;
-
+use App\EmployerProfile; 
 use App\CandidateInfo;
 class JobPostController extends Controller
 {
     //
+
+    
+   
     public function create()
     {
     	return view('employer.post_job');
@@ -152,7 +155,7 @@ public function logoutandregister()
         {
             foreach ($request['skill_ids'] as $key => $skill) {
                 # code...
-                \App\JobSkill::create(['job_id'=>$job->id, 'skill_id'=>$skill])
+                \App\UserSkill::create(['user_id'=>$job->id, 'user_id'=>$skill])
                 ;
             }
         }
@@ -240,9 +243,6 @@ public function logoutandregister()
     {
 
       $job = PostJob::where('id',$id)->first(); 
-  $Skilljob=DB::table('job_skills')
-     ->join('skills','skills.id','job_skills.skill_id')
-     ->where('job_id',$id)->get();
 
       $jobforcompany = PostJob::where('created_by',$job->created_by)->get();
       $jobCan=null;
@@ -270,7 +270,7 @@ if(Auth::user() !=null)
 
 
       }
-      return view('Arabic.Jobs.ViewJob',compact('job','jobforcompany','jobCan','color','Skilljob'));
+      return view('Arabic.Jobs.ViewJob',compact('job','jobforcompany','jobCan','color'));
     }
 
 

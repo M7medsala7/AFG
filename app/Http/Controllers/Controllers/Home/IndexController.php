@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Http\Controllers\Home;
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
@@ -14,31 +12,77 @@ use App\Country;
 use App\Skills;
 use App\Currency;
 use Input;
-use Khsing\World\World;
+use File;
+use App\EmployerProfile; 
 
 
 class IndexController extends Controller
 {
+   public function CountryName()
+
+   {
+
+    
+         $countrynames= EmployerProfile::
+        join('countries','countries.id','=','employer_profiles.country_id')
+        ->select('countries.name  AS CountrysName' )
+        ->where('user_id',\Auth()->user()->id)->first();
+        // dd($countryname);
+        //dd($countryname);
+        return view('employer.dashboard',compact('countrynames'));
+   } 
+
    public function index()
    {
 
     $TotalJob= PostJob::count();
         $TotalCandidate= CandidateInfo::count();
         $TotalVideoCvs= CandidateInfo::where('vedio_path','!=',NULL)->count();
+
+
+
         $TotalAnsweredQuestions= DB::table('candidate_infos')->count()*21;
 
         $RecentlyAddedJobs= PostJob::join('users','users.id','=','post_jobs.created_by')
         ->join('jobs','jobs.id','=','post_jobs.job_id')
         ->join('countries','countries.id','=','post_jobs.country_id')
         ->orderBy('post_jobs.created_at', 'DEC')->limit(4)
-        ->select('jobs.name AS JobName','users.name AS CompanyName','users.type','post_jobs.max_salary','countries.name AS CountryName','post_jobs.created_at AS Jobdate','post_jobs.id','post_jobs.job_for','post_jobs.job_descripton')->get();
-
+        ->select('jobs.name AS JobName','post_jobs.job_for','users.name AS CompanyName','users.type','post_jobs.max_salary','countries.name AS CountryName','post_jobs.created_at AS Jobdate','post_jobs.id')->get();
+    
         $SuccessStories =DB::table('success_stories')->join('users','users.id','=','success_stories.user_id')->orderBy('success_stories.created_at', 'DEC')->limit(4)->get();
 
-        $TopCandidate =CandidateInfo::orderBy('candidate_infos.created_at', 'DEC')->where('seen','=',1)->limit(4)->get();
+        $TopCandidate =CandidateInfo::where('vedio_path','!=',null)
+->where('seen',1)
+        
+        ->orderBy('candidate_infos.created_at', 'DEC')->limit(4)->get();
         
         return view('Layout.index',compact('TotalJob','TotalCandidate','TotalVideoCvs','TotalAnsweredQuestions','RecentlyAddedJobs','SuccessStories','TopCandidate'));
    }
+
+   
+        //Prefered C
+      public function index2()
+   {
+
+    $alljobCan=[];
+    $Alljobs=postJob::where('created_by',\Auth::user()->id)->select('job_id')->get();
+ 
+    foreach ($Alljobs as  $value)
+     {
+   
+     array_push($alljobCan,$value->job_id);
+       
+    }
+
+ //dd($alljobCan);
+    $TopCandidate=CandidateInfo::whereIN('job_id',$alljobCan)->get();
+     //dd($TopCandidate);
+
+        return view('candidates.SuggestedCandidates',compact('TopCandidate'));
+   } 
+
+   
+   
 
    public function search(Request $request)
    {
@@ -66,7 +110,6 @@ class IndexController extends Controller
 $candidates= collect();
    $GLOBALS['searchresulte'] =array();
         
-
 
 
 
@@ -801,7 +844,7 @@ return  view('Search.searchresult',compact('candidates','words','jobcheck','coun
 
         if($type =="I am Candidate" && $words!=null)
         {
-            $jobs=PostJob::search($words)->orderBy('job_for')->get();
+            $jobs=PostJob::search($words)->get();
 $jobcheck=1;
    $jobtitle=PostJob::search($words)->with('job')->groupBy('job_id')->get();
 $count=count($jobs);
@@ -811,9 +854,7 @@ $count=count($jobs);
                if($type =="I am Candidate" && $words==null)
 
         {
-        
-               $jobs=PostJob::search($words)->orderBy('job_for')
-->get();
+               $jobs=PostJob::search($words)->get();
                 $jobtitle=PostJob::search($words)->with('job')->groupBy('job_id')->get();
 $jobcheck=1;
     
@@ -823,8 +864,21 @@ $count=count($jobs);
         
         {
             $result=collect();
+
+        $CandidateInfo=\Auth::user()->CanInfo()->first();
+        if($CandidateInfo->job_id!=null)
+        {
+            //Matching job 
+            $MatchingJobs = PostJob::where('job_id',$CandidateInfo->job_id)->get();          
+        }     
+        else
+        {
+           
+            $MatchingJobs=null;
+        } 
+    dd(asd);
             $count=count($result);
-                return  view('Search.searchresult',compact('result','words','count','jobtitle','jobtitleresult','Country','jobfor') );
+                return  view('Search.searchresult',compact('MatchingJobs','CandidateInfo','result','words','count','jobtitle','jobtitleresult','Country','jobfor') );
 
         }
     
@@ -869,7 +923,7 @@ $experince=json_decode($request->experince);
   $nationality=$request->nationality;
         $skills=$request->skills;
 
-         
+        // dd($nationality,$skills);
 if($salary != [])
 {
   
@@ -944,10 +998,6 @@ if( $words == 'undefined')
    $resultQuery= PostJob::all();
  }
  
- else
- {
-   $resultQuery= PostJob::all();
- }
 
 
 
@@ -1686,7 +1736,7 @@ if($Jobtitles !=[] && $Jobtitles[0] !="all" && $employertype !=[] && $employerty
 if($Jobtitles ==[] && $employertype !=[] && $employertype[0] !="all" && $salary !=[]   && $country  !="0" && $experince !=[])
 {
 
- 
+// dd('l');
 
 
 

@@ -18,16 +18,35 @@
           
           <div class="row addicta">
             <div class="detalsprofile">
-              <h4 class="textcandidate">addicta</h4>
+                @foreach($employerJobs as $job)
+                
+              <h4 class="textcandidate">{{$job->job_for}}</h4>
               <p>{{(\Auth::user()->name)?(\Auth::user()->name):'No Name'}}</p>
-              <span>new cairo,egypt</span> </div>
+             
+ 
+         <span>  
+         @foreach($countrynames as $Adobs)
+         {{$Adobs->CName}}
+           @endforeach ,
+           @foreach($citynames as $AddJobs)
+          {{$AddJobs->cityName}}
+            @endforeach
+          </span> 
+
+            
+               </div>
+             
             <!--detalsprofile-->
             
             <div class="detalsprofile">
+             @if($job->job_for =='company' || $job->job_for =='agency' )
               <h4 class="textcandidate">5-20</h4>
-              <span>employees</span> </div>
+              <span>employees</span>
             <!--detalsprofile-->
-            
+            @endif
+              @endforeach
+             </div>
+
             <div class="detalsprofile">
               <h4 class="textcandidate">{{count($employerJobs)}}</h4>
               <span>jobs posted</span> </div>
@@ -116,10 +135,10 @@
                         <p class="officer">nanny</p>
                         <ul class="hassle salary">
                           <li> 28 years</li>
-                          <li>{{$candidate->country->name}}</li>
+                        
                         </ul>
                         <div class="tidivbotom"> 
-                          <a href="#">know more</a> 
+                          <a href="/ViewJob/{{$candidate->id}}">know more</a> 
                           <span>{{$candidate->created_at}}</span>
                         </div>
                         <!--tidiv--> 
@@ -157,6 +176,7 @@
           
           <div class="row ">
           @if($job->getSimilarJobsAttribute()->first())
+        
             @foreach($job->getSimilarJobsAttribute() as $sJob)
               <div class="col-sm-4 company com-dashboard">
                 <div class="ineercompany">
@@ -168,9 +188,9 @@
                   <p class="officer">{{$sJob->job->name}}</p>
                   <ul class="hassle salary">
                     <li> <strong>loc.</strong> {{$sJob->country->name}}</li>
-                    <li> <strong>salary.</strong> {{$sJob->min_salary}}-{{$sJob->max_salary}} {{($job->Currency)?$job->Currency->name:""}}</li>
+                    <li> <strong>salary.</strong> {{number_format($sJob->min_salary)}}-{{number_format($sJob->max_salary)}} {{($job->Currency)?$job->Currency->name:""}}</li>
                   </ul>
-                  <div class="tidivbotom"> <a href="#">apply now</a> <span>{{$sJob->created_at}}</span>
+                  <div class="tidivbotom"> <a href="/ViewJob/{{$sJob->id}}">apply now</a> <span>{{$sJob->created_at}}</span>
                   </div>
                   <!--tidiv--> 
                   

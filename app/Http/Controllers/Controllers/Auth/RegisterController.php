@@ -554,13 +554,14 @@ $citynam->save();
         
     }
 
-
+   
     //////Candidate part
     public function candFullReg(Request $request)
     {
         return view('auth.full_candidate_reg');
     }
 
+   
     public function f_reg_cand(Request $request)
     {
  try{

@@ -26,10 +26,7 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function  editFullReg(Request $request)
-    {
-        return view('auth.Edit_Candidate_reg');
-    }
+  
    
     public function EditJobRef()
     {

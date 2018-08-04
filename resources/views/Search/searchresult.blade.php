@@ -228,7 +228,7 @@
     <li class="hidden">
              <label>
 
-                  <input type="checkbox" name="Jobtitle" value="{{$jobtitle[$i]->job->id}}" onchange="Doaaasd()" class="disabled">
+                  <input type="checkbox" name="Jobtitle" value="{{$jobtitle[$i]}}" onchange="Doaaasd()" class="disabled">
                   <span class="label-text">{{$jobtitle[$i]->job->name}}</span> </label>
                   
               </li>
@@ -397,7 +397,9 @@
 
 <script type="text/javascript"></script>
 @section('scripts')
+
 <script>
+
   $(document).ready(function () {
    $.ajaxSetup({
         headers: {
@@ -500,8 +502,9 @@ var skills=$('#skills_id').find(":selected").val();
       employertype=JSON.stringify(employertype); 
       salary=JSON.stringify(salary); 
      experince=JSON.stringify(experince); 
+    console.log(employertype);
 
-var dataString = "Jobtitle="+Jobtitle+"&country="+country+"&jobcheck="+jobcheck+"&jobs="+jobs+"&candidate="+candidate+"&words="+words+"&employertype="+employertype+"&salary="+salary+"&fromsalary="+fromsalary+"&tosalary="+tosalary+"&currency="+currency+"&experince="+experince+"&fromsexperince="+fromexperince+"&toexperince="+toexperince+"&nationality="+nationality+"&skills="+skills;
+var dataString = "Jobtitle="+Jobtitle+"&country="+country+"&jobcheck="+jobcheck+"&candidate="+candidate+"&words="+words+"&employertype="+employertype+"&salary="+salary+"&fromsalary="+fromsalary+"&tosalary="+tosalary+"&currency="+currency+"&experince="+experince+"&fromsexperince="+fromexperince+"&toexperince="+toexperince+"&nationality="+nationality+"&skills="+skills;
     $.ajax({
         type: 'POST',
         url: '/filtersearch',

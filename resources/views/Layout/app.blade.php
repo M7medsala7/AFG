@@ -3,7 +3,13 @@
 <head>
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-@yield('share')
+
+
+<meta property="og:type" content="article" />
+<meta property="og:image" content="https://www.maidandhelper.com/images/slide5.jpg" />
+
+<meta property="og:title" content="CANDIDATES & EMPLOYERS" />
+<meta property="og:description" content="WELL CONNECTED HERE" />
 
 
  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
@@ -27,7 +33,7 @@
 <script type="text/javascript" src="/js/bootstrap-select.min.js"></script>
 <script type="text/javascript" src="/js/count-number.js"></script>
 <script type="text/javascript" src="/js/jquery.canvasjs.min.js"></script>
-
+<script type= "text/javascript" src = "/images/js/countries.js"></script>
 <script type="text/javascript" src="/js/script.js"></script>
 <script src="/node_modules/video.js/dist/video.min.js"></script>
   <script src="/node_modules/recordrtc/RecordRTC.js"></script>

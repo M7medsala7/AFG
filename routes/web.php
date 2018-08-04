@@ -13,6 +13,12 @@
 
 
 Route::get('/', 'Home\IndexController@index');
+Route::get('/country', 'Home\IndexController@CountryName');
+Route::get('/MatchingCandidates', 'Home\IndexController@index2');
+Route::get('/getNotify', 'HomeController@getNotify');
+Route::get('/point', 'HomeController@reg');
+Route::get('/full_register/candidate/{id}','EditCanProfileController@editFullReg');
+Route::post('/update_register/candidate/{id}','EditCanProfileController@updateFullReg');
 
 Route::group(['middleware' => 'guest'], function () {
     Route::post('/registeremployer', '\App\Http\Controllers\Auth\RegisterController@emplyReg');
@@ -21,6 +27,7 @@ Route::group(['middleware' => 'guest'], function () {
 	Route::get('/f_register/employeer','Auth\RegisterController@empFullReg');
 	Route::post('/f_reg/employer','Auth\RegisterController@f_reg_emp');
 	Route::get('/f_register/candidate','Auth\RegisterController@candFullReg');
+	//Route::get('/full_register/candidate','HomeController@editFullReg');
 	Route::post('/f_reg/candidate','Auth\RegisterController@f_reg_cand');
 
 	Route::get('/signup', function () {
@@ -53,9 +60,12 @@ Auth::routes();
 Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');
 
 Route::get('/home', 'HomeController@index')->name('home');
-
+Route::get('/EditJobRef', 'HomeController@EditJobRef');
+Route::get('//MatchingJobs', 'HomeController@MatchingJobs');
+//Route::get('/home3', 'HomeController@CanadatiesDashboard3');
 
 Route::get('/company_profile/edit/{id}', 'companiesController@create');
+//Route::get('/company_profile/edit', 'companiesController@create2');
 Route::get('/company_profile/{id}', 'companiesController@show');
 
 //***************************Employer Regestration Facebook and google*************************
@@ -102,9 +112,11 @@ Route::group(['middleware'=>'auth'],function(){
 	Route::post('/company_store', 'companiesController@store');
 
 });
-
+Route::get('/candidate2/{id}','CandidatesController@profile2');
 Route::get('/candidate/{id}','CandidatesController@profile');
+Route::get('/EditCandidate/{id}','CandidatesController@EditRefrnces');
 Route::get('/ViewJob/{id}','JobPostController@ViewJob');
+
 Route::get('/ApplyJob/{id}','JobPostController@ApplyJob');
 Route::get('/ApplyOk','JobPostController@ApplyOk');
 Route::get('/likejob/{id}','JobPostController@likejob');

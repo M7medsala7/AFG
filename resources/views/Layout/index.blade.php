@@ -74,7 +74,7 @@
           <p class="officer">{{$AddJobs->JobName}}</p>
           <ul class="hassle salary">
             <li> <strong>loc.</strong> {{$AddJobs->CountryName}}</li>
-            <li> <strong>salary.</strong> {{$AddJobs->max_salary}}</li>
+            <li> <strong>salary.</strong> {{number_format($AddJobs->max_salary)}}</li>
           </ul>
           <div class="tidivbotom"> <a href="/ViewJob/{{$AddJobs->id}}">View Job</a> <span>{{ \Carbon\Carbon::parse($AddJobs->Jobdate)->format('d/M/Y')}}</span></div>
           <!--tidiv--> 

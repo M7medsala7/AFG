@@ -24,59 +24,61 @@
       <form  action="/f_reg/employer" method="post" id="f_reg_emp" class="formlogin">
         {{csrf_field()}}
         <div class="divwits">
-           <input type="text" name="first_name" class="form-control" placeholder="first name">
+           <input type="text" name="first_name" class="form-control" placeholder="first name" onblur="processForm(this.form)">
         </div>
         <div class="divwits">
-           <input type="hidden" name="type" value="{{$type}}" class="form-control" placeholder="first name">
-        </div>
-        <!--divwits-->
-        
-        <div class="divwits">
-           <input type="text" name="last_name" class="form-control" placeholder="last name">
+           <input type="hidden" name="type" value="{{$type}}" class="form-control" placeholder="first name" onblur="processForm(this.form)">
         </div>
         <!--divwits-->
         
         <div class="divwits">
-           <input type="text" name="address" class="form-control" placeholder="address">
+           <input type="text" name="last_name" class="form-control" placeholder="last name" onblur="processForm(this.form)">
         </div>
         <!--divwits-->
         
         <div class="divwits">
-          <select class="form-control" name="country_id" id="country_id" required="required">
-            <option selected="" disabled="disabled">Current Country</option>
-            @foreach(\App\Country::all() as $country)
-              <option value="{{$country->id}}">{{$country->name}}</option>
-            @endforeach
+           <input type="text" name="address" class="form-control" placeholder="address" onblur="processForm(this.form)">
+        </div>
+        <!--divwits-->
+        
+        <div class="divwits">
+          <select class="form-control " name="country_id" id="country_id" required="required" onblur="processForm(this.form)">
+          
           </select>
         </div>
         <!--divwits-->
         
         <div class="divwits">
-           <select class="form-control" id="city_id" name="city_id"  required="required">
-            
+           <select class="form-control " id="city_id" name="city_id"  onblur="processForm(this.form)">
+           
           </select>
         </div>
         <!--divwits-->
         
         <div class="divwits">
-           <input type="email" name="email" class="form-control" placeholder="email address" required="required">
+           <input type="email" name="email" class="form-control" placeholder="email address" required="required" onblur="processForm(this.form)">
         </div>
         <!--divwits-->
         
         <div class="divwits">
-           <input type="email" name="email_confirmation" class="form-control" placeholder="confirm email" required="required">
+           <input type="email" name="email_confirmation" class="form-control" placeholder="confirm email" required="required" onblur="processForm(this.form)">
         </div>
         <!--divwits-->
         
         <div class="divwits iconfont">
-           <input type="password" name="password" class="form-control" placeholder="password">
+           <input type="password" name="password" class="form-control" placeholder="password" onblur="processForm(this.form)">
         </div>
-        <!--divwits-->
+        <<div class="col-sm-8  stepotw">
+                <div class="linksing textcand-1">
+                  <p id="Points">0</p>
+                  <span>earn points <i class="fas fa-trophy"></i><br>
+                  with each step</span> </div>
+              </div><!--divwits-->
         
         <div class="divwits">
           <div class="row">
             <div class="col-sm-4 createbot">
-              <button type="submit" class="largeredbtn"> create now </button>
+              <button type="submit"   class="largeredbtn"> create now </button>
             </div>
           </div>
           <!--row--> 
@@ -87,7 +89,7 @@
       </form>
     </div>
     <!--witstapon-->
-    
+ 
     <div class="col-sm-4 inputbox margmadia">
       <h3 class="title-con entea"> welcome to</h3>
       <h4 class="title-con entea">Maid & Helper</h4>
@@ -106,27 +108,12 @@
 @endsection
 @section('scripts')
  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-<script>
-  $(document).ready(function(){
+<script >
+  populateCountries("country_id", "city_id"); // first parameter is id of country drop-down and second parameter is id of state drop-down
 
-    $('#country_id').select2();
-  });
-  $('#country_id').on('change',function(){
-    var country_id = $('#country_id').val();
-     $('#city_id').find('option').remove().end();
-     $.get("/getCities/"+country_id, function(data, status){
-
-      $.each(data, function(key, item) {   
-       $('#city_id')
-           .append($("<option></option>")
-                      .attr("value",item.id)
-                      .text(item.name)); 
-        });
-    });
-  });
-  $('#city_id').select2();
 </script>
 <script >
+
   $.ajaxSetup({
         headers:{
              'X-CSRF-Token': $('input[name="_token"]').val()
@@ -140,6 +127,7 @@
      $.get("/congrats", function(data, status){
       $('#congrats').append(data);
      });
+     
     
     // $('#congrat_section').css('diplay','block');
   
@@ -167,5 +155,29 @@
         });
         // return false to
      });
+</script>
+<script >
+  
+function processForm(form) {
+  
+  document.getElementById("Points").innerHTML=0;
+
+ //document.getElementById("Points5").innerHTML=0;
+  var control, controls = form.elements;
+  for (var i=0, iLen=controls.length; i<iLen; i++) {
+    control = controls[i];
+ 
+if(control.value !="" && control.value !=0)
+{
+
+  document.getElementById("Points").innerHTML = 5+parseInt(document.getElementById("Points").innerHTML);
+ 
+
+
+ }   // Do something with the control
+   // console.log(control.name + ': ' + control.value);
+  }
+}
+
 </script>
 @endsection

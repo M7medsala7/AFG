@@ -46,7 +46,7 @@ div.desc {
 <td>
 <div class="gallery">
   <a target="_blank" href="https://www.maidandhelper.com/">
-    <img src="/images/p3.png" alt="Northern Lights" width="600" height="400">
+    <img src="https://www.maidandhelper.com/images/p3.PNG" alt="Northern Lights" width="600" height="400">
   </a>
  
 </div>

@@ -46,8 +46,10 @@
 
 
 
+ 
+ <a href="/candidate/{{(\Auth::user()->id)}}" class="skiplink">view profile </a>
 
- <a href="#" class="skiplink">view profile </a>
+
             </div> 
             </form> 
 
@@ -61,10 +63,10 @@
             <!--detalsprofile-->
             
             <div class="col-sm-12">
-              <div class="text-only">profile strength: <span>{{$CandidateInfo->coins*2}}%</span></div>
+              <div class="text-only">profile strength: <span>{{$CandidateInfo->coins/2*100/100}}%</span></div>
               <!--text-only-->
               <div class="progress">
-                <div class="progress-bar" style="width: {{$CandidateInfo->coins*2}}%;"></div>
+                <div class="progress-bar" style="width: {{$CandidateInfo->coins/2*100/100}}%;"></div>
               </div>
               <!--progress-->
               
@@ -78,16 +80,20 @@
         
             <div class="videoprofy"> <a href="#" data-toggle="modal" data-target="#myModal" class="watchvideo"> 
    @if($CandidateInfo->vedio_path != null)
-              <video src="{{($CandidateInfo->vedio_path)}}" type="video/{{File::extension($CandidateInfo->vedio_path)}}"> <i class="fas fa-play"></i> </a> 
+              <video src="{{($CandidateInfo->vedio_path)}}" type="video/{{File::extension($CandidateInfo->vedio_path)}}">< <i class="fas fa-play"></i> </a> 
                 @else
                 <img src="images/slide5.jpg"> <i class="fas fa-play"></i> </a>
                 @endif
 
                 </div>
             <!--videoprofy-->
-            <div  class="col-sm-12 cenbottom  edit-pro"><input type="file" id="my_file"> <a id="get_file" value="Grab file" class="file_input largeredbtn">Upload Video  <i class="fas fa-pencil-alt"></i></a> </div>
+         
+
+           <div  class="col-sm-12 cenbottom  edit-pro"><input type="file" id="my_file"> <a id="get_file" value="Grab file" class="file_input largeredbtn">Upload Video  <i class="fas fa-pencil-alt"></i></a> </div>
             <div class="col-sm-12 cenbottom  edit-pro"> <a href="#"  data-toggle="modal" data-target="#myModa2" class="largeredbtn">record video  <i class="fas fa-pencil-alt"></i></a> </div>
+
           </div>
+
           <!--addicta--> 
           
         </div>
@@ -122,7 +128,7 @@
         <div class="inner-aboutus">
           <div class="currencytext resultstext">
             <h2>recommended jobs</h2>
-            <a href="#" class="prefrnces">edit job prefrnces <i class="fas fa-pencil-alt"></i></a> </div>
+            <a href="/EditCandidate/{{(\Auth::user()->id)}}" class="prefrnces">edit job prefrnces <i class="fas fa-pencil-alt"></i></a> </div>
           <!--resultstext-->
           
           <div class="row">
@@ -134,18 +140,20 @@
                     <div class="tidiv"> <img src="images/car1.jpg"> <span> {{$val->job_for}}</span></div>
                     <!--tidiv-->
                     
-                    <h4 class="innertitltext">{{$val->user->name}} </h4>
+                    
                     <p class="officer">{{$val->job->name}}</p>
                     <ul class="hassle salary">
                       <li> <strong>loc.</strong> oman</li>
                        <li> <strong>loc.</strong>{{$val->country->name}} </li>
-                <li> <strong>salary.</strong>{{$val->min_salary}}-{{$val->max_salary}} {{($val->Currency)?$val->Currency->name:"Currency is not set"}}</li> 
+                <li> <strong>salary.</strong>{{number_format($val->min_salary)}}-{{number_format($val->max_salary)}} {{($val->Currency)?$val->Currency->name:"Currency is not set"}}</li> 
                     </ul>
-                    <div class="tidivbotom"> <a href="#">apply now</a> <span>{{$val->created_at}}</span></div>
+                    <div class="tidivbotom"> <a href="/ViewJob/{{$val->id}}">apply now</a> <span>{{$val->created_at}}</span></div>
                     <!--tidiv--> 
                     
                   </div>
                   <!--inernews--> 
+
+
                   
                 </div>
 
@@ -179,13 +187,18 @@
             <h2>your progress</h2>
           </div>
           <!--resultstext-->
-          @if($CandidateInfo->coins == 50)
+         
+          @if(Auth::user()->logo != null)
           <div class="row">
             <div class="col-sm-3 profiledeta">
-              <div class="innersprof"> <i class="fas fa-user"></i> </div>
+             
+
+               <img src="{{(\Auth::user()->logo)}}" style="width:113px; "> 
               <h3>profile</h3>
               <p>great,add more info
-                top increase <a href="#">profile</a> strenght</p>
+                top increase <label for="file-upload" class="custom-file-upload">
+            <a  class="fas fa-pencil-alt" ></a> 
+           </label> strenght</p>
             </div>
              @else
    <div class="row">
@@ -193,7 +206,9 @@
               <div class="innersprof nnersp"> <i class="fas fa-user"></i> </div>
               <h3>profile</h3>
               <p>great,add more info
-                top increase <a href="#">profile</a> strenght</p>
+                top increase <label for="file-upload" class="custom-file-upload">
+            <a  class="fas fa-pencil-alt" ></a> 
+           </label> strenght</p>
             </div>
             @endif
 
@@ -201,31 +216,34 @@
             <!--profiledeta-->
             @if($CandidateInfo->vedio_path != null)
             <div class="col-sm-3 profiledeta">
-              <div class="innersprof"> <i class="fas fa-cloud-upload-alt"></i> </div>
+              <div class="innersprof">  <video src="{{($CandidateInfo->vedio_path)}}" type="video/{{File::extension($CandidateInfo->vedio_path)}}" style="width:100px;height: 60px; "> <i class="fas fa-cloud-upload-alt"></i> </div>
               <h3>upload a video</h3>
               <p>great,add more info
                 top increase <a href="#">profile</a> strenght</p>
             </div>
-           
+           </a> </div>
            @else
              <div class="col-sm-3 profiledeta">
-              <div class="innersprof nnersp"> <i class="fas fa-cloud-upload-alt"></i> </div>
+              <div class="innersprof nnersp">   <div  class="col-sm-12 cenbottom  edit-pro"> <input type="file" id="my_file2"> <a id="get_file2" value="Grab file" class="file_input largeredbtn"> <i class="fas fa-cloud-upload-alt" ></i></a></div> </p>  </div>
               <h3>upload a video</h3>
               <p>great,add more info
-                top increase <a href="#">profile</a> strenght</p>
+                top increase<a href="#"  data-toggle="modal" data-target="#myModa2" >
+                 <i class="fas fa-pencil-alt"></i></a>  strenght
+                  
+               
             </div>
             <!--profiledeta-->
              @endif
-            <div class="col-sm-3 profiledeta">
-              <div class="innersprof nnersp"> <i class="fas fa-plug"></i> </div>
+            <div class="col-sm-3 profiledeta"  >
+              <div class="innersprof nnersp"> <i class="fas fa-plug" ></i> </div>
               <h3>online interview</h3>
               <p>great,add more info
                 top increase <a href="#">profile</a> strenght</p>
             </div>
             <!--profiledeta-->
             
-            <div class="col-sm-3 profiledeta">
-              <div class="innersprof nnersp"> <i class="fas fa-users"></i> </div>
+            <div class="col-sm-3 profiledeta" >
+              <div class="innersprof nnersp"> <i class="fas fa-users" ></i> </div>
               <h3>hiring</h3>
               <p>great,add more info
                 top increase <a href="#">profile</a> strenght</p>
@@ -239,26 +257,26 @@
         
         <!--inner-aboutus-->
         
-        <div class="inner-aboutus topmergline">
+        <div class="inner-aboutus topmergline" >
           <div class="currencytext resultstext">
             <h2>matching jobs</h2>
           </div>
           <!--resultstext-->
           
-          <div class="row">
+          <div class="row" >
             @foreach($MatchingJobs  as $val)
             <div class="col-sm-4 company com-dashboard">
               <div class="ineercompany">
                 <div class="tidiv"> <img src="images/car1.jpg"> <span> {{$val->job_for}}</span></div>
                 <!--tidiv-->
                 
-                <h4 class="innertitltext">{{$val->user->name}}</h4>
+                
                 <p class="officer">{{$val->job->name}}</p>
                 <ul class="hassle salary">
                    <li> <strong>loc.</strong>{{$val->country->name}} </li>
-                  <li> <strong>salary.</strong>{{$val->min_salary}}-{{$val->max_salary}} {{($val->Currency)?$val->Currency->name:"Currency is not set"}}</li> 
+                  <li> <strong>salary.</strong>{{number_format($val->min_salary)}}-{{number_format($val->max_salary)}} {{($val->Currency)?$val->Currency->name:"Currency is not set"}}</li> 
                 </ul>
-                <div class="tidivbotom"> <a href="#">apply now</a> <span>{{$val->created_at}}</span></div>
+                <div class="tidivbotom"> <a href="/ViewJob/{{$val->id}}">apply now</a> <span>{{$val->created_at}}</span></div>
                 <!--tidiv--> 
                 
               </div>
@@ -288,7 +306,10 @@
 
              @foreach($Candidates as $val)
             <div class="col-sm-4 company com-dashboard">
-              <div class="ineercompany nonepad"> <a href="#" class="imgbox"> <img src="{{($val->user->logo)?$val->user->logo:'images/4.jpg'}}"> <i class="fas fa-play"></i></a>
+              <div class="ineercompany nonepad"> 
+                <a  class="imgbox" onclick="ShowVideo('/{{$val->vedio_path}}','{{File::extension($val->vedio_path)}}')">
+
+                  <img src="{{($val->user->logo)?$val->user->logo:'images/4.jpg'}}"> <i class="fas fa-play"></i></a>
                 <div class="padboxs"> <span class="eyeicons"><i class="fas fa-eye"></i> 20,215</span> <span class="eyeicons"><i class="fas fa-flag"></i> 20,215</span>
                    <h4 class="innertitltext">{{$val->user->name}}</h4>
             <p class="officer">{{$val->job->name}}</p>
@@ -342,7 +363,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header"> watch demo video
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <button type="button" class="close" data-dismiss="modal">x</button>
       </div>
       <video style="text-align: center;" width="auto" height="auto" controls>
         <source src="{{$CandidateInfo->vedio_path}}" type="video/{{File::extension($CandidateInfo->vedio_path)}}">
@@ -360,7 +381,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header"> record a video
-        <button type="button" class="close" data-dismiss="modal">أ—</button>
+        <button type="button" class="close" data-dismiss="modal">x</button>
       </div>
       <div class="textbox">
         <form action="#" method="" class="formlogin video-rc">
@@ -383,8 +404,69 @@
   </div>
 </div>
 <!--myModa2-->
+<div id="myModal3" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header"> watch video
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="textbox" id="v1">
+      
+      </div>
+      <!--textbox--> 
+      
+    </div>
+  </div>
+</div>
 
 @endsection
+@section('scripts')
+<script type="text/javascript" src="/js/slick.min.js"></script>
+
+
+
+
+<script>
+
+
+$('.your-stud').slick({
+dots: true,
+infinite: true,
+speed: 2000,
+slidesToShow:1,
+slidesToScroll: 1,
+autoplay: true,
+autoplaySpeed: 3000,
+responsive: [
+{
+breakpoint: 550,
+settings: {
+slidesToShow: 1,
+slidesToScroll: 1
+}
+},
+
+]
+});
+
+  var searchtype = $('#search_type').val();
+  if(searchtype == "")
+  {
+    $('.input-search').on('click',function(){
+      $('.select_search_type').css('display','block');
+      console.log(searchtype);
+    });
+  }
+  else
+  {
+
+  }
+$('.select_type').on('click',function(){
+    $('.select_search_type').remove();
+    searchtype=$(this).attr('type_val');
+    $('#search_type').val(searchtype);
+  });
+</script>
 
 <script type="text/javascript"> 
 
@@ -403,9 +485,35 @@ var map;
 document.getElementById('get_file').onclick = function() {
     document.getElementById('my_file').click();
 };
+document.getElementById('get_file2').onclick = function() {
+    document.getElementById('my_file2').click();
+};
 
 $('#my_file').change(function (e) {
     var myFile = $('#my_file').prop('files');
+var video=myFile[0];
+    var id=  $("#canid").val();
+ 
+       var fd = new FormData();
+    fd.append('id', id);
+    fd.append('video',video);
+
+            $.ajax({
+            
+             url: '/EditUploadVideo',
+             type: "POST",
+                    contentType: false, // Not to set any content header
+                    processData: false, // Not to process data
+                    data: fd,
+            
+            
+      
+    });
+
+});
+
+$('#my_file2').change(function (e) {
+    var myFile = $('#my_file2').prop('files');
 var video=myFile[0];
     var id=  $("#canid").val();
  
@@ -612,3 +720,19 @@ function ajaxCall() {
 
 
 </script>
+
+<Script>
+function ShowVideo($id,$type)
+{
+  
+ $typeM='video/'+$type;
+var int="";
+$("#v1").html('');
+
+$("#v1").html('<video style="text-align: center;width: 100%;" controls><source src="'+$id+'" type='+$typeM+'></source></video>' );
+
+ $('#myModal3').modal('show');
+}
+
+</script>
+@endsection

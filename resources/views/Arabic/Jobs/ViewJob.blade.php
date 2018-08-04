@@ -50,9 +50,11 @@
               <p class="officer">{{($sJob->job)?$sJob->job->name:""}}</p>
               <ul class="hassle salary">
                 <li> <strong>loc.</strong> {{$sJob->country->name}}</li>
-                <li> <strong>salary.</strong>{{($sJob->min_salary)?$sJob->min_salary:"0"}}:{{($sJob->max_salary)?$sJob->max_salary:"0"}} {{($job->Currency)?$job->Currency->name:""}}</li>
+                <li> <strong>salary.</strong>{{number_format(($sJob->min_salary))?number_format($sJob->min_salary):"0"}}:{{number_format(($sJob->max_salary))?number_format($sJob->max_salary):"0"}} {{($job->Currency)?$job->Currency->name:""}}</li>
               </ul>
               <div class="tidivbotom"> <a href="" data-toggle="modal" data-target="#myModal">apply now</a> <span>{{$sJob->created_at}}</span></div>
+
+
 
             </div>
 
@@ -96,9 +98,14 @@
               <ul class="hassle salary">
                 <li> <strong>{{($job->country)?$job->country->name:""}}</strong> </li>
                 <li> <strong>posted</strong> <span class="timetext"><i class="far fa-clock"></i> posted</span> <span class="timetext"><i class="far fa-eye"></i> 10 views</span></li>
-                <li> <strong>salary.</strong>{{($job->min_salary)?$job->min_salary:"0"}}:{{($job->max_salary)?$job->max_salary:"0"}}{{($job->Currency)?$job->Currency->name:""}}</li>
+                <li> <strong>salary.</strong>{{($job->min_salary)?number_format($job->min_salary):"0"}}:{{($job->max_salary)?number_format($job->max_salary):"0"}}{{($job->Currency)?$job->Currency->name:""}}</li>
               </ul>
-              <div class="cenbottom seejobs linkappley"> <a href="#" data-toggle="modal" data-target="#myModal"  class="largeredbtn" style="width: 150;">apply</a> <a href="" class="largeredbtn" style="width: 215;font-size: 12px;">apply without regestration</a> </div>
+              @if(\Auth::user())
+              <div class="cenbottom seejobs linkappley"> <a href="#" data-toggle="modal" data-target="#myModal"  class="largeredbtn" style="width: 150;">apply</a>
+                @else
+                <div class="cenbottom seejobs linkappley"> <a href="#" data-toggle="modal" data-target="#myModal"  class="largeredbtn" style="width: 150;">apply</a>
+               <a href="" class="largeredbtn" style="width: 215;font-size: 12px;">apply without regestration</a> </div>
+               @endif
             </div>
             <!--comitm--> 
             
@@ -131,14 +138,12 @@
             <h5 class="textcandidate">skills :</h5>
             <p class="textabout">
 
-          @if($job->skills)
-            @foreach($job->skills as $skill)
+         <nav class="driver">
+            @foreach($Skilljob as $skill)
             <a>{{$skill->name}}</a>
             @endforeach
-          @else
-            No skills selected
-          @endif
-
+        </nav>
+       
 
             </p>
           </div>
@@ -146,7 +151,7 @@
           
           <div class="com-proftow aboutcompany discription">
             <h5 class="textcandidate">salary : </h5>
-            <p class="textabout">{{($job->min_salary)?$job->min_salary:"0"}}:{{($job->max_salary)?$job->max_salary:"0"}}</p>
+            <p class="textabout">{{($job->min_salary)?number_format($job->min_salary):"0"}}:{{($job->max_salary)?number_format($job->max_salary):"0"}}</p>
           </div>
 
 
@@ -175,7 +180,8 @@
                   <p class="officer">{{($Compjob->job)?$Compjob->job->name:""}}</p>
                   <ul class="hassle salary">
                     <li> <strong>{{($Compjob->country)?$Compjob->country->name:""}}.</strong> </li>
-                    <li> <strong>salary.</strong>{{($Compjob->min_salary)?$Compjob->min_salary:"0"}}:{{($job->max_salary)?$job->max_salary:"0"}}{{($Compjob->Currency)?$Compjob->Currency->name:""}}</li>
+                    <li> <strong>salary.</strong>{{number_format(($Compjob->min_salary))?number_format($Compjob->min_salary):"0"}}:{{number_format(($job->max_salary))
+                      ?number_format($job->max_salary):"0"}}{{($Compjob->Currency)?$Compjob->Currency->name:""}}</li>
                   </ul>
                   <div class="tidivbotom"> <a href="" data-toggle="modal" data-target="#myModal">apply now</a> <span>{{$Compjob->created_at}}</span></div>
                   <!--tidiv--> 
@@ -207,7 +213,7 @@
                   <p class="officer">{{($Conjob->job)?$Conjob->job->name:"No Job"}}</p>
                   <ul class="hassle salary">
                     <li> <strong>{{($Conjob->country)?$Conjob->country->name:""}}.</strong> </li>
-                    <li> <strong>salary.</strong> {{($Conjob->min_salary)?$Conjob->min_salary:"0"}}:{{($Conjob->max_salary)?$Conjob->max_salary:"0"}} {{($Conjob->Currency)?$Conjob->Currency->name:" No Currency"}}</li>
+                    <li> <strong>salary.</strong> {{number_format(($Conjob->min_salary))?number_format($Conjob->min_salary):"0"}}:{{number_format(($Conjob->max_salary))?number_format($Conjob->max_salary):"0"}} {{($Conjob->Currency)?$Conjob->Currency->name:" No Currency"}}</li>
                   </ul>
                   <div class="tidivbotom"> <a href="" data-toggle="modal" data-target="#myModal">apply now</a> <span>{{$Conjob->created_at}}</span></div>
                   <!--tidiv--> 
@@ -255,7 +261,7 @@
       <!--chancevedio-->
       
       <div class="col-sm-6 chancevedio">
-       <iframe width="560" height="315" src="https://www.youtube.com/embed/whMCdOkI2CU" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+       <iframe width="560" height="315" src="https://www.youtube.com/embed/_I4AxpE5byE" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
       </div>
       <!--chancevedio--> 
       

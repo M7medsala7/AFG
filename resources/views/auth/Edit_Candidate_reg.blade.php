@@ -57,7 +57,7 @@ width:300px;
     </ul>
     <!--tabssteps-->
     
-    <form  action="/f_reg/candidate" method="post" id="full_cand_reg" class="formlogin mergform"  novalidate enctype="multipart/form-data">
+    <form  action="/update_register/candidate/{id}" method="post" id="full_cand_reg" class="formlogin mergform"  novalidate enctype="multipart/form-data">
             {{csrf_field()}}
       <div class="tab-content">
         <div role="tabpanel" class="tab-pane  nonebac active" id="step-1">
@@ -117,12 +117,12 @@ width:300px;
             <div class="col-sm-6 leftinput">
               <div class="row">
                 <div class="col-sm-12 airports witpostslid">
-                  <input type="text" class="form-control requirments" id="first_name"  name="first_name" placeholder="full name" onblur="processForm(this.form)">
+                  <input type="text" class="form-control requirments" value="{{$data->name}}"  id="first_name"  name="first_name" placeholder="full name" onblur="processForm(this.form)">
                 </div>
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                  <input type="text" class="form-control requirments" name="last_name" placeholder="last name" onblur="processForm(this.form)">
+                  <input type="text" value="{{$cans->last_name}}" class="form-control requirments" name="last_name" placeholder="last name" onblur="processForm(this.form)">
                 </div>
                 <!--witpostslid-->
                 
@@ -147,23 +147,25 @@ width:300px;
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                  <input type="text" class="form-control requirments" name="phone_number" placeholder=" phone no" onblur="processForm(this.form)">
+                  <input type="text" value="{{$cans->phone_number}}"  
+                  class="form-control requirments" name="phone_number" placeholder=" phone no" onblur="processForm(this.form)">
                 </div>
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                  <input type="email" class="form-control requirments" name="email" placeholder="email" onblur="processForm(this.form)">
+                  <input type="email" value="{{$data->email}}" 
+                  class="form-control requirments" name="email" placeholder="email" onblur="processForm(this.form)">
                 </div>
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                  <input type="password" class="form-control requirments" name="password"  placeholder="password" onblur="processForm(this.form)">
+                  <input type="password" value="{{$data->password}}"  class="form-control requirments" name="password"  placeholder="password" onblur="processForm(this.form)">
                 </div>
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid" style"width:100%">
                 
-                  <select class="form-control requirments" name="gender" id="gender" required="" style="width: 90%;" onblur="processForm(this.form)">
+                  <select class="form-control requirments" value="{{$cans->gender}}" name="gender" id="gender" required="" style="width: 90%;" onblur="processForm(this.form)">
                     <option selected="" style="width: 90%;"> gender</option>
                     <option value="0">Male</option>
                     <option value="1" >female</option>
@@ -212,7 +214,7 @@ width:300px;
                 
                 <div class="col-sm-12 airports witpostslid">
                   <div class="input-group input-file" name="logo">
-                    <input type="text" class="form-control requirments"  placeholder='image...'  />
+                    <input type="text" value="{{$data->logo}}" class="form-control requirments"  placeholder='image...'  />
                     <span class="input-group-btn">
                     <button class="btn btn-default btn-choose largeredbtn brows" type="button" onblur="processForm(this.form)">brows</button>
                     </span> </div>
@@ -229,7 +231,8 @@ width:300px;
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                  <select class="form-control requirments" id="visa_type"  name="visa_type" required="" style="width: 90%;" onblur="processForm(this.form)">
+                  <select  value="{{$cans->visa_type}}"
+                  class="form-control requirments"  id="visa_type"  name="visa_type" required="" style="width: 90%;" onblur="processForm(this.form)">
                      <option selected=""> Emploer-type of visa</option>
                     <option  value="None" >None</option>
                     <option  value="Employed" >Employed</option>

@@ -43,8 +43,8 @@
           <div role="tabpanel" class="tab-pane tabs-inner active" id="step-1">
             <div class="divwits"> 
               <!--          <label class="desired">desired job</label>-->
-              <select class="form-control requirments" name="job_id" id="job_id" required="">
-                  <option selected="" disabled="disabled">desired job</option>
+              <select class="form-control requirments" name="job_id" id="job_id" required="" onblur="processForm(this.form)">
+                  <option >desired job</option>
                     @foreach(\App\Job::all() as $job)
                       <option value="{{$job->id}}">{{$job->name}}</option>
                     @endforeach
@@ -54,10 +54,10 @@
             
             <div class="divwits"> 
               <!--<label class="desired">desired industry</label>-->
-             <select class="form-control requirments" name="industry_id" id="industry_id" required="">
-                  <option selected="" disabled="disabled">desired industry</option>
+             <select class="form-control requirments" name="industry_id" id="industry_id" required="" onblur="processForm(this.form)">
+                  <option selected="" disabled="disabled" >desired industry</option>
                     @foreach(\App\Industry::all() as $ind)
-                      <option value="{{$ind->id}}">{{$ind->name}}</option>
+                      <option value="{{$ind->id}}" >{{$ind->name}}</option>
                     @endforeach
                 </select>
             </div>
@@ -65,10 +65,10 @@
             
             <div class="divwits"> 
               <!--<label class="desired">desired location</label>-->
-             <select class="form-control requirments" name="country_id" id="country_id" required="">
-                  <option selected="" disabled="">desired location</option>
+             <select class="form-control requirments" name="country_id" id="country_id" required="" onblur="processForm(this.form)">
+                  <option selected="" disabled="" >desired location</option>
                    @foreach(\App\Country::all() as $country)
-                      <option value="{{$country->id}}">{{$country->name}}</option>
+                      <option value="{{$country->id}}" >{{$country->name}}</option>
                     @endforeach
                 </select>
             </div>
@@ -78,7 +78,7 @@
               <div class="row">
                 <div class="col-sm-8  stepotw">
                   <div class="linksing textcand-1">
-                    <p>10</p>
+                    <p id="Points">0</p>
                     <span>earn points <i class="fas fa-trophy"></i><br>
                     with each step</span> </div>
                 </div>
@@ -99,29 +99,29 @@
                 <div class="col-sm-4 airports availability"> gender</div>
                 <label class="col-sm-4 airports">
                   <input type="radio" name="gender" value="0" checked="">
-                  <span class="label-text">male</span> </label>
+                  <span class="label-text" onblur="processForm(this.form)">male</span> </label>
                 <label class="col-sm-4 airports">
                   <input type="radio" name="gender" value="1">
-                  <span class="label-text">female</span> </label>
+                  <span class="label-text" onblur="processForm(this.form)">female</span> </label>
               </div>
             </div>
             <!--divwits-->
             
             <div class="divwits"> 
               <!-- <label class="desired">full name</label>-->
-              <input type="text" class="form-control requirments" name="name" placeholder="full name">
+              <input type="text" class="form-control requirments" name="name" placeholder="full name" onblur="processForm(this.form)">
             </div>
             <!--divwits-->
             
             <div class="divwits"> 
               <!--<label class="desired">email address</label>-->
-              <input type="text" class="form-control requirments" name="email" placeholder="email address">
+              <input type="text" class="form-control requirments" name="email" placeholder="email address" onblur="processForm(this.form)">
             </div>
             <!--divwits-->
             
             <div class="divwits iconfont"> 
               <!--<label class="desired">password</label>-->
-              <input type="password" class="form-control requirments" name="password" placeholder="password">
+              <input type="password" class="form-control requirments" name="password" placeholder="password" onblur="processForm(this.form)">
             </div>
             <!--divwits-->
             
@@ -129,7 +129,7 @@
               <div class="row">
                 <div class="col-sm-6  stepotw">
                   <div class="linksing textcand-1">
-                    <p>20</p>
+                    <p id="Points2">0</p>
                     <span>earn points <i class="fas fa-trophy"></i><br>
                     with each step</span> </div>
                 </div>
@@ -167,11 +167,11 @@
               <div class="col-sm-6 instructionsleft">
                 <div class="iconsoch">
                   <h3 class="airports inrtodce colorste"> if you have an available camera</h3>
-                  <div class="witboots"> <a href="#" data-toggle="modal" data-target="#myModa2" class="largeredbtn back"> <i class="fas fa-video"></i> record a video</a> </div>
+                  <div class="witboots"> <a href="#" data-toggle="modal" data-target="#myModa2" class="largeredbtn back" onblur="processForm(this.form)"> <i class="fas fa-video" ></i> record a video</a> </div>
                   <!--botrg-->
                   
                   <h3 class="airports inrtodce colorste"> in case camera is not available</h3>
-                  <div class="witboots"> <input type="file" id="video_file" style="display: none;" name="video_file"> <a href="#" data-toggle="modal" data-target="#myModa3" class="largeredbtn back file_input"> <i class="fas fa-cloud-upload-alt"></i> upload a video</a> </div>
+                  <div class="witboots"> <input type="file" id="video_file" style="display: none;" name="video_file" onblur="processForm(this.form)"> <a href="#" data-toggle="modal" data-target="#myModa3" class="largeredbtn back file_input" onblur="processForm(this.form)"> <i class="fas fa-cloud-upload-alt"></i> upload a video</a> </div>
                   <!--botrg--> 
                   
                 </div>
@@ -185,13 +185,13 @@
               <div class="row">
                 <div class="col-sm-6  stepotw">
                   <div class="linksing textcand-1">
-                    <p>30</p>
+                    <p id="Points3">0</p>
                     <span>earn points <i class="fas fa-trophy"></i><br>
                     with each step</span> </div>
                 </div>
                 <div class="col-sm-3  stepotw"> <a href="#" id="step-2-back" class="largeredbtn back"> <i class="fas fa-long-arrow-alt-left"></i> back</a> </div>
                 <div class="col-sm-3  stepotw">
-                  <button type="submit" class="largeredbtn"> finish <i class="fas fa-check"></i></button></button>
+                  <button type="submit" data-toggle="modal" data-target="#myModa3" class="largeredbtn"> finish <i class="fas fa-check"></i></button></button>
                 </div>
               </div>
               <!--row--> 
@@ -252,6 +252,29 @@
 </div>
 <!--myModal-->
 
+<div id="myModa3" class="modal fade">
+  <div class="modal-content dal-conte dal-conte2"> <i class="fas fa-check-circle"></i>
+  <h2 class="textcandidate">congratulations</h2>
+      <p class="viewsdriver">we found a match jobs  </p> 2
+    
+   <div class="sk-circle">
+        <div class="sk-circle1 sk-child"></div>
+        <div class="sk-circle2 sk-child"></div>
+        <div class="sk-circle3 sk-child"></div>
+        <div class="sk-circle4 sk-child"></div>
+        <div class="sk-circle5 sk-child"></div>
+        <div class="sk-circle6 sk-child"></div>
+        <div class="sk-circle7 sk-child"></div>
+        <div class="sk-circle8 sk-child"></div>
+        <div class="sk-circle9 sk-child"></div>
+        <div class="sk-circle10 sk-child"></div>
+        <div class="sk-circle11 sk-child"></div>
+        <div class="sk-circle12 sk-child"></div>
+      </div>
+       <div class="linksing"> rediricling you to the profile page in <span class="nambers">7</span> seconds</div>
+   
+  </div>
+</div>
 <div id="myModa2" class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -390,6 +413,33 @@ console.log(player.recordedData.video);
  });
 
 
+
+
+
+function processForm(form) {
+  
+  document.getElementById("Points").innerHTML=0;
+  document.getElementById("Points2").innerHTML=0;
+  //document.getElementById("Points3").innerHTML=0;
+
+  var control, controls = form.elements;
+  for (var i=0, iLen=controls.length; i<iLen; i++) {
+    control = controls[i];
+ 
+if(control.value !="" && control.value !=0)
+{
+
+ 
+ document.getElementById("Points").innerHTML = 5+parseInt(document.getElementById("Points").innerHTML);
+  document.getElementById("Points2").innerHTML = 5+parseInt(document.getElementById("Points").innerHTML);
+  document.getElementById("Points3").innerHTML = 5+parseInt(document.getElementById("Points").innerHTML);
+ 
+
+ }   // Do something with the control
+   // console.log(control.name + ': ' + control.value);
+  }
+
+}
 </script>
 
 @endsection

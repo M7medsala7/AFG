@@ -1,8 +1,12 @@
+
 <section class="sliderphoto innerphoto" style="background:url(/images/slide5.jpg) fixed center center no-repeat; background-size:cover;">
   <div class="overlaytru">
     <div class="modal-content dal-conte"> <i class="fas fa-check-circle"></i>
       <h2 class="textcandidate">congratulations</h2>
-      <p class="viewsdriver">your application is now available for employers to view, please stay tuned , you may get an invitation for interview soon</p>
+   
+          <p class="viewsdriver">we found a match candidate  </p> 2
+        
+  
       <div class="sk-circle">
         <div class="sk-circle1 sk-child"></div>
         <div class="sk-circle2 sk-child"></div>

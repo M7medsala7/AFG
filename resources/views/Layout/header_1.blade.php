@@ -1,13 +1,7 @@
-
-
 <header class="header {{(\Auth::user())?' header-in':''}}">
   <div class="container">
     <div class="logoinner"> <a href="/"> <img src="/images/logoinner.png" title="Maid & Helper"> </a> </div>
-    
-    
-    
-    
-    <form action="/search" method="get"  class="input-search searchinner">
+     <form action="/search" method="get"  class="input-search searchinner">
        <select name="type" class="selectpicker" id="search_type">
      
         <option>I am Candidate</option>
@@ -18,36 +12,97 @@
       <button type="submit" class="fas fa-search btn-slide"> </button>
     </form>
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     @if(\Auth::user())
     <div class="dropdownlink">
-        <div class="dropdown">
+      <div class="dropdown">
         <p class="award"><i class="fas fa-trophy"></i> <br/>
-          <span>10</span>
+            @if(Auth::user()->type=='candidate')
+          <span>{{\Auth::user()->CanInfo()->first()->coins}}</span>
+         @else
+          <span>{{\Auth::user()->EmpInfo()->first()->coins}}</span>
+         @endif
         </p>
-        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"> <img src="images/callto-action.png"> <i class="fa fa-angle-down" aria-hidden="true"></i>
+         <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"> <img src="{{(\Auth::user()->logo)?(\Auth::user()->logo):'images/callto-action.png'}}"> <i class="fa fa-angle-down" aria-hidden="true"></i>
         </button>
         <ul class="dropdown-menu">
-         
-          <li><a href="#"><i class="far fa-edit"></i> Edit </a></li>
-          <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Log out </a></li>
+          <li><a href="/home"><i class="far fa-user"></i> Account </a></li>
+          <li><a href="{{ url('/logout') }}"><i class="fas fa-sign-out-alt"></i> Log out </a></li>
         </ul>
       </div>
       <!--dropdown--> 
       
       <!--      <nav class="linktop"> <a href="#"> login</a> <a href="#"> Register</a> </nav>--> 
     </div>
+     @if(Auth::user()->type=='candidate')
+
+        <div class="dropdownlink">
+        <div class="dropdown">
+         <span class="glyphicon glyphicon-bell"><span  id="clicks" class="dot" style=" height: 15px;
+    width: 20px;
+    background-color:red;
+    border-radius: 50%;
+    display: inline-block;text-align: center;">{{count(\Auth::user()->getMatchingjobs())}}</span>
+          </span>
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" onClick="onClick()"> 
+         <i class="fa fa-angle-down" aria-hidden="true"></i>
+
+        </button>
+   
+        <ul class="dropdown-menu" style=" height:300px;overflow:auto;width:300px;">
+        
+
+          @foreach(\Auth::user()->getMatchingjobs() as $j)
+
+          <li style="background-color:#f0f0f0;" >
+            <a href="/ViewJob/{{$j['id']}}" id="demo" onmouseover="myFunction(this, 'white')">{{$j['user']['name']}} added job for {{$j['job_for']}}  </a></li>
+            
+          @endforeach
+        
+          <li><a href="/MatchingJobs" > view more  </a></li>
+         
+        </ul>
+
+      </div>
+      <!--dropdown--> 
+      
+      <!--      <nav class="linktop"> <a href="#"> login</a> <a href="#"> Register</a> </nav>--> 
+    </div>
+    @else
+    
+        <div class="dropdownlink">
+        <div class="dropdown">
+         <span class="glyphicon glyphicon-bell" ><span id="clicks" class="dot" style=" height: 15px;
+    width: 20px;
+    background-color:red;
+    border-radius: 50%;
+    display: inline-block;text-align: center;">{{\Auth::user()->getMatchingcandidates()->count()}}
+          </span></span>
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" onClick="onClick()"> 
+         <i class="fa fa-angle-down" aria-hidden="true"></i>
+
+        </button>
+   
+        <ul class="dropdown-menu" style=" height: 300px;
+  overflow:auto;">
+         
+          @foreach(\Auth::user()->getMatchingcandidates() as $j)
+          <li style="background-color:#f0f0f0;" >
+            <a href="/candidate/{{$j['user']['id']}}" id="demo" onmouseover="myFunction(this, 'white')">{{$j['user']['name']}}  added new candidate </a></li>
+           @endforeach
+
+          <li><a href="/MatchingCandidates" > view more  </a></li>
+         
+        </ul>
+       
+         
+      </div>
+      <!--dropdown--> 
+      
+      <!--      <nav class="linktop"> <a href="#"> login</a> <a href="#"> Register</a> </nav>--> 
+    </div>
+    @endif
+  
+
     <nav id='cssmenu'>
       <div id="head-mobile"></div>
       <div class="button"></div>
@@ -66,6 +121,7 @@
         </li>-->
         <li> <a href="#">messages </a> </li>
         <li> <a href="#"> interviews</a> </li>
+     
       </ul>
 
     </nav>
@@ -109,6 +165,20 @@
     @endif
     </div>
   <!--container--> 
-  
+
 </header>
 <!--header-->
+
+<script>
+function myFunction(elmnt,clr) {
+    elmnt.style.background = clr;
+}
+</script>
+
+ <script type="text/javascript">
+    var clicks = 0;
+    function onClick() {
+        clicks =0;
+        document.getElementById("clicks").innerHTML = clicks;
+    };
+    </script>

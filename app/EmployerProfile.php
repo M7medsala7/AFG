@@ -14,8 +14,15 @@ class EmployerProfile extends Model
         'last_name',
         'type',
         'city_id',
+        'country_id',
         'address',
         'nationality',
         'coins',
     ];
+
+     public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 }
+
