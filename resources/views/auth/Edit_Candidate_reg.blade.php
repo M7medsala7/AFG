@@ -57,33 +57,25 @@ width:300px;
     </ul>
     <!--tabssteps-->
     
-    <form  action="/update_register/candidate/{id}" method="post" id="full_cand_reg" class="formlogin mergform"  novalidate enctype="multipart/form-data">
+    <form  action="{{ url('/update_register/candidate/').'/'.$data->id }}" method="post" id="full_cand_reg" class="formlogin mergform"  novalidate enctype="multipart/form-data">
             {{csrf_field()}}
       <div class="tab-content">
         <div role="tabpanel" class="tab-pane  nonebac active" id="step-1">
-          <div class="inputbox margmadia nonmegtext nonmerg">
-            <h4 class="title-con entea ">welcome to </h4>
-            <h5 class="title-con entea"> the future of applications</h5>
-            <p class="textprgraf"> be prepared to provide your details
-              and make<br>
-              sure <span> webcam</span> is on </p>
-          </div>
+        
           <!--nonmegtext-->
           
           <div class="innertabs">
             <div class="row">
               <div class="col-sm-6 instructionsleft">
-                <h3 class="airports inrtodce"> how does it work?</h3>
-                <div class="witboots"> <a href="#" data-toggle="modal" data-target="#myModal" class="largeredbtn "> watch demo video</a> </div>
+             
+                <div class="witboots"> <a href="#" data-toggle="modal" data-target="#myModal" class="largeredbtn "> Here you can Edit your profile .</a> </div>
                 <!--botrg-->
                 
-                <h3 class="airports inrtodce"> ready to start?</h3>
+           
                 <a href="#" id="step-1-next" class="largeredbtn"> go <i class="fas fa-long-arrow-alt-right"></i></a> </div>
               <!--instructionsleft-->
               
-              <div class="col-sm-6 instructionsleft"> <a href="#" data-toggle="modal" data-target="#myModal" class="watchvideo"> <img src="/images/slide5.jpg"> <i class="fas fa-play"></i>
-                <p>watch demo video</p>
-                </a> </div>
+            
               <!--instructionsleft--> 
             </div>
             <!--row--> 
@@ -117,12 +109,12 @@ width:300px;
             <div class="col-sm-6 leftinput">
               <div class="row">
                 <div class="col-sm-12 airports witpostslid">
-                  <input type="text" class="form-control requirments" value="{{$data->name}}"  id="first_name"  name="first_name" placeholder="full name" onblur="processForm(this.form)">
+                  <input type="text" class="form-control requirments" value="{{$data->user->name}}" id="first_name"  name="first_name" placeholder="full name" onblur="processForm(this.form)">
                 </div>
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                  <input type="text" value="{{$cans->last_name}}" class="form-control requirments" name="last_name" placeholder="last name" onblur="processForm(this.form)">
+                  <input type="text" value="{{$data->last_name}}" class="form-control requirments" name="last_name" placeholder="last name" onblur="processForm(this.form)">
                 </div>
                 <!--witpostslid-->
                 
@@ -147,25 +139,23 @@ width:300px;
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                  <input type="text" value="{{$cans->phone_number}}"  
-                  class="form-control requirments" name="phone_number" placeholder=" phone no" onblur="processForm(this.form)">
+                  <input type="text" value="{{$data->phone_number}}" class="form-control requirments" name="phone_number" placeholder=" phone no" onblur="processForm(this.form)">
                 </div>
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                  <input type="email" value="{{$data->email}}" 
-                  class="form-control requirments" name="email" placeholder="email" onblur="processForm(this.form)">
+                  <input type="email" value="{{$data->user->email}}" class="form-control requirments" name="email" placeholder="email" onblur="processForm(this.form)">
                 </div>
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                  <input type="password" value="{{$data->password}}"  class="form-control requirments" name="password"  placeholder="password" onblur="processForm(this.form)">
+                  <input type="password" value="{{$data->user->password}}" class="form-control requirments" name="password"  placeholder="password" onblur="processForm(this.form)">
                 </div>
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid" style"width:100%">
                 
-                  <select class="form-control requirments" value="{{$cans->gender}}" name="gender" id="gender" required="" style="width: 90%;" onblur="processForm(this.form)">
+                  <select value="{{$data->gender}}" class="form-control requirments" name="gender" id="gender" required="" style="width: 90%;" onblur="processForm(this.form)">
                     <option selected="" style="width: 90%;"> gender</option>
                     <option value="0">Male</option>
                     <option value="1" >female</option>
@@ -207,14 +197,15 @@ width:300px;
                   
                   <!--             <label class="desired">birth date</label>
 -->
-<input required="" type="text" style="background-color: transparent;" class="form-control requirments calendar" name="birthdate" placeholder="birth date" onfocus="(this.type='date')" />
+<input required="" type="text" style="background-color: transparent;" 
+class="form-control requirments calendar" name="birthdate"  value="{{$data->birthdate}}" placeholder="birth date" onfocus="(this.type='date')" />
                              
                 </div>
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                  <div class="input-group input-file" name="logo">
-                    <input type="text" value="{{$data->logo}}" class="form-control requirments"  placeholder='image...'  />
+                  <div class="input-group input-file" value="{{$data->user->logo}}" name="logo">
+                    <input type="text" class="form-control requirments"  placeholder='image...'  />
                     <span class="input-group-btn">
                     <button class="btn btn-default btn-choose largeredbtn brows" type="button" onblur="processForm(this.form)">brows</button>
                     </span> </div>
@@ -222,7 +213,7 @@ width:300px;
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                  <div class="input-group input-file" name="cv_path">
+                  <div class="input-group input-file" name="cv_path" value="{{$data->cv_path}}">
                     <input type="text" class="form-control requirments"  placeholder='cv...' onblur="processForm(this.form)" /> 
                     <span class="input-group-btn">
                     <button class="btn btn-default btn-choose largeredbtn brows" type="button" onblur="processForm(this.form)">upload</button>
@@ -231,8 +222,7 @@ width:300px;
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                  <select  value="{{$cans->visa_type}}"
-                  class="form-control requirments"  id="visa_type"  name="visa_type" required="" style="width: 90%;" onblur="processForm(this.form)">
+                  <select class="form-control requirments" id="visa_type"  name="visa_type" required="" style="width: 90%;" onblur="processForm(this.form)">
                      <option selected=""> Emploer-type of visa</option>
                     <option  value="None" >None</option>
                     <option  value="Employed" >Employed</option>
@@ -246,7 +236,9 @@ width:300px;
                   <!--      <label class="desired">expired date visa</label>-->
                   
 
-                  <input required="" type="text" style="background-color: transparent;" class="form-control requirments calendar" name="visa_expire_date" placeholder="expired date visa" onfocus="(this.type='date')" />
+                  <input required="" type="text" style="background-color: transparent;" 
+                  class="form-control requirments calendar" name="visa_expire_date" 
+                  placeholder="expired date visa" value="{{$data->visa_expire_date}}" onfocus="(this.type='date')" />
                
              
              
@@ -331,7 +323,8 @@ width:300px;
             
             <div class="col-sm-12 airports witpostslid">
 
-            <textarea class="form-control requirments"  name="descripe_yourself" placeholder="describe your self in one sentence" onblur="processForm(this.form)"></textarea>
+            <textarea class="form-control requirments"  name="descripe_yourself" 
+            placeholder="describe your self in one sentence" value="{{$data->descripe_yourself}}" onblur="processForm(this.form)"></textarea>
               
             </div>
             <!--witpostslid-->
@@ -391,9 +384,15 @@ width:300px;
           </div>
           <!--divwits-->
           
+        
+         
           <div class="divwits">
-            <input type="number" class="form-control requirments" name="min_salary" placeholder="what is your Expected salary?" onblur="processForm(this.form)">
-          </div>
+          <label>Salary</label>
+                    <input type="number"  value="{{$data->salary}}"   name="salary" class="form-control requirments" placeholder="from " onblur="processForm(this.form)">
+                 
+                    <input type="number"  value="{{$data->MaxSalary}}"   name="MaxSalary" class="form-control requirments" placeholder="to" onblur="processForm(this.form)">
+                  
+                  </div>
           <!--divwits-->
           
           <div class="divwits">
@@ -472,13 +471,17 @@ width:300px;
             <div class="row">
              
               <div class="col-sm-6 binputs">
-              <input required="" type="text" style="background-color: transparent;" class="form-control requirments calendar" name="start_date" placeholder="from" onfocus="(this.type='date')"/>
+              <input required="" type="text" style="background-color: transparent;" 
+              class="form-control requirments calendar" name="start_date"
+               placeholder="from" value="{{$data->start_date}}"  onfocus="(this.type='date')"/>
  
                
               </div>
             
                 <div class="col-sm-6 binputs">
-              <input required="" type="text" style="background-color: transparent;" class="form-control requirments calendar" name="end_date" placeholder="to" onfocus="(this.type='date')"/>
+              <input required="" type="text" style="background-color: transparent;" 
+              class="form-control requirments calendar" name="end_date" 
+              placeholder="to" value="{{$data->end_date}}"  onfocus="(this.type='date')"/>
  
              
              
@@ -495,7 +498,8 @@ width:300px;
           <!--divwits-->
           
           <div class="divwits">
-            <input type="text" class="form-control requirments" name="company_name" placeholder="   company/family name" onblur="processForm(this.form)">
+            <input type="text" class="form-control requirments" 
+            name="company_name"  value="{{$data->company_name}}" placeholder="   company/family name" onblur="processForm(this.form)">
           </div>
           <!--divwits-->
           
@@ -522,12 +526,14 @@ width:300px;
           <!--divwits-->
           
           <div class="divwits">
-            <input type="text" class="form-control requirments" name="salary" placeholder="salary may be" onblur="processForm(this.form)">
+            <input type="text" class="form-control requirments" name="salary"
+            value="{{$data->salary}}"  placeholder="salary may be" onblur="processForm(this.form)">
           </div>
           <!--divwits-->
           
           <div class="divwits">
-          <textarea class="form-control requirments" name="role" placeholder=" what is your tasks in company" onblur="processForm(this.form)"></textarea>
+          <textarea class="form-control requirments" name="role" 
+          placeholder=" what is your tasks in company"    value="{{$data->role}}" onblur="processForm(this.form)"></textarea>
  
           </div>
           <!--divwits-->
@@ -535,10 +541,7 @@ width:300px;
           <div class="divwits">
             <div class="row">
               <div class="col-sm-6  stepotw">
-                <div class="linksing textcand-1">
-                  <p id="Points4"></p>
-                  <span>earn points <i class="fas fa-trophy"></i><br>
-                  with each step</span> </div>
+               
               </div>
               <div class="col-sm-3  stepotw"> <a href="#" id="step-4-back" class="largeredbtn back"> back</a> </div>
               <div class="col-sm-3  stepotw"> <a href="#" id="step-5-next" class="largeredbtn">Next </a> </div>

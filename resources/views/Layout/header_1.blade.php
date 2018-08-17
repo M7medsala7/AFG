@@ -22,7 +22,8 @@
           <span>{{\Auth::user()->EmpInfo()->first()->coins}}</span>
          @endif
         </p>
-         <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"> <img src="{{(\Auth::user()->logo)?(\Auth::user()->logo):'images/callto-action.png'}}"> <i class="fa fa-angle-down" aria-hidden="true"></i>
+         <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+         <img src="{{(\Auth::user()->logo)?(\Auth::user()->logo):'images/callto-action.png'}}">  <i class="fa fa-angle-down" aria-hidden="true"></i>
         </button>
         <ul class="dropdown-menu">
           <li><a href="/home"><i class="far fa-user"></i> Account </a></li>

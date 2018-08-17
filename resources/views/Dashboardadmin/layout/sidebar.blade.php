@@ -1,7 +1,7 @@
  <div class="col-md-3 left_col">
-          <div class="left_col scroll-view">
+          <div class="left_col scroll-view" style="background-color:#dbc65d;">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="#" class="site_title">   <img src="/assets/img/lo1.png" class="img-responsive" alt="#" style="margin-left: 35px; margin-top: 8px;"></a>
+              <a href="#" class="site_title">   <img src="/assets/img/lo1.png" class="img-responsive" alt="" style="margin-left: 35px; margin-top: 8px;"></a>
             </div>
 
             <div class="clearfix"></div>
@@ -20,29 +20,34 @@
             <br/>
 
  <!-- sidebar menu -->
-            <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-              <div class="menu_section">
-                <h3></h3>
-                <ul class="nav side-menu">
-
-
-                     
-                
-                     <li><a href="/PostJob"><i class="fa fa-calendar" aria-hidden="true" style="    font-size: 16px; float: right;     margin-left: 30px;"></i>الوظائف</a>
-                    </li>
-                    <li><a href="/fregister/candidate"><i class="fa fa-calendar" aria-hidden="true" style="    font-size: 16px; float: right;     margin-left: 30px;"></i>الوظائف</a>
-                    </li>
-                    
-
+          <div > 
+          <li class=" treeview" style="font: normal normal normal 17px/1 FontAwesome;display:inline;">
+          <a href="#">
+            <i class="fa fa-users pull-left"></i> <span>Emplyer control</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-right pull-left"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li class="active"><a href="{{url('/adminpanel/employer')}}"><i class="fa fa-circle-o"></i> all employers</a></li>
+            <li><a href="{{url('add/employer')}}"><i class="fa fa-circle-o"></i>add employers</a></li>
+          </ul>
+        </li>
+        <br>
+        <li class=" treeview" style="font: normal normal normal 17px/1 FontAwesome;display:inline;">
+          <a href="#">
+            <i class="fa fa-users pull-left"></i> <span>Candidates control</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-right pull-left"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li class="active"><a href="{{url('/adminpanel/candidate')}}"><i class="fa fa-circle-o"></i> all candidtes</a></li>
+            <li><a href="{{url('/f_add/candidate')}}"><i class="fa fa-circle-o"></i>add candidate</a></li>
+          </ul>
+        </li>
+</div>
          
-          
-
-
-         
-     
-                </ul>
-              </div>
-         
-
-            </div>
             <!-- /sidebar menu -->
+
+            

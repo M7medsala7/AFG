@@ -52,7 +52,7 @@
               <span>jobs posted</span> </div>
             <!--detalsprofile-->
             
-            <div class="col-sm-12 cenbottom  edit-pro"> <a href="/company_profile/edit/{{\Auth::user()->company->id}}" class="largeredbtn">edit profile <i class="fas fa-pencil-alt"></i></a> </div>
+            <div class="col-sm-12 cenbottom  edit-pro"> <a href="#" class="largeredbtn">edit profile <i class="fas fa-pencil-alt"></i></a> </div>
           </div>
           <!--addicta--> 
           

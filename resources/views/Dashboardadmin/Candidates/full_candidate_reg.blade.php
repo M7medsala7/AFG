@@ -387,13 +387,10 @@ width:300px;
             </select>
           </div>
           <!--divwits-->
+          
           <div class="divwits">
-          <label style="color:white;">Salary</label>
-                    <input type="number"   name="salary" class="form-control requirments" placeholder="from " onblur="processForm(this.form)">
-                 
-                    <input type="number"     name="MaxSalary" class="form-control requirments" placeholder="to" onblur="processForm(this.form)">
-                  
-                  </div>
+            <input type="number" class="form-control requirments" name="min_salary" placeholder="what is your Expected salary?" onblur="processForm(this.form)">
+          </div>
           <!--divwits-->
           
           <div class="divwits">

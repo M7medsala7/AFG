@@ -4,12 +4,14 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<meta property="fb:app_id" content="397007164160816" />
+<meta property="og:type" content="thetestasdf:recipie" />
+<meta property="og:url" content="https://www.maidandhelper.com" />
+<meta property="og:title" content="Cookie Recipie!" />
+<meta property="og:description" content="Tastiest recipe ever" />
+<meta property="og:image" content="https://www.maidandhelper.com/uploads/398/152982589327604902_177527993019842_1858867125_o.jpg" />
 
-<meta property="og:type" content="article" />
-<meta property="og:image" content="https://www.maidandhelper.com/images/slide5.jpg" />
 
-<meta property="og:title" content="CANDIDATES & EMPLOYERS" />
-<meta property="og:description" content="WELL CONNECTED HERE" />
 
 
  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />

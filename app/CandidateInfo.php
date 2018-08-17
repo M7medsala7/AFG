@@ -11,7 +11,11 @@ class CandidateInfo extends Model
 
        public $table="candidate_infos";
     protected $fillable = [
-        'job_id','last_name','phone_number','religion_id','birthdate','visa_type','visa_expire_date','industry_id','country_id','gender','martial_status','type','vedio_path','cv_path','descripe_yourself','looking_for_job','coins','user_id','nationality_id','CurrencyId','Eductionlevel',
+        'job_id','last_name','phone_number','religion_id',
+        'birthdate','visa_type','visa_expire_date','industry_id',
+        'country_id','gender','martial_status','type','vedio_path',
+        'cv_path','descripe_yourself','looking_for_job','coins',
+        'user_id','nationality_id','salary','MaxSalary','CurrencyId','Eductionlevel',
     ];
 
     public function user()

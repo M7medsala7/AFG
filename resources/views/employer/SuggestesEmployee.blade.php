@@ -56,7 +56,7 @@
                 <div class="tidiv"> <img src="images/car1.jpg"> <span> {{$val->job_for}}</span></div>
                 <!--tidiv-->
                 
-                <h4 class="innertitltext">{{$val->user->name}}</h4>
+                <h4 class="innertitltext">{{$val['user']['name']}}</h4>
                 <p class="officer">{{$val->job->name}}</p>
                 <ul class="hassle salary">
                    <li> <strong>loc.</strong>{{$val->country->name}} </li>
@@ -283,11 +283,7 @@ console.log( player.recordedData);
 
 
 });
-        map = new google.maps.Map(document.getElementById('map'), {
-          center:new google.maps.LatLng({{$CandidateInfo->country->Lnag}},{{$CandidateInfo->country->Lat}}),
-           mapTypeId: google.maps.MapTypeId.ROADMAP,
-          zoom: 8
-        });
+      
 
          ajaxCall();
 

@@ -35,7 +35,7 @@
                 <div class="tidiv"> <img src="images/car1.jpg"> <span>{{$job->job_for}}</span></div>
                 <!--tidiv-->
                 
-                <h4 class="innertitltext">{{$job->user->name}} </h4>
+                <h4 class="innertitltext">{{($job->user)?$job->user->name:"No User"}}</h4>
                 <p class="officer">{{$job->job->name}}</p>
                 <ul class="hassle salary">
                   <li> <strong>loc.</strong> {{$job->country->name}}</li>

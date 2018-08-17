@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Home;
-
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
@@ -15,8 +14,6 @@ use App\Skills;
 use App\Currency;
 use Input;
 use Khsing\World\World;
-
-
 class IndexController extends Controller
 {
    public function index()
@@ -39,6 +36,28 @@ class IndexController extends Controller
         
         return view('Layout.index',compact('TotalJob','TotalCandidate','TotalVideoCvs','TotalAnsweredQuestions','RecentlyAddedJobs','SuccessStories','TopCandidate'));
    }
+
+     
+   public function MatchingCandidates()
+   {
+
+    $alljobCan=[];
+    $Alljobs=postJob::where('created_by',\Auth::user()->id)->select('job_id')->get();
+ 
+    foreach ($Alljobs as  $value)
+     {
+   
+     array_push($alljobCan,$value->job_id);
+       
+    }
+
+ //dd($alljobCan);
+    $TopCandidate=CandidateInfo::whereIN('job_id',$alljobCan)->get();
+     //dd($TopCandidate);
+
+        return view('candidates.SuggestedCandidates',compact('TopCandidate'));
+   } 
+
 
    public function search(Request $request)
    {
