@@ -1,6 +1,14 @@
 @extends('Layout.app')
 
+
+<style>
+.checked {
+    color: orange;
+}
+</style>
+
 @section('content')
+
 <style type="text/css">
 .namesprof li {
 
@@ -8,10 +16,6 @@
 
 }
 </style>
-
-
-
-
 
 <section class="candidate-profile">
   <h1>candidate profile </h1>
@@ -82,7 +86,6 @@
           
           <div class="namecandidates">
             <h4 class="textcandidate">Similar candidates</h4>
-             
             @if($simialr_candidates)
               @foreach($simialr_candidates as $cand)
                 <div class="itmonw"> <img src="/{{($cand->user->logo)?$cand->user->logo :'/images/blue-pass-onw.jpg'}}" >
@@ -142,7 +145,14 @@
           <!--divboxs-->
           
           <div class="col-sm-3 divboxs">
-            <nav class="pholeft"> <a href="#" data-toggle="modal" data-target="#myModa2"> <i class="fas fa-phone" ></i> call</a> <a href="#" ><i class="far fa-envelope"></i> message</a> </nav>
+            <nav class="pholeft"> 
+            <a href="#" data-toggle="modal" data-target="#myModa2"> 
+            <i class="fas fa-phone" ></i> call</a> 
+       
+            <a href="#" ><i class="far fa-envelope"></i> message</a> 
+            <a href="#" data-toggle="modal" data-target="#myModa3"> 
+            <i class="far fa-address-card"></i>View Cv</a> 
+            </nav>
           </div>
           <!--divboxs-->
       
@@ -198,10 +208,12 @@
 
               <p>{{$lang->name}} <span>
 
-              @for($i = 0; $i < $lang->pivot->degree ; $i++)
-                  <i class="fas fa-star"></i>
+             
+                  <i class="fa fa-star checked"></i>
+                  <i class="fa fa-star checked"></i>
+                  <i class="fa fa-star checked"></i>
 
-                @endfor
+            
                 </span></p>
               @endforeach
             @else
@@ -315,6 +327,17 @@
       <div class="linksing">
         <h2 class="callnow">call now </h2>
         {{($candidate->CanInfo->phone_number)?$candidate->CanInfo->phone_number:"No phone number"}}</div>
+    </div>
+  </div>
+</div>
+
+<div id="myModa3" class="modal fade" aria-hidden="false">
+  <div class="modal-dialog popvad">
+    <div class="modal-content">
+      <button type="button" class="close" data-dismiss="modal">×</button>
+      <div class="linksing">
+        <h2 class="callnow">candidates cv </h2>
+        <iframe style="width:100%;height:500px;" src="{{url($candidate->CanInfo->cv_path)}}#"></iframe></div>
     </div>
   </div>
 </div>

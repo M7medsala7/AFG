@@ -76,10 +76,7 @@
         <div class="inner-aboutus">
           <div class="com-proftow companychool imgprof"> <img src="/images/callto-action.png">
             <div class="comitm">
-              <h5 class="textcandidate">{{($job->job)?$job->job->name:""}}
-
-
-              </h5>
+              <h5 class="textcandidate">{{($job->job)?$job->job->name:""}}</h5>
 
 
 
@@ -96,9 +93,13 @@
 
 
               <ul class="hassle salary">
-                <li> <strong>{{($job->country)?$job->country->name:""}}</strong> </li>
+                <li> <strong>Country.</strong>{{($job->country)?$job->country->name:""}} </li>
                 <li> <strong>posted</strong> <span class="timetext"><i class="far fa-clock"></i> posted</span> <span class="timetext"><i class="far fa-eye"></i> 10 views</span></li>
-                <li> <strong>salary.</strong>{{($job->min_salary)?number_format($job->min_salary):"0"}}:{{($job->max_salary)?number_format($job->max_salary):"0"}}{{($job->Currency)?$job->Currency->name:""}}</li>
+                @if($job->min_salary !=null && $job->max_salary !=null)
+                      <li> <strong>salary.</strong>{{($job->min_salary)?number_format($job->min_salary):"0"}}:{{($job->max_salary)?number_format($job->max_salary):"0"}}{{($job->Currency)?$job->Currency->name:""}}</li>
+              @else
+              <li> <strong>salary.</strong>{{($job->max_salary)?number_format($job->max_salary):"0"}}{{($job->Currency)?$job->Currency->name:""}}</li>
+              @endif
               </ul>
               @if(\Auth::user())
               <div class="cenbottom seejobs linkappley"> <a href="#" data-toggle="modal" data-target="#myModal"  class="largeredbtn" style="width: 150;">apply</a>
@@ -209,7 +210,7 @@
                   <div class="tidiv"> <img src="/images/callto-action.png"> <span> {{$Conjob->job_for}} </span></div>
                   <!--tidiv-->
                   
-                  <h4 class="innertitltext nameviwjobs">{{$Conjob->user->name}} </h4>
+                  <h4 class="innertitltext nameviwjobs">{{$Conjob['user']['name']}} </h4>
                   <p class="officer">{{($Conjob->job)?$Conjob->job->name:"No Job"}}</p>
                   <ul class="hassle salary">
                     <li> <strong>{{($Conjob->country)?$Conjob->country->name:""}}.</strong> </li>
@@ -246,22 +247,22 @@
   
 </section>
 <!--section-->
-<div id="myModal" class="modal fade in" aria-hidden="false">
-  <div class="modal-dialog popvad">
-    <div class="modal-content">
+<div id="myModal" class="modal fade in" aria-hidden="false"  >
+  <div class="modal-dialog popvad"  >
+    <div class="modal-content" >
       <button type="button" class="close" data-dismiss="modal">X</button>
       <div class="col-sm-6 chancevedio">
-        <div class="linksing"> did you know that your <span class="nambers">chance</span> will be inncreased <span class="nambers">9</span> times when
-          employer watch your vedio </div>
+        <div class="linksing" > did you know that your <span class="nambers">chance</span> will be increased <span class="nambers">9</span> times when
+          employer watch your video </div>
         <label class="airports personal-in">
           <input type="radio" name="radio">
-          <span class="label-text"> record your <a href="/ApplyOk" class="termsagreements"> vedio now </a> </span> </label>
+          <span class="label-text"> record your <a href="/ApplyOk" class="termsagreements"> video now </a> </span> </label>
         <div class="witbot"> <a href="/ApplyOk" class="largeredbtn">yes </a> <a href="/ApplyJob/{{$job->id}}" class="largeredbtn back"> later</a> </div>
       </div>
       <!--chancevedio-->
       
       <div class="col-sm-6 chancevedio">
-       <iframe width="560" height="315" src="https://www.youtube.com/embed/_I4AxpE5byE" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+       <iframe width="660" height="355" src="https://www.youtube.com/embed/_I4AxpE5byE" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
       </div>
       <!--chancevedio--> 
       

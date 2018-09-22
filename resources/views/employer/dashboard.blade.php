@@ -13,12 +13,13 @@
     <div class="row">
       <div class="col-sm-3 dashboardleft">
         <div class="inner-aboutus">
-          <div class="linksing viewprofile"> <img src="{{(\Auth::user()->logo)?'(\Auth::user()->logo)':'images/callto-action.png'}}"> <a href="#" class="skiplink">view profile </a> </div>
+          <div class="linksing viewprofile"> <img src="{{(\Auth::user()->logo)?'(\Auth::user()->logo)':'images/callto-action.png'}}"> <a href="/company_profile/{{\Auth::user()->company->id}}" class="skiplink">view profile </a> </div>
           <!--viewprofile-->
           
           <div class="row addicta">
             <div class="detalsprofile">
                 @foreach($employerJobs as $job)
+              
                 
               <h4 class="textcandidate">{{$job->job_for}}</h4>
               <p>{{(\Auth::user()->name)?(\Auth::user()->name):'No Name'}}</p>
@@ -52,7 +53,8 @@
               <span>jobs posted</span> </div>
             <!--detalsprofile-->
             
-            <div class="col-sm-12 cenbottom  edit-pro"> <a href="#" class="largeredbtn">edit profile <i class="fas fa-pencil-alt"></i></a> </div>
+            <div class="col-sm-12 cenbottom  edit-pro"> <a href="/company_profile/edit/{{\Auth::user()->company->id}}" class="largeredbtn">edit profile <i class="fas fa-pencil-alt"></i></a> </div>
+
           </div>
           <!--addicta--> 
           
@@ -131,7 +133,7 @@
                     <div class="ineercompany nonepad"> <a href="#" class="imgbox"> <img src="images/4.jpg"> <i class="fas fa-play"></i></a>
                       <div class="padboxs">
                        <span class="eyeicons"><i class="fas fa-eye"></i> 20,215</span> <span class="eyeicons"><i class="fas fa-flag"></i> 20,215</span>
-                        <h4 class="innertitltext">{{$candidate->user->name}}</h4>
+                        <h4 class="innertitltext">{{$candidate['user']['name']}}</h4>
                         <p class="officer">nanny</p>
                         <ul class="hassle salary">
                           <li> 28 years</li>
@@ -184,7 +186,7 @@
                   </div>
                   <!--tidiv-->
                   
-                  <h4 class="innertitltext"> {{$sJob->user->name}} </h4>
+                  <h4 class="innertitltext"> {{$sJob['user']['name']}} </h4>
                   <p class="officer">{{$sJob->job->name}}</p>
                   <ul class="hassle salary">
                     <li> <strong>loc.</strong> {{$sJob->country->name}}</li>

@@ -706,7 +706,7 @@ width:300px;
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="textbox">
- <iframe width="560" height="315" src="https://www.youtube.com/embed/whMCdOkI2CU" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+ <iframe width="560" height="315" src="https://www.youtube.com/embed/_I4AxpE5byE" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
       </div>
       <!--textbox--> 
       
@@ -714,6 +714,37 @@ width:300px;
   </div>
 </div>
 <!--myModal-->
+<div id="myModalcongratulation" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header"> Uploading you voide 
+       
+      </div>
+      <div class="textbox">
+      <div class="sk-circle">
+        <div class="sk-circle1 sk-child"></div>
+        <div class="sk-circle2 sk-child"></div>
+        <div class="sk-circle3 sk-child"></div>
+        <div class="sk-circle4 sk-child"></div>
+        <div class="sk-circle5 sk-child"></div>
+        <div class="sk-circle6 sk-child"></div>
+        <div class="sk-circle7 sk-child"></div>
+        <div class="sk-circle8 sk-child"></div>
+        <div class="sk-circle9 sk-child"></div>
+        <div class="sk-circle10 sk-child"></div>
+        <div class="sk-circle11 sk-child"></div>
+        <div class="sk-circle12 sk-child"></div>
+      </div>
+      <div class="linksing"> Be patiant  <span class="nambers">7</span> seconds to uploading sucessfully</div>
+    </div>
+  </div>
+      </div>
+      <!--textbox--> 
+      
+    </div>
+  </div>
+</div>
+
 
 <div id="myModa2" class="modal fade">
   <div class="modal-dialog">
@@ -828,12 +859,14 @@ player.on('error', function(error) {
 });
 // user clicked the record button and started recording
 player.on('startRecord', function() {
-    console.log('started recording!');
+  document.getElementById("Sucessrecord").innerHTML = "Video Start record after finish press stop";
+  
 });
 // user completed recording and stream is available
 player.on('finishRecord', function() {
-    // the blob object contains the recorded data that
-    // can be downloaded by the user, stored on server etc.
+  document.getElementById("Sucessrecord").innerHTML = "";
+  $('#myModa2').modal('hide');
+  $('#myModalcongratulation').modal('show');
 console.log( player.recordedData);
 
      var fd = new FormData();
@@ -842,19 +875,15 @@ console.log( player.recordedData);
     $.ajax({
         type: 'POST',
         url: '/StoreVideo',
+        processData: false,
+        contentType: false,
         data: fd
     }).done(function(data) {
-     document.getElementById("Sucessrecord").innerHTML = "Video record Sucessfully";
-      
-        //console.log('data');
+      $('#myModa2').modal('hide');
+    // document.getElementById("Sucessrecord").innerHTML = "Video record Sucessfully";
+        console.log('yarab');
     });
-
-
-
-
-
 });
-
 
  });
 // function default_value($m)

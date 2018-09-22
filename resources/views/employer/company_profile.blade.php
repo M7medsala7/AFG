@@ -55,7 +55,7 @@
                 <select class="form-control" name="industry_id" id="industry_id" required="">
                   <option selected="" disabled="disabled">desired industry</option>
                     @foreach(\App\Industry::all() as $ind)
-                      <option value="{{$ind->id}}" {{($company->industry_id == $ind->id)?'selected':''}}>{{$ind->name}}</option>
+                      <option value="{{$ind->id}}" {{($company['industry_id'] == $ind['id'])?'selected':''}}>{{$ind['name']}}</option>
                     @endforeach
                 </select>
               </div>
@@ -63,7 +63,7 @@
               
               <div class="col-sm-6 formcompany">
                 <label class="desired">company size</label>
-                <input type="number" name="size" value={{$company->size}} class="form-control" placeholder="10000">
+                <input type="number" name="size" value={{$company['size']}} class="form-control" placeholder="10000">
               </div>
               <!--formcompany-->
               
@@ -72,7 +72,7 @@
                 <select class="form-control" name="country_id" id="country_id" required="">
                   <option selected="" disabled="">desired location</option>
                    @foreach(\App\Country::all() as $country)
-                      <option value="{{$country->id}}" {{($company->country_id == $country->id)?'selected':''}}>{{$country->name}}</option>
+                      <option value="{{$country->id}}" {{($company['country_id'] == $country['id'])?'selected':''}}>{{$country['name']}}</option>
                     @endforeach
                 </select>
               </div>
@@ -87,13 +87,13 @@
               
               <div class="col-sm-12 formcompany">
                 <label class="desired">company description</label>
-                <textarea name="description" value="{{$company->description}}" class="form-control" placeholder=""></textarea>
+                <textarea name="description" value="{{$company['description']}}" class="form-control" placeholder=""></textarea>
               </div>
               <!--formcompany-->
               
               <div class="col-sm-12 formcompany">
                 <label class="desired">company website url</label>
-                <input type="text" name="website" value="{{$company->website}}" class="form-control" placeholder="www.site.com">
+                <input type="text" name="website" value="{{$company['website']}}" class="form-control" placeholder="www.site.com">
               </div>
               <!--formcompany-->
               
@@ -101,27 +101,27 @@
                 <label class="desired">company social links</label>
                 <div class="row">
                   <div class="col-sm-2 sociallinks">
-                    <input name="company_linkedin" type="text" class="form-control" placeholder="linknedin" value="{{$company->company_linkedin}}">
+                    <input name="company_linkedin" type="text" class="form-control" placeholder="linknedin" value="{{$company['company_linkedin']}}">
                   </div>
                   <!--sociallinks-->
                   
                   <div class="col-sm-2 sociallinks">
-                    <input name="company_twitter" type="text" value="{{$company->company_twitter}}" class="form-control" placeholder="twitter">
+                    <input name="company_twitter" type="text" value="{{$company['company_twitter']}}" class="form-control" placeholder="twitter">
                   </div>
                   <!--sociallinks-->
                   
                   <div class="col-sm-2 sociallinks">
-                    <input name="company_youtube" value="{{$company->company_youtube}}" type="text" class="form-control" placeholder="youtube">
+                    <input name="company_youtube" value="{{$company['company_youtube']}}" type="text" class="form-control" placeholder="youtube">
                   </div>
                   <!--sociallinks-->
                   
                   <div class="col-sm-2 sociallinks">
-                    <input name="company_facebook" type="text" value="{{$company->company_facebook}}" class="form-control" placeholder="facebook">
+                    <input name="company_facebook" type="text" value="{{$company['company_facebook']}}" class="form-control" placeholder="facebook">
                   </div>
                   <!--sociallinks-->
                   
                   <div class="col-sm-2 sociallinks">
-                    <input name="company_googleplus" value="{{$company->company_googleplus}}" type="text" class="form-control" placeholder="google plus">
+                    <input name="company_googleplus" value="{{$company['company_googleplus']}}" type="text" class="form-control" placeholder="google plus">
                   </div>
                   <!--sociallinks--> 
                   

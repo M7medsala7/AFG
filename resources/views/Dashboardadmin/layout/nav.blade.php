@@ -1,7 +1,6 @@
 
 
 
-
         <li  style="font: normal normal normal 17px/1 FontAwesome;"><a href="/">Home</a></li>
         {{-- employer--}}
      
@@ -15,7 +14,9 @@
           <ul class="treeview-menu">
             <li class="active"><a href="{{url('/adminpanel/employer/create')}}"><i class="fa fa-circle-o"></i> add Employer</a></li>
             <li><a href="{{url('/adminpanel/employer')}}"><i class="fa fa-circle-o"></i> all Employers</a></li>
-          </ul>
+            
+     
+           </ul>
         </li>
 
         {{-- candidates--}}
@@ -60,6 +61,37 @@
             <li><a href="{{url('/adminpanel/postjob')}}"><i class="fa fa-circle-o"></i> Add Question</a></li>
             
           </ul>
+          {{-- employer--}}
+     
+     <li class=" treeview" style="font: normal normal normal 17px/1 FontAwesome;">
+      <a href="#">
+        <i class="fa fa-users pull-right"></i> <span>Stories control</span>
+        <span class="pull-right-container">
+          <i class="fa fa-angle-left pull-right"></i>
+        </span>
+      </a>
+      <ul class="treeview-menu">
+       
+        <li><a href="{{url('/adminpanel/stories')}}"><i class="fa fa-circle-o"></i> all Stories</a></li>
+        <li><a href="{{url('/adminpanel/employer/creates')}}"><i class="fa fa-circle-o"></i> Add Employe Story</a></li>
+        <li><a href="{{url('/adminpanel/candidate/create')}}"><i class="fa fa-circle-o"></i> Add Candidae Story</a></li>
+ 
+       </ul>
+    </li>
+    <li class=" treeview" style="font: normal normal normal 17px/1 FontAwesome;">
+      <a href="#">
+        <i class="fa fa-users pull-right"></i> <span>Requests</span>
+        <span class="pull-right-container">
+          <i class="fa fa-angle-left pull-right"></i>
+        </span>
+      </a>
+      <ul class="treeview-menu">
+       
+        <li><a href="{{url('/adminpanel/Requests')}}"><i class="fa fa-circle-o"></i> All Requests</a></li>
+        
+ 
+       </ul>
+    </li>
 
 
 

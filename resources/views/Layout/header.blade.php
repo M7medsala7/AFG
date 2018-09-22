@@ -31,10 +31,10 @@
             <li><a href="#">jobs </a> </li>
             <li> <a href="#"> Candidates </a></li>
             <li> <a href="#">Employers </a></li>
-            <li> <a href="/aboutus"> About Us</a> </li>
+            <li> <a href="/Payment"> Pricing</a> </li>
           </ul> -->
         </li>
-        <li> <a href="/search?type=I+Am+Employer&words=">Our Services </a>
+        <li> <a href="/Requests">Submit your request </a>
         <!--   <ul>
             <li><a href="#" class="active">Home </a></li>
             <li><a href="#">jobs </a> </li>
@@ -43,7 +43,7 @@
             <li> <a href="#"> Pricing</a> </li>
           </ul> -->
         </li>
-        <li> <a href="/aboutus"> About Us</a> </li>
+        <li> <a href="/Payment"> Pricing</a> </li>
       </ul>
     </nav>
     @else

@@ -19,7 +19,7 @@
             @if(Auth::user()->type=='candidate')
           <span>{{\Auth::user()->CanInfo()->first()->coins}}</span>
          @else
-          <span>{{\Auth::user()->EmpInfo()->first()->coins}}</span>
+          
          @endif
         </p>
          <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
@@ -120,6 +120,13 @@
             <li> <a href="#"> Pricing</a> </li>
           </ul>
         </li>-->
+         @if(Auth::user()->type=='candidate')
+
+        <li> <a href="{{url('/SuccessStory/'.\Auth::user()->CanInfo()->first()->id.'/CreateSuccessStory')}}">Success stories </a> </li>
+        @else
+        
+        <li> <a href="{{url('/EmployerSuccessStory/'.\Auth::user()->EmpInfo()->first()->id.'/CreateSuccessStory')}}">Success stories </a> </li>
+       @endif
         <li> <a href="#">messages </a> </li>
         <li> <a href="#"> interviews</a> </li>
      
@@ -145,10 +152,10 @@
             <li><a href="#">jobs </a> </li>
             <li> <a href="#"> Candidates </a></li>
             <li> <a href="#">Employers </a></li>
-            <li> <a href="#"> About Us</a> </li>
+           <li> <a href="/Payment"> Pricing</a> </li>
           </ul> -->
         </li>
-        <li> <a href="/search?type=I+Am+Employer&words=">Our Services </a>
+        <li> <a href="/Requests">your Request </a>
         <!--   <ul>
             <li><a href="#" class="active">Home </a></li>
             <li><a href="#">jobs </a> </li>
@@ -157,7 +164,7 @@
             <li> <a href="#"> Pricing</a> </li>
           </ul> -->
         </li>
-        <li> <a href="/aboutus"> About Us</a> </li>
+       <li> <a href="/Payment"> Pricing</a> </li>
       </ul>
       </nav>
       

@@ -134,6 +134,8 @@
 
 
 </style>
+
+
 <div class="sliderphoto" style="background:url(/images/slide5.jpg) fixed center center no-repeat; background-size:cover;">
   <div class="container textslider">
     <h1 class="titltop"><span>Candidates & employers</span><br/>
@@ -192,7 +194,48 @@
     <h3 class="title-con">recently added jobs</h3>
     <div class="row">
 
-       @foreach($RecentlyAddedJobs as $AddJobs)
+       @foreach($RecentlyAddedJobsCompany as $AddJobs)
+      <div class="col-sm-3 company">
+        <div class="ineercompany">
+          <div class="tidiv"> <img src="/images/car1.jpg"> <span>{{$AddJobs->job_for}}</span></div>
+          <!--tidiv-->
+          
+          <h4 class="innertitltext">{{$AddJobs->CompanyName}} </h4>
+          <p class="officer">{{$AddJobs->JobName}}</p>
+          <ul class="hassle salary">
+            <li> <strong>loc.</strong> {{$AddJobs->CountryName}}</li>
+            <li> <strong>salary.</strong> {{number_format($AddJobs->max_salary)}}</li>
+          </ul>
+          <div class="tidivbotom"> <a href="/ViewJob/{{$AddJobs->id}}">View Job</a> <span>{{ \Carbon\Carbon::parse($AddJobs->Jobdate)->format('d/M/Y')}}</span></div>
+          <!--tidiv--> 
+   
+
+
+
+
+         <a href="https://www.facebook.com/dialog/share?
+app_id=1112718265559949
+&display=popup
+&title='maid and helper'
+
+&description='Mohamed salah'
+&quote={{$AddJobs->job_descripton}}
+&caption='Dody'
+&href=https://www.maidandhelper.com/ViewJob/{{$AddJobs->id}}
+&redirect_uri=https://www.facebook.com/" onclick="" ><i class="fas fa-share-alt"></i></a>
+
+     
+
+        </div>
+        <!--inernews--> 
+    
+
+      </div>
+      @endforeach
+
+
+
+         @foreach($RecentlyAddedJobsFamily as $AddJobs)
       <div class="col-sm-3 company">
         <div class="ineercompany">
           <div class="tidiv"> <img src="/images/car1.jpg"> <span>{{$AddJobs->job_for}}</span></div>
@@ -241,7 +284,6 @@ app_id=1112718265559949
       <!--bocprod--> 
       
     </div>
-    <!--row-->
     
     <div class="cenbottom"> <a href="/search?type=I+am+Candidate&words=" class="largeredbtn">view more jobs <i class="fas fa-long-arrow-alt-right"></i></a> </div>
     <!--cenbottom--> 
@@ -445,6 +487,23 @@ app_id=1112718265559949
   <!--row--> 
   
 </div>
+ <div class="modal fade" id="myModalVideo" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Watch Video</h4>
+        </div>
+        <div class="modal-body">
+             <iframe width="560" height="315" src="https://www.youtube.com/embed/_I4AxpE5byE" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+       
+      </div>
+      
+    </div>
+  </div>
 
 <div id="myModal" class="modal fade">
   <div class="modal-dialog">
@@ -462,6 +521,9 @@ app_id=1112718265559949
 </div>
 <!--myModal-->
 
+
+<!--myModal-->
+
  @stop
 @section('scripts')
 
@@ -471,6 +533,11 @@ app_id=1112718265559949
 
 
 <script>
+$(window).load(function()
+{
+    $('#myModalVideo').modal('show');
+   
+});
 
 
 $('.your-stud').slick({
@@ -493,6 +560,7 @@ slidesToScroll: 1
 ]
 });
 
+
   var searchtype = $('#search_type').val();
   if(searchtype == "")
   {
@@ -510,6 +578,9 @@ $('.select_type').on('click',function(){
     searchtype=$(this).attr('type_val');
     $('#search_type').val(searchtype);
   });
+</script>
+<script>
+
 </script>
 <Script>
 function ShowVideo($id,$type)

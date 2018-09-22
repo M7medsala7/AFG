@@ -5,7 +5,7 @@
      
       <ol class="breadcrumb">
         <li><a href="{{url('adminpanel')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active"><a href="{{url('/adminpanel/employer')}}">All Epmloyer
+        <li class="active"><a href="{{url('/adminpanel/employer')}}">All Epmloyer</a></li>
       </ol>
      
     </section>

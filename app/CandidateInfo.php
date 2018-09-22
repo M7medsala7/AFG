@@ -65,4 +65,9 @@ class CandidateInfo extends Model
        
         'job.name' => 25,
     ];
+
+    public function SuccessStory()
+    {
+        return $this->hasOne('App\SuccessStories');
+    }
 }

@@ -13,7 +13,7 @@
 </form>
       <ol class="breadcrumb">
         <li><a href="{{url('adminpanel')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active"><a href="{{url('/adminpanel/candidates/create')}}"> Add candidates
+        <li class="active"><a href="{{url('/adminpanel/candidates/create')}}"> Add candidates</a></li>
       </ol>
     </section>
 
@@ -62,6 +62,7 @@
 
                 <td>
                 	<a href="{{url('/adminpanel/candidate/'.$userinfo->id.'/edit')}}" class="btn btn-primary"> Edit </a>
+                  <a href="{{url('/adminpanel/story/'.$userinfo->id.'/addstory')}}" class="btn btn-primary"> Add Story </a>
                
                 </td>
                     </tr>

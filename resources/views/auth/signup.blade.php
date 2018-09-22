@@ -21,9 +21,9 @@
         
         <div class="col-sm-6 congratulations"> <i class="fas fa-recycle"></i> <a href="/register/employeer" class="largeredbtn">Employers </a>
           <ul class="hassl agencies">
-            <li>find a job easily</li>
-            <li>reach your employer directly</li>
-            <li>forget about agencies hassle</li>
+            <li>post job you want easily</li>
+            <li>find the most suitable maid/helper</li>
+            <li>forget about costly agencies</li>
           </ul>
         </div>
         <!--textbotphot--> 

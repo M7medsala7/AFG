@@ -81,7 +81,7 @@ public function Industry()
                 break;
             }
         }
-        return $topCandidates->SortBy('order')->take(6);
+        return $topCandidates->SortBy('order')->take(3);
     }
     public function getSimilarJobsAttribute()
     {

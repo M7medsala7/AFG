@@ -1,4 +1,4 @@
-<div id ="myPartialDiv" >
+<div id ="myPartialDiv" class="rowemp">
  <div class="col-sm-9 dashboardleft" >
         <div class="inner-aboutus">
           <div class="currencytext resultstext">
@@ -18,12 +18,9 @@
            <input type="hidden" name="words" value={{$words}} id="words">
                 @if($jobcheck !=0)
 
-          <div class="row" style="min-height:360px">
+          <div class="rowemp" style="min-height:360px">
            
-           
-            
-    
-            
+      
         
             
            @foreach($jobs  as $job)
@@ -38,11 +35,14 @@
                 <h4 class="innertitltext">{{($job->user)?$job->user->name:"No User"}}</h4>
                 <p class="officer">{{$job->job->name}}</p>
                 <ul class="hassle salary">
-                  <li> <strong>loc.</strong> {{$job->country->name}}</li>
-                                  <li> <strong>salary.</strong>{{$job->min_salary}}-{{$job->max_salary}} {{($job->Currency)?$job->Currency->name:"Currency is not set"}}</li> 
-
-              
+                  <li> <strong>loc.</strong> {{$job['country']['name']}}</li>
+                  @if($job->min_salary !=null && $job->max_salary !=null)
+                                  <li> <strong>salary.</strong>{{number_format($job->min_salary)}}-{{number_format($job->max_salary)}} {{($job->Currency)?$job->Currency->name:"Currency is not set"}}</li> 
+                 @else
+                 <li> <strong>salary.</strong>{{number_format($job->max_salary)}} {{($job->Currency)?$job->Currency->name:"Currency is not set"}}</li> 
+               @endif
                 </ul>
+             
                 <a href="https://www.facebook.com/dialog/share?
 app_id=1112718265559949
 &display=popup
@@ -62,7 +62,14 @@ app_id=1112718265559949
             </div>
             @endforeach
             <!--com-dashboard--> 
-            
+            <div style="margin-left:24%;">
+              {!! $jobs->appends(Request::capture()->except('page'))->links() !!}
+
+
+
+
+
+          </div>
           </div>
           <!--row-->
 
@@ -94,16 +101,6 @@ app_id=1112718265559949
     <img src="{{($candidate->user->logo)?$candidate->user->logo:'images/4.jpg'}}" >
     </a>
      @endif
- 
- 
-
-   
-    
-    
-    
-    
-    
-    
           <div class="padboxs"> <span class="eyeicons"><i class="fas fa-eye"></i> 20,215</span> <span class="eyeicons"><i class="fas fa-flag"></i> 20,215</span>
             <h4 class="innertitltext">{{$candidate->user->name}}</h4>
             <p class="officer">{{$candidate->job->name}}</p>
@@ -134,12 +131,48 @@ app_id=1112718265559949
       </div>
       </div>
              @endforeach
+             <div class="cenbottom nomergbotm">  {!! $candidates->appends(Request::capture()->except('page'))->links() !!} </div>
             @endif
             </div>
+        
           
-          <div class="cenbottom nomergbotm"> <a href="#" class="largeredbtn">load more</a> </div>
+         
         </div>
         <!--inner-aboutus--> 
         
       </div>
       </div>
+@push('part')
+          <script>
+
+         $(function() {
+    $('body').on('click', '.pagination a', function(e) { 
+        e.preventDefault(); 
+
+        var url = $(this).attr('href'); 
+    
+        getJobs(url);
+
+      
+    });
+    function getJobs(url) {
+        $.ajax({
+          
+            url : url
+        }).done(function (data) {
+         
+           $('#myPartialDiv').html(data);
+           location.hash;
+        }).fail(function () {
+            alert('Data could not be loaded.');
+        });
+    }
+});
+
+
+    </script>
+
+
+
+
+    @endpush

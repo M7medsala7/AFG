@@ -5,7 +5,7 @@
      
       <ol class="breadcrumb">
         <li><a href="{{url('adminpanel')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active"><a href="{{url('/adminpanel/postjob')}}">All PostJob
+        <li class="active"><a href="{{url('/adminpanel/postjob')}}">All PostJob</a></li>
       </ol>
      
     </section>
@@ -47,7 +47,7 @@
                   <td>{{$userinfo->created_by}}</td>
                   <td>{{$userinfo->job_id}}</td>
                   <td>{{$userinfo->job_for}}</td>
-                  <td style="width:10%;">{{$userinfo->user->name}}</td>
+            
                   <td>{{$userinfo->created_at}}</td>
                
               

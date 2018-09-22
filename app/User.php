@@ -44,11 +44,9 @@ class User extends Authenticatable
 
         public function CountryName()
    {
-
-    
         $countryname= EmployerProfile::
         join('countries','countries.id','=','employer_profiles.country_id')
-        ->select('countries.name  AS CountrysName' )
+        ->select('countries.name  AS Country_Name' )
         ->where('user_id',\Auth()->user()->id)->first();
         // dd($countryname);
         return $countryname;
@@ -169,6 +167,11 @@ class User extends Authenticatable
       public function likesjob()
     {
         return $this->belongsToMany('App\User','user_like_jobs','job_id','user_id');
+    }
+
+    public function SuccessStory()
+    {
+        return $this->hasOne('App\SuccessStories');
     }
 }
 

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Home;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
@@ -14,6 +15,13 @@ use App\Skills;
 use App\Currency;
 use Input;
 use Khsing\World\World;
+use App\SuccessStories;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+
+
+
 class IndexController extends Controller
 {
    public function index()
@@ -24,20 +32,69 @@ class IndexController extends Controller
         $TotalVideoCvs= CandidateInfo::where('vedio_path','!=',NULL)->count();
         $TotalAnsweredQuestions= DB::table('candidate_infos')->count()*21;
 
-        $RecentlyAddedJobs= PostJob::join('users','users.id','=','post_jobs.created_by')
+        $RecentlyAddedJobsCompany= PostJob::join('users','users.id','=','post_jobs.created_by')
         ->join('jobs','jobs.id','=','post_jobs.job_id')
         ->join('countries','countries.id','=','post_jobs.country_id')
-        ->orderBy('post_jobs.created_at', 'DEC')->limit(4)
-        ->select('jobs.name AS JobName','users.name AS CompanyName','users.type','post_jobs.max_salary','countries.name AS CountryName','post_jobs.created_at AS Jobdate','post_jobs.id','post_jobs.job_for','post_jobs.job_descripton')->get();
+->where('job_for','company')
+        ->orderBy('post_jobs.created_at', 'DEC')->limit(2)
+        ->select('jobs.name AS JobName','post_jobs.job_for','users.name AS CompanyName','users.type','post_jobs.max_salary','countries.name AS CountryName','post_jobs.created_at AS Jobdate','post_jobs.id')->get();
+   
+      $RecentlyAddedJobsFamily= PostJob::join('users','users.id','=','post_jobs.created_by')
+        ->join('jobs','jobs.id','=','post_jobs.job_id')
+        ->join('countries','countries.id','=','post_jobs.country_id')
+->where('job_for','family')
+        ->orderBy('post_jobs.created_at', 'DEC')->limit(2)
+        ->select('jobs.name AS JobName','post_jobs.job_for','users.name AS CompanyName','users.type','post_jobs.max_salary','countries.name AS CountryName','post_jobs.created_at AS Jobdate','post_jobs.id')->get();
 
-        $SuccessStories =DB::table('success_stories')->join('users','users.id','=','success_stories.user_id')->orderBy('success_stories.created_at', 'DEC')->limit(4)->get();
+        $SuccessStories =SuccessStories::join('users','users.id','=','success_stories.user_id')
+        ->join('employer_profiles','employer_profiles.id','=','success_stories.emp_id')
+       ->orderBy('success_stories.created_at', 'DEC')
+       ->where('approval',1)->get();
+
+     // dd($SuccessStories);  
+
+      $SuccessStoriescan =SuccessStories::join('users','users.id','=','success_stories.user_id')
+      ->join('candidate_infos','candidate_infos.id','=','success_stories.can_id')
+      ->join('jobs','jobs.id','=','candidate_infos.job_id')
+     ->orderBy('success_stories.created_at', 'DEC')
+     ->where('approval',1)->get();
+     // dd($SuccessStoriescan); 
+
+     $allSuccessStories=[];
+    
+  
+  
+     foreach($SuccessStories as $value)
+     {
+      array_push($allSuccessStories,array('description'=>$value->description,'logo'=>$value->logo,'name'=>$value->name,'type'=>$value->type));
+    
+    }
+
+     foreach($SuccessStoriescan as $value)
+     {
+      array_push($allSuccessStories,array('description'=>$value->description,'logo'=>$value->logo,'name'=>$value->last_name,'type'=>$value->name));
+      //dd($alljobCan);
+    }
+     
+       
+   //dd( $alljobCan); 
+    
+     
+
 
         $TopCandidate =CandidateInfo::orderBy('candidate_infos.created_at', 'DEC')->where('seen','=',1)->limit(4)->get();
         
-        return view('Layout.index',compact('TotalJob','TotalCandidate','TotalVideoCvs','TotalAnsweredQuestions','RecentlyAddedJobs','SuccessStories','TopCandidate'));
+        return view('Layout.index',compact('allSuccessStories','Success','TotalJob','TotalCandidate','TotalVideoCvs','TotalAnsweredQuestions','RecentlyAddedJobsFamily','RecentlyAddedJobsCompany','SuccessStories','TopCandidate'));
    }
 
-     
+
+
+   //more
+   public function loadmore()
+   {
+   $data= PostJob::search($words)->orderBy('job_for')->get();
+   return response()->json($data);
+   } 
    public function MatchingCandidates()
    {
 
@@ -57,11 +114,12 @@ class IndexController extends Controller
 
         return view('candidates.SuggestedCandidates',compact('TopCandidate'));
    } 
+//more sub candidates
 
 
    public function search(Request $request)
    {
-  
+  //dd($request->all());
         $words = $request['words'];
         $type = $request['type'];
  $GLOBALS['jobsIndeed'] =array();
@@ -771,7 +829,7 @@ $jobtitle= CandidateInfo::search($words)->with('job')->groupBy('job_id')->get();
 
             $jobcheck=0;
 $count=count($candidates);
-;
+
 
             return  view('Search.searchresult',compact('candidates','words','jobcheck','count','jobtitle','jobtitleresult','Country','jobfor'));
         }
@@ -792,6 +850,7 @@ $count=count($candidates);
       ->with('getCandidateSkill')
       ->with('country')
        ->where('candidate_infos.id', $can_info->id)
+       
 
       
        ->get();
@@ -799,7 +858,10 @@ $count=count($candidates);
 
 foreach ($Canresult as $Canresul) {
  $candidates->push($Canresul);
+
 }
+
+
     
 }
 
@@ -809,10 +871,38 @@ $jobtitle= CandidateInfo::search($words)->with('job')->groupBy('job_id')->get();
 
 
 $candidates=$candidates->sortByDesc('vedio_path');
+
     
             $jobcheck=0;
 $count=count($candidates);
 
+ $data = array();
+
+        //Get current page form url e.g. &page=6
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+
+        //Create a new Laravel collection from the array data
+        $collection = new Collection($candidates);
+
+        //Define how many items we want to be visible in each page
+        $per_page = 21;
+
+        //Slice the collection to get the items to display in current page
+        $currentPageResults = $collection->slice(($currentPage-1) * $per_page, $per_page)->all();
+
+        //Create our paginator and add it to the data array
+        $data['candidates'] = new LengthAwarePaginator($currentPageResults, count($collection), $per_page);
+
+        //Set base url for pagination links to follow e.g custom/url?page=6
+        $data['candidates']->setPath($request->url());
+
+$candidates=$data['candidates'];
+
+
+if($request->ajax())
+{
+  return Response::json(\View::make('Search.searchpartial',compact('words','candidates','jobcheck','count','jobtitle','jobtitleresult','Country','jobfor'), array('candidates' => $candidates))->render());
+}
 
 return  view('Search.searchresult',compact('candidates','words','jobcheck','count','jobtitle','jobtitleresult','Country','jobfor'));
         }
@@ -824,26 +914,43 @@ return  view('Search.searchresult',compact('candidates','words','jobcheck','coun
 $jobcheck=1;
    $jobtitle=PostJob::search($words)->with('job')->groupBy('job_id')->get();
 $count=count($jobs);
+
             return  view('Search.searchresult', compact('jobs','words','jobcheck','count','jobtitle','jobtitleresult','Country','jobfor'));
         }
 
                if($type =="I am Candidate" && $words==null)
 
         {
-        
-               $jobs=PostJob::search($words)->orderBy('job_for')
-->get();
-                $jobtitle=PostJob::search($words)->with('job')->groupBy('job_id')->get();
+          
+               $alljobs=PostJob::search($words)->orderBy('job_for')->paginate(20);
+
+               $jobs=PostJob::search($words)->orderBy('job_for')->paginate(20);
+// dd($jobs);
+              
+        $jobtitle=PostJob::search($words)->with('job')->groupBy('job_id')->get();
 $jobcheck=1;
     
-$count=count($jobs);
-            return  view('Search.searchresult', compact('jobs','words','jobcheck','count','jobtitle','jobtitleresult','Country','jobfor'));
+$count=count($alljobs);
+
+       
+if($request->ajax())
+{
+  return Response::json(\View::make('Search.searchpartial',compact('words','jobs','jobcheck','count','jobtitle','jobtitleresult','Country','jobfor'), array('jobs' => $jobs))->render());
+}
+    
+   
+//dd("dcgcu");
+   
+    
+            return  view('Search.searchresult', compact('words','jobs','jobcheck','count','jobtitle','jobtitleresult','Country','jobfor'), array('jobs' => $jobs));
         }
         
         {
+          
             $result=collect();
+         
             $count=count($result);
-                return  view('Search.searchresult',compact('result','words','count','jobtitle','jobtitleresult','Country','jobfor') );
+                return  view('Search.searchresult',compact('$alljobs','result','words','count','jobtitle','jobtitleresult','Country','jobfor') );
 
         }
     
@@ -1028,8 +1135,6 @@ if($Jobtitles !=[] && $Jobtitles[0] =="all" && $employertype !=[] && $salary ==[
       $jobts= PostJob::where('id',$resultQue->id)
                       ->where('job_for',$employertype[$emp])
                       ->get();
-
-
   foreach ($jobts as$jobt) {
   
        array_push($jobs, $jobt); 
@@ -3160,10 +3265,39 @@ if($Jobtitles ==[] && $employertype ==[] && $salary ==[]   && $country  =="0" &&
 }
 
 }
+
+
          $count=count($jobs);
          // dd($count);
+ $data = array();
 
-  return  view('Search.searchpartial',compact('jobs','words','count','jobtitle','jobcheck','jobfor') );
+        //Get current page form url e.g. &page=6
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+
+        //Create a new Laravel collection from the array data
+        $collection = new Collection($jobs);
+
+        //Define how many items we want to be visible in each page
+        $per_page = 21;
+
+        //Slice the collection to get the items to display in current page
+        $currentPageResults = $collection->slice(($currentPage-1) * $per_page, $per_page)->all();
+
+        //Create our paginator and add it to the data array
+        $data['jobs'] = new LengthAwarePaginator($currentPageResults, count($collection), $per_page);
+
+        //Set base url for pagination links to follow e.g custom/url?page=6
+        $data['jobs']->setPath($request->url());
+
+$jobs=$data['jobs'];
+
+if($request->ajax())
+{
+  return Response::json(\View::make('Search.searchpartial',compact('words','jobs','jobcheck','count','jobtitle','jobtitleresult','Country','jobfor'), array('jobs' => $jobs))->render());
+}
+// $hadeel = new Collection($jobs);
+// dd($hadeel->paginate(20));
+  return  view('Search.searchpartial',compact('jobs','words','count','jobtitle','jobcheck','jobfor','data') );
 
 }
 //////////////////Candidate Fliter////////////////////////////
@@ -5241,6 +5375,34 @@ $candidates=$candidates->sortByDesc('vedio_path');
 
 $count=count($candidates);
 
+ $data = array();
+
+        //Get current page form url e.g. &page=6
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+
+        //Create a new Laravel collection from the array data
+        $collection = new Collection($candidates);
+
+        //Define how many items we want to be visible in each page
+        $per_page = 21;
+
+        //Slice the collection to get the items to display in current page
+        $currentPageResults = $collection->slice(($currentPage-1) * $per_page, $per_page)->all();
+
+        //Create our paginator and add it to the data array
+        $data['candidates'] = new LengthAwarePaginator($currentPageResults, count($collection), $per_page);
+
+        //Set base url for pagination links to follow e.g custom/url?page=6
+        $data['candidates']->setPath($request->url());
+
+$candidates=$data['candidates'];
+
+
+if($request->ajax())
+{
+  return Response::json(\View::make('Search.searchpartial',compact('words','candidates','jobcheck','count','jobtitle','jobtitleresult','Country','jobfor'), array('candidates' => $candidates))->render());
+}
+
 
 return  view('Search.searchpartial',compact('candidates','words','jobcheck','count','jobtitle','jobtitleresult','Country','jobfor'));
          }
@@ -5249,5 +5411,9 @@ return  view('Search.searchpartial',compact('candidates','words','jobcheck','cou
 
 }
 
+
+
+
+ 
 }
 

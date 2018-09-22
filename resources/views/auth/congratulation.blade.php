@@ -4,7 +4,7 @@
     <div class="modal-content dal-conte"> <i class="fas fa-check-circle"></i>
       <h2 class="textcandidate">congratulations</h2>
    
-          <p class="viewsdriver">we found a match candidate  </p> 2
+          <p class="viewsdriver">we found a match candidate  </p> {{\Auth::user()->getMatchingcandidates()->count()}}
         
   
       <div class="sk-circle">

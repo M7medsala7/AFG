@@ -360,9 +360,9 @@
 
 
       @endif
-          <!--row-->
+       <div class="rowemp">
           @include('Search.searchpartial')
-       
+      
         </div>
         <!--inner-aboutus--> 
         
@@ -395,10 +395,15 @@
 <!--myModal-->
 @stop
 
-<script type="text/javascript"></script>
+
 @section('scripts')
 
 <script>
+   $(function(){
+    $('header').addClass('header-in');
+  });
+</script>
+<script type="text/javascript">
 
   $(document).ready(function () {
    $.ajaxSetup({
@@ -430,6 +435,23 @@ $(document).on("click", ".show-more a", function(e) {
 
   function Doaaasd()
   {
+
+        $(window).on('hashchange', function() {
+        if (window.location.hash) {
+            var page = window.location.hash.replace('#', '');
+            if (page == Number.NaN || page <= 0) {
+                return false;
+            } else {
+                getJobs(page);
+            }
+        }
+    });
+    $(document).ready(function() {
+        $(document).on('click', '.pagination a', function (e) {
+          getJobs($(this).attr('href').split('page=')[1]);
+            e.preventDefault();
+        });
+    });
 
 
      var jobcheck= $('#jobcheck').val();
@@ -512,7 +534,10 @@ var dataString = "Jobtitle="+Jobtitle+"&country="+country+"&jobcheck="+jobcheck+
   
            success:function(response)
             {
-                            $('#myPartialDiv').html(response);
+                            
+            $('#myPartialDiv').html(response);
+          
+location.hash;
 
             // $('#asd').hidden=fal
          
@@ -540,11 +565,6 @@ $("#v1").html('<video style="text-align: center;width: 100%;" controls><source s
 </script>
 
 <script>
-   $(function(){
-    $('header').addClass('header-in');
-  });
-</script>
-<script>
   var searchtype = $('#search_type').val();
   if(searchtype == "")
   {
@@ -563,6 +583,13 @@ $('.select_type').on('click',function(){
     $('#search_type').val(searchtype);
   });
 </script>
+
+
+<script type="text/javascript" src="/js/slick.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+   
+@stack('part')
+
 @endsection
 
 

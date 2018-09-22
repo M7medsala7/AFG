@@ -4,7 +4,6 @@
 <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAm3O5N1fP52tnpdSqPt71joqjd9xOkcek"></script>
-
 <script type="text/javascript">  
  
 </script>
@@ -82,7 +81,12 @@
    @if($CandidateInfo->vedio_path != null)
               <video src="{{($CandidateInfo->vedio_path)}}" type="video/{{File::extension($CandidateInfo->vedio_path)}}">< <i class="fas fa-play"></i> </a> 
                 @else
-                <img src="images/slide5.jpg"> <i class="fas fa-play"></i> </a>
+               
+                <div class="videoprofy"> <a href="#" data-toggle="modal" data-target="#myModal4" class="watchvideo"> <img src="images/slide5.jpg"> <i class="fas fa-play"></i>
+           
+            </a>
+
+          </div>
                 @endif
 
                 </div>
@@ -111,7 +115,7 @@
             <li>Add your job preference.</li>
               <li>Upload A high quilaty formal picture in your profile.</li>
           </ul>
-          <div class="videoprofy"> <a href="#" data-toggle="modal" data-target="#myModal" class="watchvideo"> <img src="images/slide5.jpg"> <i class="fas fa-play"></i>
+          <div class="videoprofy"> <a href="#" data-toggle="modal" data-target="#myModal4" class="watchvideo"> <img src="images/slide5.jpg"> <i class="fas fa-play"></i>
             <p>watch demo video</p>
             </a>
             <div class="centbotmm"> <a href="#" class="skiplink">view more tips and articles </a> </div>
@@ -124,7 +128,9 @@
       </div>
       <!--dashboardleft-->
       
-      <div class="col-sm-9 dashboardleft">
+     <!--dashboardleft-->
+      
+     <div class="col-sm-9 dashboardleft">
         <div class="inner-aboutus">
           <div class="currencytext resultstext">
             <h2>recommended jobs</h2>
@@ -134,30 +140,30 @@
           <div class="row">
             <div class="col-sm-8 leftdshbord">
               <div class="row">
-                 @foreach($RecommandJobs  as $val)
+                 @for($i=0;$i < 6;$i++) 
                 <div class="col-sm-6 company com-dashboard">
-                  <div class="ineercompany">
-                    <div class="tidiv"> <img src="images/car1.jpg"> <span> {{$val->job_for}}</span></div>
+                  <div class="ineercompany" style=" height:40%;"> 
+                    <div class="tidiv"> <img src="images/car1.jpg"> <span> {{$RecommandJobs[$i]->job_for}}</span></div>
                     <!--tidiv-->
                     
-                    
-                    <p class="officer">{{$val->job->name}}</p>
+                    <h4 class="innertitltext">{{$RecommandJobs[$i]['user']['name']}} </h4>
+                    <p class="officer">{{$RecommandJobs[$i]->job->name}}</p>
                     <ul class="hassle salary">
-                      <li> <strong>loc.</strong> oman</li>
-                       <li> <strong>loc.</strong>{{$val->country->name}} </li>
-                <li> <strong>salary.</strong>{{number_format($val->min_salary)}}-{{number_format($val->max_salary)}} {{($val->Currency)?$val->Currency->name:"Currency is not set"}}</li> 
+          
+                       <li> <strong>loc.</strong>{{$RecommandJobs[$i]['country']['name']}} </li>
+                <li> <strong>salary.</strong>{{$RecommandJobs[$i]->min_salary}}-{{$RecommandJobs[$i]->max_salary}} {{($RecommandJobs[$i]->Currency)?$RecommandJobs[$i]->Currency->name:"Currency is not set"}}</li> 
                     </ul>
-                    <div class="tidivbotom"> <a href="/ViewJob/{{$val->id}}">apply now</a> <span>{{$val->created_at}}</span></div>
+
+                    <div class="tidivbotom"> <a href="/ViewJob/{{$RecommandJobs[$i]['id']}}">apply now</a> <span>{{$RecommandJobs[$i]->created_at}}</span></div>
+
                     <!--tidiv--> 
                     
                   </div>
                   <!--inernews--> 
-
-
                   
                 </div>
 
-                       @endforeach
+                       @endfor
                 <!--com-dashboard-->
           
           
@@ -176,9 +182,10 @@
             <!--leftdshbord--> 
             
           </div>
+         
           <!--row-->
           
-          <div class="cenbottom nomergbotm"> <a href="#" class="largeredbtn">view more jobs</a> </div>
+          <div class="cenbottom nomergbotm"> <a href="/recomanded" class="largeredbtn">view more jobs</a> </div>
         </div>
         <!--inner-aboutus-->
         
@@ -257,24 +264,24 @@
         
         <!--inner-aboutus-->
         
-        <div class="inner-aboutus topmergline" >
+        <div class="inner-aboutus topmergline">
           <div class="currencytext resultstext">
             <h2>matching jobs</h2>
           </div>
           <!--resultstext-->
           
-          <div class="row" >
+          <div class="row">
             @foreach($MatchingJobs  as $val)
             <div class="col-sm-4 company com-dashboard">
               <div class="ineercompany">
                 <div class="tidiv"> <img src="images/car1.jpg"> <span> {{$val->job_for}}</span></div>
                 <!--tidiv-->
                 
-                
+                <h4 class="innertitltext">{{$val['user']['name']}}</h4>
                 <p class="officer">{{$val->job->name}}</p>
                 <ul class="hassle salary">
-                   <li> <strong>loc.</strong>{{$val->country->name}} </li>
-                  <li> <strong>salary.</strong>{{number_format($val->min_salary)}}-{{number_format($val->max_salary)}} {{($val->Currency)?$val->Currency->name:"Currency is not set"}}</li> 
+                   <li> <strong>loc.</strong>{{$val['country']['name']}} </li>
+                  <li> <strong>salary.</strong>{{$val->min_salary}}-{{$val->max_salary}} {{($val->Currency)?$val->Currency->name:"Currency is not set"}}</li> 
                 </ul>
                 <div class="tidivbotom"> <a href="/ViewJob/{{$val->id}}">apply now</a> <span>{{$val->created_at}}</span></div>
                 <!--tidiv--> 
@@ -291,11 +298,16 @@
           </div>
           <!--row-->
           
-          <div class="cenbottom nomergbotm"> <a href="#" class="largeredbtn">view more jobs</a> </div>
+          <div class="cenbottom nomergbotm"> <a href="/morejobs" class="largeredbtn">view more jobs</a> </div>
         </div>
+          <!--row-->
+          
+         
+       
         
         <!--inner-aboutus-->
-        
+      
+              
         <div class="inner-aboutus topmergline">
           <div class="currencytext resultstext">
             <h2>candidates looking for the same job</h2>
@@ -306,10 +318,7 @@
 
              @foreach($Candidates as $val)
             <div class="col-sm-4 company com-dashboard">
-              <div class="ineercompany nonepad"> 
-                <a  class="imgbox" onclick="ShowVideo('/{{$val->vedio_path}}','{{File::extension($val->vedio_path)}}')">
-
-                  <img src="{{($val->user->logo)?$val->user->logo:'images/4.jpg'}}"> <i class="fas fa-play"></i></a>
+              <div class="ineercompany nonepad"> <a href="#" class="imgbox"> <img src="{{($val->user->logo)?$val->user->logo:'images/4.jpg'}}"> <i class="fas fa-play"></i></a>
                 <div class="padboxs"> <span class="eyeicons"><i class="fas fa-eye"></i> 20,215</span> <span class="eyeicons"><i class="fas fa-flag"></i> 20,215</span>
                    <h4 class="innertitltext">{{$val->user->name}}</h4>
             <p class="officer">{{$val->job->name}}</p>
@@ -340,12 +349,15 @@
           </div>
           <!--row-->
           
-          <div class="cenbottom nomergbotm"> <a href="#" class="largeredbtn">view more candidates</a> </div>
+          <div class="cenbottom nomergbotm"> <a href="/candidates" class="largeredbtn">view more candidates</a> </div>
         </div>
         
         <!--inner-aboutus--> 
         
       </div>
+        <!--inner-aboutus--> 
+        
+     
       
       <!--dashboardleft--> 
       
@@ -359,6 +371,22 @@
 </section>
 <!--section-->
 
+
+ <div id="myModal4" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header"> watch demo video
+        <button type="button" class="close" data-dismiss="modal">x</button>
+      </div>
+      <div class="textbox">
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/Hp_HySkpTa8" frameborder="0"  encrypted-media" allowfullscreen></iframe> 
+      </div>
+      <!--textbox--> 
+      
+    </div>
+  </div>
+</div>
+<!--myModal-->
  <div id="myModal" class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -422,7 +450,39 @@
 @endsection
 @section('scripts')
 <script type="text/javascript" src="/js/slick.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script>
+    $(window).on('hashchange', function() {
+        if (window.location.hash) {
+            var page = window.location.hash.replace('#', '');
+            if (page == Number.NaN || page <= 0) {
+                return false;
+            } else {
+                getJobs(page);
+            }
+        }
+    });
+    $(document).ready(function() {
+        $(document).on('click', '.pagination a', function (e) {
+          getJobs($(this).attr('href').split('page=')[1]);
+            e.preventDefault();
+        });
+    });
+    function getJobs(page) {
+        $.ajax({
+            url : '/jobs?' ,
+            dataType: 'json',
+            data:{page:page,job:1}
+        }).done(function (data) {
+            $('.row').html(data);
+            location.hash;
+        }).fail(function () {
+            alert('jobs could not be loaded.');
+        });
+    }
+    </script>
 
+      
 
 
 
@@ -628,16 +688,21 @@ console.log( player.recordedData);
         //console.log('data');
     });
 
-
-
-
-
-});
+ });
+ var lat = {!!json_encode($CandidateInfo->country->Lat)!!};
+          var lang = {!!json_encode($CandidateInfo->country->Lnag)!!};
+          console.log(lat,lang);
         map = new google.maps.Map(document.getElementById('map'), {
-          center:new google.maps.LatLng({{$CandidateInfo->country->Lnag}},{{$CandidateInfo->country->Lat}}),
+        
+          center:new google.maps.LatLng(lat,lang),
            mapTypeId: google.maps.MapTypeId.ROADMAP,
-          zoom: 8
+          zoom: 6
         });
+
+       
+
+
+      
 
          ajaxCall();
 
@@ -649,6 +714,7 @@ console.log( player.recordedData);
 
 
   });
+  
  </script>
 
 
@@ -678,16 +744,16 @@ function ajaxCall() {
           var infowindow = new google.maps.InfoWindow();
           console.log(jArray.jobs.length);
                   for (i = 0; i < jArray.jobs.length; i++) {
-            
+                   
                   marker = new google.maps.Marker({
-                      position: new google.maps.LatLng(jArray.jobs[i].Lat, jArray.jobs[i].Lnag),
+                      position: new google.maps.LatLng(jArray.jobs[i].country.Lat, jArray.jobs[i].country.Lnag),
                       map: map
-                  });
+   });
             
            
        var geocoder = new google.maps.Geocoder();
-        var latitude = jArray.jobs[i].Lat;
-        var longitude = jArray.jobs[i].Lnag;
+        var latitude = jArray.jobs[i].country.Lat;
+        var longitude = jArray.jobs[i].country.Lnag;
         var address_arr = new Array();
         var latLng = new google.maps.LatLng(latitude,longitude);
         geocoder.geocode({       
@@ -705,7 +771,7 @@ function ajaxCall() {
         );
     google.maps.event.addListener(marker, 'click', (function(marker, i) {
           return function() {
-            infowindow.setContent('job title '+jArray.jobs[i].name+' <br/> Salary '+ jArray.jobs[i].min_salary + ':' + jArray.jobs[i].max_salary +'<br/> Job for' + jArray.jobs[i].job_for);
+            infowindow.setContent('job title '+jArray.jobs[i].job.name+' <br/> Salary '+ jArray.jobs[i].min_salary + ':' + jArray.jobs[i].max_salary +'<br/> Job for' + jArray.jobs[i].job_for);
             infowindow.open(map, marker);
           }
         })(marker, i));
@@ -734,5 +800,28 @@ $("#v1").html('<video style="text-align: center;width: 100%;" controls><source s
  $('#myModal3').modal('show');
 }
 
+function Gotopagation()
+{
+  console.log("g g ");
+
+
+  $.ajax({
+    type: "POST", 
+    url:'/jobs',
+    data: { asd: '2' },
+    dataType: "json",
+  }).done(function(data){
+    $('.content').html(data);
+  });
+
+
+
+
+
+
+}
 </script>
+
+   
+
 @endsection

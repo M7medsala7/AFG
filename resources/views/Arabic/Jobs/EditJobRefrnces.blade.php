@@ -110,7 +110,7 @@
               <div class="comitm">
               <span>
                 <h5 class="textcandidate">{{$candidate->name}} {{($candidate->CanInfo->last_name)?$candidate->CanInfo->last_name:""}}</h5>
-                <button type="button"  style="border-radius: 20px;margin-top:3%;margin-left:70%;width:85px;background-color:white;border-color:#1E90FF;"  ><a href="/full_register/candidate/{{$candidate->id}}">  Edite </a> </button>
+                <button type="button"  style="border-radius: 20px;margin-top:3%;margin-left:70%;width:85px;background-color:white;border-color:#1E90FF;"  ><a href="{{url('/full_register/candidate/'.$candidate->id.'/edit')}}">  Edite </a> </button>
              </span>
                 <ul class="namesprof">
                   <li> {{$candidate->CanInfo->job->name}} </li>
@@ -148,7 +148,7 @@
           
           <div class="row botboxs" >
             <h2  style="float:left;">{{($candidate->CanInfo->descripe_yourself)?$candidate->CanInfo->descripe_yourself:"No Description"}}</h2>
-       <button type="button"  style="float:left;border-radius: 20px;margin-left:80%;width:85px;margin-top:-20px;background-color:#1E90FF;color:white;border-color:white;"  > <a href="/full_register/candidate/{{$candidate->id}}">  Edite </a>  </button>
+       <button type="button"  style="float:left;border-radius: 20px;margin-left:80%;width:85px;margin-top:-20px;background-color:#1E90FF;color:white;border-color:white;"  > <a href="{{url('/full_register/candidate/'.$candidate->id.'/edit')}}">  Edite </a>  </button>
           </div>
           <!--resultstext--> 
           
@@ -174,7 +174,7 @@
         <div class="inner-aboutus topmergline">
           <div class="currencytext resultstext">
             <h2>skills</h2>
-            <button type="button"  style="border-radius: 20px;margin-top:-13%;margin-left:75%;width:85px;background-color:white;border-color:#1E90FF;"  >  <a href="/full_register/candidate/{{$candidate->id}}">  Edite </a>  </button>
+            <button type="button"  style="border-radius: 20px;margin-top:-13%;margin-left:75%;width:85px;background-color:white;border-color:#1E90FF;"  >  <a href="{{url('/full_register/candidate/'.$candidate->id.'/edit')}}">  Edite </a>  </button>
            
           </div>
           <!--resultstext-->
@@ -195,7 +195,7 @@
           <div class="language">
           <div>
             <h4 class="textcandidate information" > language</h4>
-            <button type="button"  style="border-radius: 20px;margin-top:-60%;margin-left:82%;width:85px;background-color:white;border-color:#1E90FF;"  > <a href="/full_register/candidate/{{$candidate->id}}">  Edite </a>  </button>
+            <button type="button"  style="border-radius: 20px;margin-top:-60%;margin-left:82%;width:85px;background-color:white;border-color:#1E90FF;"  > <a href="{{url('/full_register/candidate/'.$candidate->id.'/edit')}}">  Edite </a>  </button>
            </div>
             <div class="languagelink">
               @if($candidate->languages)
@@ -203,10 +203,12 @@
 
               <p>{{$lang->name}} <span>
 
-              @for($i = 0; $i < $lang->pivot->degree ; $i++)
+     
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
                   <i class="fas fa-star"></i>
 
-                @endfor
+              
                 </span></p>
               @endforeach
             @else
@@ -223,7 +225,7 @@
               <div class="col-sm-2 education">
               <div >
               <h4 class="textcandidate information" >education :</h4>
-              <button type="button"  style="border-radius: 20px;float:left;margin-top:-20%;margin-left:590px;width:85px;background-color:white;border-color:#1E90FF;"  > <a href="/full_register/candidate/{{$candidate->id}}">  Edite </a> </button>
+              <button type="button"  style="border-radius: 20px;float:left;margin-top:-20%;margin-left:590px;width:85px;background-color:white;border-color:#1E90FF;"  > <a href="{{url('/full_register/candidate/'.$candidate->id.'/edit')}}">  Edite </a> </button>
              
 
                 </div>
@@ -241,7 +243,7 @@
             <div class="row">
               <div class="col-sm-3 education">
                 <h4 class="textcandidate information">work experience : </h4>
-                <button type="button"  style="border-radius: 20px;margin-top:-20%;float:left;margin-left:590px;width:85px;background-color:white;border-color:#1E90FF;"  > <a href="/full_register/candidate/{{$candidate->id}}">  Edite </a> </button>
+                <button type="button"  style="border-radius: 20px;margin-top:-20%;float:left;margin-left:590px;width:85px;background-color:white;border-color:#1E90FF;"  > <a href="{{url('/full_register/candidate/'.$candidate->id.'/edit')}}">  Edite </a> </button>
              
 
               </div>

@@ -1,6 +1,16 @@
 <!doctype html>
 <html>
 <head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-124778189-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-124778189-1');
+</script>
+
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -12,7 +22,13 @@
 <meta property="og:image" content="https://www.maidandhelper.com/uploads/398/152982589327604902_177527993019842_1858867125_o.jpg" />
 
 
-
+<meta http-equiv="cache-control" content="max-age=0" />
+<meta http-equiv="cache-control" content="no-cache" />
+<meta http-equiv="cache-control" content="no-store" />
+<meta http-equiv="cache-control" content="must-revalidate" />
+<meta http-equiv="expires"       content="0" />
+<meta http-equiv="expires"       content="Tue, 01 Jan 1980 1:00:00 GMT" />
+<meta http-equiv="pragma"        content="no-cache" />
 
  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="/css/bootstrap.min.css" />
@@ -23,7 +39,7 @@
   <link href="/node_modules/videojs-record/dist/css/videojs.record.css" rel="stylesheet">
 
 
-
+  
 <link href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.min.css" rel="stylesheet"/>
  
  <link rel="stylesheet" href="/css/bootstrap-select.min.css">

@@ -243,7 +243,7 @@
         <button type="button" class="close" data-dismiss="modal">أ—</button>
       </div>
       <div class="textbox">
-         <iframe width="560" height="315" src="https://www.youtube.com/embed/whMCdOkI2CU" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+         <iframe width="560" height="315" src="https://www.youtube.com/embed/_I4AxpE5byE" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
       </div>
       <!--textbox--> 
       
@@ -255,7 +255,7 @@
 <div id="myModa3" class="modal fade">
   <div class="modal-content dal-conte dal-conte2"> <i class="fas fa-check-circle"></i>
   <h2 class="textcandidate">congratulations</h2>
-      <p class="viewsdriver">we found a match jobs  </p> 2
+      <p class="viewsdriver">we found a match jobs  </p> 15
     
    <div class="sk-circle">
         <div class="sk-circle1 sk-child"></div>

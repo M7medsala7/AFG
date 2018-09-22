@@ -14,7 +14,7 @@
 
       <ol class="breadcrumb">
         <li><a href="{{url('adminpanel')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active"><a href="{{url('/adminpanel/postjob')}}"> Add question
+        <li class="active"><a href="{{url('/adminpanel/postjob')}}"> Add question</a></li>
       </ol>
  </section>
 
