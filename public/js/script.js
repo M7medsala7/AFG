@@ -135,57 +135,11 @@ $(this).next(".hidecountries").slideToggle(500);
 
 
 
-$('.your-stud').slick({
-dots: true,
-infinite: true,
-speed: 2000,
-slidesToShow:1,
-slidesToScroll: 1,
-autoplay: true,
-autoplaySpeed: 3000,
-responsive: [
-{
-breakpoint: 550,
-settings: {
-slidesToShow: 1,
-slidesToScroll: 1
-}
-},
-
-]
-});
 
 
 
-$('.see-jobs').slick({
-dots: true,
-infinite: true,
-speed: 2000,
-slidesToShow:3,
-slidesToScroll: 1,
-autoplay: true,
-autoplaySpeed: 3000,
-responsive: [
-{
-breakpoint:991,
-settings: {
-slidesToShow: 2,
-slidesToScroll: 1
-}
-},
 
 
-{
-breakpoint:550,
-settings: {
-slidesToShow: 1,
-slidesToScroll: 1
-}
-},
-
-
-]
-});
 
  
 
@@ -486,6 +440,22 @@ bs_input_file();
 
 $(document).ready(function() {
 
+   $('.checkboxall').change(function(){
+    $('.disabled').attr('disabled', this.checked);
+  });
+  
+    $('.checkboxalltow').change(function(){
+    $('.disabledtow').attr('disabled', this.checked);
+  });
+
+    $('.checkboxallthree').change(function(){
+    $('.disabledthree').attr('disabled', this.checked);
+  });
+
+     $('.checkboxallfor').change(function(){
+    $('.disabledfor').attr('disabled', this.checked);
+  });
+
 // $('.calendar').daterangepicker({
 // "singleDatePicker": true,
 // "showDropdowns": true,
@@ -576,6 +546,4 @@ listArray.push(listText);
 searchList();
 
  
-});     
-
-
+});

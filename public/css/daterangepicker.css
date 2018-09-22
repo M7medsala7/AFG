@@ -3,7 +3,7 @@
 	color: inherit;
 	background: #fff;
 	border-radius: 4px;
-	width: 250px;
+	width: 278px;
 	padding: 4px;
 	margin-top: 1px;
 	top: 100px;
@@ -138,7 +138,7 @@
 	border-radius: 4px;
 }
 .daterangepicker td.active, .daterangepicker td.active:hover {
-	background-color: #357ebd;
+	background-color: #008419;
 	border-color: transparent;
 	color: #fff;
 }
@@ -156,7 +156,6 @@
 	height: auto;
 	margin: 0;
 	cursor: default;
-	border: 1px solid #ccc;
 }
 .daterangepicker select.monthselect {
 	margin-right: 2%;
@@ -191,7 +190,7 @@
 .daterangepicker .daterangepicker_input i {
 	position: absolute;
 	left: 8px;
-	top: 8px;
+	top: 3px;
 }
 .daterangepicker .calendar-time {
 	text-align: center;

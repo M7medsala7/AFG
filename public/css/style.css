@@ -1,4 +1,4 @@
-﻿@charset "utf-8";
+@charset "utf-8";
 /* CSS Document */
 
 @font-face {
@@ -593,7 +593,7 @@ end header
 	border-radius: 5px;
 	position: relative;
 }
-.tidiv, .tidivbotom, .cenbottom, .imgbox, .imgbox img, .padboxs, .works {
+.tidiv, .tidivbotom, .cenbottom, .imgbox, .imgbox img, .padboxs, .works, .imgbox video{
 	float: left;
 	width: 100%;
 }
@@ -603,6 +603,13 @@ end header
 	height: 45px;
 	border: 1px solid #ddd;
 }
+.tidiv video {
+	float: left;
+	width: 45px;
+	height: 45px;
+	border: 1px solid #ddd;
+}
+
 .tidiv span {
 	float: right;
 	padding: 5px 15px;
@@ -716,6 +723,51 @@ end header
 	-ms-transform: rotate(2deg);
 	-sand-transform: rotate(2deg);
 }
+
+.top-can {
+	float: left;
+	width: 100%;
+	padding: 100px 0px 115px 0px;
+	position: relative;
+	background: #fff;
+	overflow: hidden;
+	z-index: 1;
+}
+.top-can:after {
+	content: '';
+	display: block;
+	position: absolute;
+	z-index: 100;
+	width: 140%;
+	height: 245px;
+	background: #fff;
+	top: -190px;
+	left: -46px;
+	transition: all 0.2s ease-out;
+	-webkit-transform: rotate(2deg);
+	-moz-transform: rotate(2deg);
+	-o-transform: rotate(2deg);
+	-ms-transform: rotate(2deg);
+	-sand-transform: rotate(2deg);
+}
+.top-can:before {
+	content: '';
+	display: block;
+	position: absolute;
+	z-index: 100;
+	width: 140%;
+	height: 245px;
+	background: #fff;
+	bottom: -195px;
+	left: -46px;
+	transition: all 0.2s ease-out;
+	-webkit-transform: rotate(2deg);
+	-moz-transform: rotate(2deg);
+	-o-transform: rotate(2deg);
+	-ms-transform: rotate(2deg);
+	-sand-transform: rotate(2deg);
+}
+
 .entea {
 	color: #fff;
 	margin: 0;
@@ -737,6 +789,13 @@ end header
 	padding-top: 20px;
 }
 .imgbox img {
+	float: none;
+	width: 180px;
+	height: 180px;
+	border-radius: 50%;
+}
+
+.imgbox video {
 	float: none;
 	width: 180px;
 	height: 180px;
@@ -1825,7 +1884,13 @@ label.desired {
 .watchvideo img {
 	float: left;
 	width: 100%;
-	height: 100%;
+	height: 20%;
+}
+
+.watchvideo video {
+	float: left;
+	width: 100%;
+	height: 20%;
 }
 .watchvideo p {
 	position: absolute;
@@ -5142,6 +5207,9 @@ nav.list-inline.boredrticon, nav.list-inline.rint {
 	margin-top: 20px;
 }
 .top-candidates {
+	padding: 60px 0px 90px 0px;
+}
+.top-cand {
 	padding: 60px 0px 90px 0px;
 }
 .tebprofile li {
