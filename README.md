@@ -66,11 +66,14 @@ Maidandhelper help employer and candidates well comnnected
 5-php artisan cache:clear
 6-php artisan config:cache
 7-php artisan migrate
+8-php atisan serve
 #Troubleshooting Guide
 1-composer update
 2-run composer dump-autoload
+4-file newmaidandhelper.sql you can use it if you have any trouble
+5-php atisan serve
 #instruction to login 
 you can register as employer and candidates to login in dashboard
 #Link live 
 https://www.maidandhelper.com/
-#feature on maidandhelper
+
