@@ -56,3 +56,21 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#About the projects
+Maidandhelper help employer and candidates well comnnected
+#instruction 
+1-git clone https://github.com/M7medsala7/AFG.git
+2-cd AFG
+3-composer install
+4-cp .env.example .env
+5-php artisan cache:clear
+6-php artisan config:cache
+7-php artisan migrate
+#Troubleshooting Guide
+1-composer update
+2-run composer dump-autoload
+#instruction to login 
+you can register as employer and candidates to login in dashboard
+#Link live 
+https://www.maidandhelper.com/
+#feature on maidandhelper
