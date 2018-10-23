@@ -46,6 +46,7 @@
            
 
           </a>
+          <input type="hidden" value="{{$candidate->id}}" id="CanID">
           <div>
             @if($color=='black')
             <button class="like like_button" user-id="{{$candidate->id}}" > <i class="fas fa-heart"></i> </button> <span>like</span>
@@ -146,11 +147,14 @@
           
           <div class="col-sm-3 divboxs">
             <nav class="pholeft"> 
-            <a href="#" data-toggle="modal" data-target="#myModa2"> 
+            
+            <a href="#" onclick="Checkpaymentauth(1)"> 
             <i class="fas fa-phone" ></i> call</a> 
        
-            <a href="#" ><i class="far fa-envelope"></i> message</a> 
-            <a href="#" data-toggle="modal" data-target="#myModa3"> 
+            <a href="#" onclick="Checkpaymentauth(2)">
+            <i class="far fa-envelope"></i> message</a> 
+            
+            <a href="#" onclick="Checkpaymentauth(3)">
             <i class="far fa-address-card"></i>View Cv</a> 
             </nav>
           </div>
@@ -319,7 +323,23 @@
 </div>
 <!--myModal-->
 
+ 
 
+
+<div id="myModa3" class="modal fade" aria-hidden="false">
+  <div class="modal-dialog popvad">
+    <div class="modal-content">
+      <button type="button" class="close" data-dismiss="modal">×</button>
+      <div class="linksing" >
+        <h2 class="callnow">candidates cv </h2>
+         <div id="Frame">
+         </div>
+         </div>
+    </div>
+  </div>
+</div>
+</section>
+<section>
 <div id="myModa2" class="modal fade" aria-hidden="false">
   <div class="modal-dialog popvad">
     <div class="modal-content">
@@ -330,25 +350,34 @@
     </div>
   </div>
 </div>
-
-<div id="myModa3" class="modal fade" aria-hidden="false">
+</section>
+<section >
+  <!-- Modal -->
+  <div class="modal fade" id="MyloginModal" aria-hidden="false">
   <div class="modal-dialog popvad">
-    <div class="modal-content">
-      <button type="button" class="close" data-dismiss="modal">×</button>
-      <div class="linksing">
-        <h2 class="callnow">candidates cv </h2>
-        <iframe style="width:100%;height:500px;" src="{{url($candidate->CanInfo->cv_path)}}#"></iframe></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">login to Maidandhelper</h4>
+        </div>
+        <div class="modal-body">
+          <p>Please login!!!!!!</p>
+        </div>
+        <div class="modal-footer">
+       
+          <a href="/loginEmployer" style="float: right;" class="largeredbtn" >login</a>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-
-
 </section>
-<!--section-->
-@endsection
+
+@stop
 
 @section('scripts')
-
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script>
 $.ajaxSetup({
   headers: {
@@ -363,16 +392,10 @@ $.ajaxSetup({
         url:'/likeCandidate',
         data:"user_id="+user_id,
         success: function(data){
-
-
          if(data=='true')
-      
-
             $('.like_button').css('color','red');
-         
           else 
             $('.like_button').css('color','');  
-
                
         },
                     error: function(response)
@@ -389,6 +412,53 @@ $.ajaxSetup({
    $(function(){
     $('header').addClass('header-in');
   });
+</script>
+
+<script type="text/javascript">
+
+function Checkpaymentauth($type)
+{
+ $id= $('#CanID').val();
+  $.ajax(
+      {
+        type:"GET",
+        url:'/Checkpaymentauth/'+$id+'/'+$type,
+       
+        success: function(data){
+        console.log(data);
+         if(data==1)
+         {
+         $('#myModa2').modal('show');
+         }
+         else if(data==2)
+         {
+        alert("you Finishe e1 3adad");
+         }
+        else if(data==3)
+         {
+           //append to I Frame
+$('#Frame').append('<iframe width="90%" height="60%"src="/{{$candidate->CanInfo->cv_path}}"></iframe>')
+          $('#myModa3').modal('show');
+         }
+          else 
+          {
+            $('#MyloginModal').modal('show');
+            
+           
+          }
+           },
+          error: function(response)
+            {
+            
+              $('#MyloginModal').modal('show');
+              
+            }
+      });
+}
+
+
+
+
 </script>
 <script>
   var searchtype = $('#search_type').val();
@@ -408,5 +478,7 @@ $('.select_type').on('click',function(){
     searchtype=$(this).attr('type_val');
     $('#search_type').val(searchtype);
   });
+
 </script>
+
 @endsection

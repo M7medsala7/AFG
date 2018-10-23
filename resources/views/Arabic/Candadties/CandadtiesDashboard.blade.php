@@ -4,10 +4,11 @@
 <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAm3O5N1fP52tnpdSqPt71joqjd9xOkcek"></script>
-<script type="text/javascript">  
- 
-</script>
 
+<script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
+    <script src="https://cdn.webrtc-experiment.com/gif-recorder.js"></script>
+    <script src="https://cdn.webrtc-experiment.com/getScreenId.js"></script>
+    <script src="https://cdn.webrtc-experiment.com/gumadapter.js"></script>
 @section('content')
 <style type="text/css">
   
@@ -22,7 +23,126 @@
 }
 
 
-
+#loader {
+    bottom: 0;
+    height: 175px;
+    left: 0;
+    margin: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 175px;
+}
+#loader {
+    bottom: 0;
+    height: 175px;
+    left: 0;
+    margin: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 175px;
+}
+#loader .dot {
+    bottom: 0;
+    height: 100%;
+    left: 0;
+    margin: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 87.5px;
+}
+#loader .dot::before {
+    border-radius: 100%;
+    content: "";
+    height: 87.5px;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: scale(0);
+    width: 87.5px;
+}
+#loader .dot:nth-child(7n+1) {
+    transform: rotate(45deg);
+}
+#loader .dot:nth-child(7n+1)::before {
+    animation: 0.8s linear 0.1s normal none infinite running load;
+    background: #00ff80 none repeat scroll 0 0;
+}
+#loader .dot:nth-child(7n+2) {
+    transform: rotate(90deg);
+}
+#loader .dot:nth-child(7n+2)::before {
+    animation: 0.8s linear 0.2s normal none infinite running load;
+    background: #00ffea none repeat scroll 0 0;
+}
+#loader .dot:nth-child(7n+3) {
+    transform: rotate(135deg);
+}
+#loader .dot:nth-child(7n+3)::before {
+    animation: 0.8s linear 0.3s normal none infinite running load;
+    background: #00aaff none repeat scroll 0 0;
+}
+#loader .dot:nth-child(7n+4) {
+    transform: rotate(180deg);
+}
+#loader .dot:nth-child(7n+4)::before {
+    animation: 0.8s linear 0.4s normal none infinite running load;
+    background: #0040ff none repeat scroll 0 0;
+}
+#loader .dot:nth-child(7n+5) {
+    transform: rotate(225deg);
+}
+#loader .dot:nth-child(7n+5)::before {
+    animation: 0.8s linear 0.5s normal none infinite running load;
+    background: #2a00ff none repeat scroll 0 0;
+}
+#loader .dot:nth-child(7n+6) {
+    transform: rotate(270deg);
+}
+#loader .dot:nth-child(7n+6)::before {
+    animation: 0.8s linear 0.6s normal none infinite running load;
+    background: #9500ff none repeat scroll 0 0;
+}
+#loader .dot:nth-child(7n+7) {
+    transform: rotate(315deg);
+}
+#loader .dot:nth-child(7n+7)::before {
+    animation: 0.8s linear 0.7s normal none infinite running load;
+    background: magenta none repeat scroll 0 0;
+}
+#loader .dot:nth-child(7n+8) {
+    transform: rotate(360deg);
+}
+#loader .dot:nth-child(7n+8)::before {
+    animation: 0.8s linear 0.8s normal none infinite running load;
+    background: #ff0095 none repeat scroll 0 0;
+}
+#loader .lading {
+    background-image: url("../images/loading.gif");
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    bottom: -40px;
+    height: 20px;
+    left: 0;
+    position: absolute;
+    right: 0;
+    width: 180px;
+}
+@keyframes load {
+100% {
+    opacity: 0;
+    transform: scale(1);
+}
+}
+@keyframes load {
+100% {
+    opacity: 0;
+    transform: scale(1);
+}
+}
 </style>
 <section class="dashboard">
   <div class="container">
@@ -79,7 +199,7 @@
         
             <div class="videoprofy"> <a href="#" data-toggle="modal" data-target="#myModal" class="watchvideo"> 
    @if($CandidateInfo->vedio_path != null)
-              <video src="{{($CandidateInfo->vedio_path)}}" type="video/{{File::extension($CandidateInfo->vedio_path)}}">< <i class="fas fa-play"></i> </a> 
+              <video src="{{($CandidateInfo->vedio_path)}}" style="margin: 5% 5% 5% 5%;width: 90%;">< <i class="fas fa-play"></i> </a> 
                 @else
                
                 <div class="videoprofy"> <a href="#" data-toggle="modal" data-target="#myModal4" class="watchvideo"> <img src="images/slide5.jpg"> <i class="fas fa-play"></i>
@@ -94,7 +214,7 @@
          
 
            <div  class="col-sm-12 cenbottom  edit-pro"><input type="file" id="my_file"> <a id="get_file" value="Grab file" class="file_input largeredbtn">Upload Video  <i class="fas fa-pencil-alt"></i></a> </div>
-            <div class="col-sm-12 cenbottom  edit-pro"> <a href="#"  data-toggle="modal" data-target="#myModa2" class="largeredbtn">record video  <i class="fas fa-pencil-alt"></i></a> </div>
+            <div class="col-sm-12 cenbottom  edit-pro"> <a href="#"  data-toggle="modal" data-target="#record_video" class="largeredbtn">record video  <i class="fas fa-pencil-alt"></i></a> </div>
 
           </div>
 
@@ -149,9 +269,18 @@
                     <h4 class="innertitltext">{{$RecommandJobs[$i]['user']['name']}} </h4>
                     <p class="officer">{{$RecommandJobs[$i]->job->name}}</p>
                     <ul class="hassle salary">
-          
+                    
                        <li> <strong>loc.</strong>{{$RecommandJobs[$i]['country']['name']}} </li>
-                <li> <strong>salary.</strong>{{$RecommandJobs[$i]->min_salary}}-{{$RecommandJobs[$i]->max_salary}} {{($RecommandJobs[$i]->Currency)?$RecommandJobs[$i]->Currency->name:"Currency is not set"}}</li> 
+                 @if($RecommandJobs[$i]->min_salary !=null && $RecommandJobs[$i]->max_salary !=null)
+                    
+                <li> <strong>salary.</strong>{{number_format($RecommandJobs[$i]->min_salary)}}-{{number_format($RecommandJobs[$i]->max_salary)}} {{($RecommandJobs[$i]->Currency)?$RecommandJobs[$i]->Currency->name:"Currency is not set"}}</li> 
+                @elseif($RecommandJobs[$i]->min_salary !=null)
+                  
+                <li> <strong>salary.</strong>{{number_format($RecommandJobs[$i]->min_salary)}} {{($RecommandJobs[$i]->Currency)?$RecommandJobs[$i]->Currency->name:"Currency is not set"}}</li> 
+                @else
+                <li> <strong>salary.</strong>{{number_format($RecommandJobs[$i]->max_salary)}} {{($RecommandJobs[$i]->Currency)?$RecommandJobs[$i]->Currency->name:"Currency is not set"}}</li> 
+                @endif
+
                     </ul>
 
                     <div class="tidivbotom"> <a href="/ViewJob/{{$RecommandJobs[$i]['id']}}">apply now</a> <span>{{$RecommandJobs[$i]->created_at}}</span></div>
@@ -223,7 +352,7 @@
             <!--profiledeta-->
             @if($CandidateInfo->vedio_path != null)
             <div class="col-sm-3 profiledeta">
-              <div class="innersprof">  <video src="{{($CandidateInfo->vedio_path)}}" type="video/{{File::extension($CandidateInfo->vedio_path)}}" style="width:100px;height: 60px; "> <i class="fas fa-cloud-upload-alt"></i> </div>
+              <div class="innersprof">  <video src="{{($CandidateInfo->vedio_path)}}" style="margin: 5% 5% 5% 5%;width: 90%;"> <i class="fas fa-cloud-upload-alt"></i> </div>
               <h3>upload a video</h3>
               <p>great,add more info
                 top increase <a href="#">profile</a> strenght</p>
@@ -281,7 +410,16 @@
                 <p class="officer">{{$val->job->name}}</p>
                 <ul class="hassle salary">
                    <li> <strong>loc.</strong>{{$val['country']['name']}} </li>
-                  <li> <strong>salary.</strong>{{$val->min_salary}}-{{$val->max_salary}} {{($val->Currency)?$val->Currency->name:"Currency is not set"}}</li> 
+                   @if($val->min_salary !=null && $val->max_salary !=null)
+                    
+                    <li> <strong>salary.</strong>{{number_format($val->min_salary)}}-{{number_format($val->max_salary)}} {{($val->Currency)?$val->Currency->name:"Currency is not set"}}</li> 
+                    @elseif($val->min_salary !=null)
+                      
+                    <li> <strong>salary.</strong>{{number_format($val->min_salary)}} {{($val->Currency)?$val->Currency->name:"Currency is not set"}}</li> 
+                    @else
+                    <li> <strong>salary.</strong>{{number_format($val->max_salary)}} {{($val->Currency)?$val->Currency->name:"Currency is not set"}}</li> 
+                    @endif
+                  
                 </ul>
                 <div class="tidivbotom"> <a href="/ViewJob/{{$val->id}}">apply now</a> <span>{{$val->created_at}}</span></div>
                 <!--tidiv--> 
@@ -379,7 +517,7 @@
         <button type="button" class="close" data-dismiss="modal">x</button>
       </div>
       <div class="textbox">
-      <iframe width="560" height="315" src="https://www.youtube.com/embed/Hp_HySkpTa8" frameborder="0"  encrypted-media" allowfullscreen></iframe> 
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/Hp_HySkpTa8" frameborder="0"  encrypted-media="allowfullscreen"></iframe> 
       </div>
       <!--textbox--> 
       
@@ -393,8 +531,8 @@
       <div class="modal-header"> watch demo video
         <button type="button" class="close" data-dismiss="modal">x</button>
       </div>
-      <video style="text-align: center;" width="auto" height="auto" controls>
-        <source src="{{$CandidateInfo->vedio_path}}" type="video/{{File::extension($CandidateInfo->vedio_path)}}">
+      <video style="text-align: center; margin: 5% 5% 5% 5%;width: 90%;" controls>
+        <source src="{{$CandidateInfo->vedio_path}}" >
       </video>
       <!--textbox--> 
       
@@ -447,11 +585,82 @@
   </div>
 </div>
 
+
+
+<div id="record_video" class="modal fade record_video stream" role="dialog">
+        <div class="modal-dialog ">
+            <!-- Modal content-->
+          <div class="modal-content inpudata">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Record your Video</h4>
+                </div>
+                <div class="modal-body inpudata">
+                    <div id="container">
+                        <div class="col-sm-12" hidden>
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-3">
+                                <label class="pull-right">:<span style="color: red;">*</span> </label>
+                            </div>
+                            <div class="col-sm-4 inpudata"  >
+                                <input type="text" name="video_title" id="video_title" class="form-control">
+                            </div>
+                        </div>
+                        <div class="in-iframe">
+                          <video id="gum" autoplay muted style="width: 100%;
+                          margin:0px 0px 0px 0px;background-color:black"></video>
+                          <video id="recorded" hidden style="width: 100%;
+                          margin: 10px 10px 10px;"></video>
+</div>
+<div class="divwits">
+            <div class="row" style="Background-color:#009df4">
+            <div class="col-sm-3 record-ve" style="margin-bottom:-30px">
+                            <button class=" largeredbtn"   id="record" ><i class="fas fa-video"></i>record</button>
+                            </div>
+                            <div class="col-sm-3 record-ve">
+                            <button class=" largeredbtn"  id="play" disabled> <i class="fas fa-play"></i>play</button>
+                            </div>
+                            <div class="col-sm-3 record-ve">
+                            <button class=" largeredbtn"  id="uploadv" disabled> <i class="fas fa-upload"></i>save</button>
+                            </div>
+                            <div class="col-sm-3 record-ve">
+                            <button class=" largeredbtn"  id="download" disabled><i class="fas fa-download"></i>Download</button>
+                       
+                            </div>
+</div>
+</div>
+                        <div class="row" id="progress_v" hidden>
+                            <div id="loader">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="lading"> uploading wait please ...</div>
+
+                        </div>
+                     </div>
+                  </div>
+
+     
+                <div class="modal-footer">
+                    <!-- <button type="button" class="btn btn-default close_vedio" data-dismiss="modal"></button> -->
+                </div>
+  </div>
+  </div>
+</div>
+
+
 @endsection
 @section('scripts')
 <script type="text/javascript" src="/js/slick.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script>
+    
+'use strict';
     $(window).on('hashchange', function() {
         if (window.location.hash) {
             var page = window.location.hash.replace('#', '');
@@ -467,6 +676,298 @@
           getJobs($(this).attr('href').split('page=')[1]);
             e.preventDefault();
         });
+
+
+
+
+var mediaSource = new MediaSource();
+        mediaSource.addEventListener('sourceopen', handleSourceOpen, false);
+        var mediaRecorder;
+        var recordedBlobs;
+        var sourceBuffer;
+
+        var gumVideo = document.querySelector('video#gum');
+        var recordedVideo = document.querySelector('video#recorded');
+
+
+        var recordButton = document.querySelector('button#record');
+        var playButton = document.querySelector('button#play');
+        var downloadButton = document.querySelector('button#download');
+        recordButton.onclick = toggleRecording;
+        playButton.onclick = play;
+        downloadButton.onclick = download;
+
+        // window.isSecureContext could be used for Chrome
+        var isSecureOrigin = location.protocol === 'https:' ||
+                location.hostname === 'localhost';
+        if (!isSecureOrigin) {
+
+            var alert_content='';
+            alert_content+='getUserMedia() must be run from a secure origin: HTTPS or localhost.' +
+                    '\n\nChanging protocol to HTTPS';
+
+            $('#alert_box').append(alert_content);
+            $('#record_video').modal('hide');
+
+            location.protocol = 'HTTPS';
+        }
+
+        var constraints = {
+            audio: true,
+            video: true
+        };
+
+        var uploadfiles = document.querySelector('button#uploadv');
+        uploadfiles.onclick = uploadFile;
+
+        function uploadFile(){
+            $('#progress_v').show();
+            var blob = new Blob(recordedBlobs, {type: 'video/webm'});
+            var fileType = blob.type.split('/')[0] || 'audio';
+            var fileName = (Math.random() * 1000).toString().replace('.', '');
+            if (fileType === 'audio') {
+                fileName += '.' + (!!navigator.mozGetUserMedia ? 'ogg' : 'wav');
+            } else {
+                fileName += '.webm';
+            }
+            
+
+            var url = window.URL.createObjectURL(blob);
+    
+            var a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.upload = 'test.webm';
+            document.body.appendChild(a);
+            // a.click();
+
+            var surl = '/EditStoreVideo';
+
+            var xhr = new XMLHttpRequest();
+
+            var fd = new FormData();
+
+            xhr.open("POST", surl, true);
+
+            xhr.onreadystatechange = function() {
+
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                 // $('#myModalcongratulation').modal('show');
+                  
+                  //  var alert_content='';
+                  //   alert_content+=' <div class="alert alert-success alert-dismissable fade in " id="profile_alert">';
+                  //   alert_content+=' <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
+                  //   alert_content+='<strong>{{trans('ocs/registration::massages/message.success.video_uploaded')}}</strong>';
+                  //   alert_content+=' </div>';
+                  
+                    $('#record_video').modal('hide');
+                    $('#video_data').val("{{asset('/candidates/videos/')}}"+'/'+fileName);
+                    return;
+                    // Every thing ok, file uploaded
+                    console.log(xhr.responseText); // handle response.
+
+
+                }
+                else
+
+                {
+
+                }
+
+            };
+
+            fd.append(fileType + '-filename', fileName);
+            
+            fd.append(fileType + '-blob', blob);
+            fd.append('video_title',$('#video_title').val());
+            fd.append('id',$('#canid').val());
+            fd.append('_token','{{csrf_token()}}');
+            xhr.send(fd);
+
+
+        }
+
+        function handleSuccess(stream) {
+
+            recordButton.disabled = false;
+            console.log('getUserMedia() got stream: ', stream);
+            window.stream = stream;
+            if (window.URL) {
+                gumVideo.src = window.URL.createObjectURL(stream);
+            }
+            else {
+                gumVideo.src = stream;
+            }
+        }
+
+        function handleError(error) {
+
+            console.log('navigator.getUserMedia error: ', error);
+        }
+        $('.record_video').on('click',function(){
+
+            navigator.mediaDevices.getUserMedia(constraints).
+                    then(handleSuccess).catch(handleError);
+
+        });
+
+        $('.stream').on('hidden.bs.modal', function () {
+
+            $('#gum').hide();
+            $('#recorded').hide();
+            recordButton.textContent = 'record';
+            if (mediaStream.getVideoTracks().length && mediaStream.getVideoTracks()[0].stop) {
+    mediaStream.getVideoTracks().forEach(function(track) {
+        track.stop();
+    });
+}
+
+
+           // stream.getVideoTracks()[0].stop();
+        });
+
+
+
+
+
+        function handleSourceOpen(event) {
+            console.log('MediaSource opened');
+            sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vp8"');
+            console.log('Source buffer: ', sourceBuffer);
+        }
+
+        recordedVideo.addEventListener('error', function(ev) {
+            console.error('MediaRecording.recordedMedia.error()');
+
+            var alert_content='';
+            alert_content+='Your browser can not play\n\n' + recordedVideo.src
+                    + '\n\n media clip. event: ' + JSON.stringify(ev);
+
+            $('#alert_box').append(alert_content);
+            $('#record_video').modal('hide');
+
+        }, true);
+
+        function handleDataAvailable(event) {
+
+            if (event.data && event.data.size > 0) {
+                recordedBlobs.push(event.data);
+            }
+        }
+
+        function handleStop(event) {
+
+            console.log('Recorder stopped: ', event);
+        }
+
+        function toggleRecording() {
+         
+
+            if (recordButton.textContent === 'record') {
+                startRecording();
+            }
+            else
+            {
+                stopRecording();
+                recordButton.textContent = 'record';
+                playButton.disabled = false;
+                downloadButton.disabled = false;
+                uploadfiles.disabled = false;
+
+
+            }
+        }
+
+        function startRecording() {
+
+
+var recorder = new window.MediaRecorder(stream);
+            $('#gum').show();
+            recordedBlobs = [];
+            var options = {mimeType: 'video/webm;'};
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+
+                console.log(options.mimeType + ' is not Supported');
+                options = {mimeType: 'video/webm;codecs=vp8'};
+                if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                    console.log(options.mimeType + ' is not Supported');
+                    options = {mimeType: 'video/webm'};
+                    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                        console.log(options.mimeType + ' is not Supported');
+                        options = {mimeType: ''};
+                    }
+                }
+            }
+
+            try
+            {
+              console.log("StartRecord");
+              mediaRecorder = new MediaRecorder(window.stream, options);
+
+            }
+
+            catch (e)
+            {
+              console.log("StartRecord Wrong");
+                console.error('Exception while creating MediaRecorder: ' + e);
+                var alert_content='';
+                alert_content+='Exception while creating MediaRecorder: '
+                        + e + '. mimeType: ' + options.mimeType;
+                $('#alert_box').append(alert_content);
+                $('#record_video').modal('hide');
+
+                return;
+            }
+            console.log('Created MediaRecorder', mediaRecorder, 'with options', options);
+            recordButton.textContent = 'Stop record';
+            playButton.disabled = true;
+            downloadButton.disabled = true;
+            uploadfiles.disabled = true;
+
+            mediaRecorder.onstop = handleStop;
+            mediaRecorder.ondataavailable = handleDataAvailable;
+            mediaRecorder.start(10); // collect 10ms of data
+            console.log('MediaRecorder started', mediaRecorder);
+        }
+
+        function stopRecording() {
+            // $('#gum').hide();
+            mediaRecorder.stop();
+            console.log('Recorded Blobs: ', recordedBlobs);
+            recordedVideo.controls = true;
+        }
+
+        function play() {
+          $('#gum').hide();
+            $('#recorded').show();
+            var superBuffer = new Blob(recordedBlobs, {type: 'video/webm'});
+            recordedVideo.src = window.URL.createObjectURL(superBuffer);
+        }
+
+        function download() {
+
+            var blob = new Blob(recordedBlobs, {type: 'video/webm'});
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'test.webm';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 100);
+        }
+
+
+
+
+
+
+
+
+
     });
     function getJobs(page) {
         $.ajax({
@@ -531,7 +1032,6 @@ $('.select_type').on('click',function(){
 <script type="text/javascript"> 
 
 
-
 var map;
  $(document).ready(function(){
 
@@ -548,6 +1048,18 @@ document.getElementById('get_file').onclick = function() {
 document.getElementById('get_file2').onclick = function() {
     document.getElementById('my_file2').click();
 };
+
+
+
+
+
+
+
+
+
+
+
+
 
 $('#my_file').change(function (e) {
     var myFile = $('#my_file').prop('files');
@@ -628,77 +1140,22 @@ var dataString = "id="+id+"&images="+images;
        
     });
 
-
-
-
-
     });
    
 
-
-   var player = videojs("myVideo", {
-    controls: true,
-    width: 580,
-    height: 240,
-    fluid: false,
-    plugins: {
-        record: {
-            audio: true,
-            video: true,
-            maxLength: 120,
-            debug: true
-        }
-    }
-}, function(){
-    // print version information at startup
-    videojs.log('Using video.js', videojs.VERSION,
-        'with videojs-record', videojs.getPluginVersion('record'),
-        'and recordrtc', RecordRTC.version);
-});
-// error handling
-player.on('deviceError', function() {
-    console.log('device error:', player.deviceErrorCode);
-});
-player.on('error', function(error) {
-    console.log('error:', error);
-});
-// user clicked the record button and started recording
-player.on('startRecord', function() {
-    console.log('started recording!');
-});
-// user completed recording and stream is available
-player.on('finishRecord', function() {
-    // the blob object contains the recorded data that
-    // can be downloaded by the user, stored on server etc.
-console.log( player.recordedData);
-
-     var fd = new FormData();
-    fd.append('name', player.recordedData.video.name);
-    fd.append('data', player.recordedData.video);
-     fd.append('id', $("#canid").val());
-    $.ajax({
-        type: 'POST',
-        url: '/EditStoreVideo',
-            processData: false,
-          contentType: false,
-        data: fd
-    }).done(function(data) {
-     document.getElementById("Sucessrecord").innerHTML = "Video record Sucessfully";
-      
-        //console.log('data');
-    });
-
- });
- var lat = {!!json_encode($CandidateInfo->country->Lat)!!};
-          var lang = {!!json_encode($CandidateInfo->country->Lnag)!!};
+      var lat = {!!json_encode($CandidateInfo->country->Lat)!!};
+   
+       var lang = {!!json_encode($CandidateInfo->country->Lnag)!!};
           console.log(lat,lang);
-        map = new google.maps.Map(document.getElementById('map'), {
-        
-          center:new google.maps.LatLng(lat,lang),
-           mapTypeId: google.maps.MapTypeId.ROADMAP,
-          zoom: 6
-        });
-
+         
+              map = new google.maps.Map(document.getElementById('map'), {
+              
+                center:new google.maps.LatLng(lat,lang),
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                zoom: 6
+              });
+         
+      
        
 
 
@@ -756,6 +1213,72 @@ function ajaxCall() {
         var longitude = jArray.jobs[i].country.Lnag;
         var address_arr = new Array();
         var latLng = new google.maps.LatLng(latitude,longitude);
+        //console.log(jArray.jobs[i].job_for);
+        if(jArray.jobs[i].job_for=='Jobs in UAE')
+      {
+      
+        marker = new google.maps.Marker({
+                      position: new google.maps.LatLng(25.276987,55.296249),
+                      map: map
+   });
+            
+           
+       var geocoder = new google.maps.Geocoder();
+        var latitude = 25.276987;
+        var longitude =55.296249;
+        var address_arr = new Array();
+        var latLng = new google.maps.LatLng(latitude,longitude);
+        console.log(latLng);
+      }
+      if(jArray.jobs[i].job_for=='Jobs in KSA')
+      {
+      
+        marker = new google.maps.Marker({
+                      position: new google.maps.LatLng(19.128445,41.924606),
+                      map: map
+   });
+            
+           
+       var geocoder = new google.maps.Geocoder();
+        var latitude = 19.128445;
+        var longitude =41.924606;
+        var address_arr = new Array();
+        var latLng = new google.maps.LatLng(latitude,longitude);
+        console.log(latLng);
+      }
+      if(jArray.jobs[i].job_for=='Jobs in USA')
+      {
+      
+        marker = new google.maps.Marker({
+                      position: new google.maps.LatLng(40.730610,-73.935242),
+                      map: map
+   });
+            
+           
+       var geocoder = new google.maps.Geocoder();
+        var latitude = 40.730610;
+        var longitude =-73.935242;
+        var address_arr = new Array();
+        var latLng = new google.maps.LatLng(latitude,longitude);
+        console.log(latLng);
+      }
+      if(jArray.jobs[i].job_for=='Jobs in Qatar')
+      {
+      
+        marker = new google.maps.Marker({
+                      position: new google.maps.LatLng(25.286106,51.534817),
+                      map: map
+   });
+            
+           
+       var geocoder = new google.maps.Geocoder();
+        var latitude = 25.286106;
+        var longitude =51.534817;
+        var address_arr = new Array();
+        var latLng = new google.maps.LatLng(latitude,longitude);
+        console.log(latLng);
+      }
+
         geocoder.geocode({       
             latLng: latLng     
           }, 
@@ -778,6 +1301,8 @@ function ajaxCall() {
 
 
     markerArr[i]=marker;
+
+             
     }
   }});
 }
@@ -795,7 +1320,7 @@ function ShowVideo($id,$type)
 var int="";
 $("#v1").html('');
 
-$("#v1").html('<video style="text-align: center;width: 100%;" controls><source src="'+$id+'" type='+$typeM+'></source></video>' );
+$("#v1").html('<video style="text-align: center;style="margin: 5% 5% 5% 5%;width: 90%;" controls><source src="'+$id+'" ></source></video>' );
 
  $('#myModal3').modal('show');
 }

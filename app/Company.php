@@ -8,7 +8,7 @@ class Company extends Model
 {
     //
      protected $fillable = [
-        'name','industry_id','country_id','Lat','lang','size','description','website','company_linkedin','company_facebook','company_twitter','company_googleplus','video_path','company_youtube','created_by',
+        'name','industry_id','country_id','Lat','lang','size','description','website','company_linkedin','company_facebook','company_twitter','company_googleplus','video_path','company_youtube','Created_by',
     ];
 
     public function photos()
@@ -17,6 +17,6 @@ class Company extends Model
     }
     public function user()
     {
-    	return $this->belongsTo('\App\User','created_by');
+    	return $this->belongsTo('\App\User','Created_by');
     }
 }

@@ -1,95 +1,125 @@
-  <!-- top navigation -->
+<head >
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   
-        <div class="top_nav">
-          <div class="nav_menu">
-            <nav>
-              <div class="nav toggle">
-                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-              </div>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" href="/admin/bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.min.css" rel="stylesheet"/>
+ 
 
-              <ul class="nav navbar-nav navbar-right">
-                <li class="">
-                  <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    <img src="{{Session::get('Logo')}}" alt="">{{Session::get('username')}}
-                    <span class=" fa fa-angle-down"></span>
-                  </a>
-                  <ul class="dropdown-menu dropdown-usermenu pull-right">
-                 <!--    <li><a href="javascript:;"> Profile</a></li>
-                    <li>
-                      <a href="javascript:;">
-                        <span class="badge bg-red pull-right">50%</span>
-                        <span>Settings</span>
-                      </a>
-                    </li>
-                    <li><a href="javascript:;">Help</a></li> -->
-                    <li><a href="/Home"><i class="fa fa-sign-out pull-right"></i> تسجيل خروج</a></li>
-                  </ul>
-                </li>
+  <!-- Font Awesome -->
 
-               <!--  <li role="presentation" class="dropdown">
-                  <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
-                  <span class="badge bg-red" id="Notify"></span>
-                    <i class="fa fa-bullhorn" style="font-size: 2em; padding-top: 10px"></i>
-                   
-                  </a>
-                  <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
-                                                  <li>
-                      <a>
-                      
-                        <span class="message">
-                          أضغط لمعرفة الاصناف التى قاربت على الانتهاء
-                        </span>
-                      </a>
-                    </li>
-                    <li>
-                      <div class="text-center">
-                        <a>
-                        <i class="fa fa-angle-left"></i>
-                          <strong><a href="/MinLimtItems">عرض كل الاصناف</a></strong>
-                          
-                        </a>
-                      </div>
-                    </li>
-                  </ul>
-                </li> -->
+  <!-- Ionicons -->
 
-                <!--  <li role="presentation" class="dropdown" id="noti_Container">
-                  <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false" >
-                  <span class="badge bg-orange"  id="noti_Counter"></span>
-                    <i class="fa fa-inbox" style="font-size: 2em; padding-top: 10px"></i>
-                   
-                  </a>
-                  <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
-                  <li>
-                      <a>
-                      
-                          <div id="noti_Button">
-               
-                </div>    
+   <link rel="stylesheet" href="/admin/bower_components/font-awesome/css/font-awesome.min.css">
 
-                <div id="notifications" >
-                  
-                    <div style="height:auto;" id="pnotifications">
-                   
-                    </div>
-                   
-                </div>
-                      </a>
-                    </li>
-                    <li>
-                      <div class="text-center">
-                        <a>
-                        <i class="fa fa-angle-left"></i>
-                          <strong><a href="#">No Notifications Else</a></strong>
-                          
-                        </a>
-                      </div>
-                    </li>
-                  </ul>
-                </li> -->
+  <!-- Theme style -->
+
+   <link rel="stylesheet" href="/admin/bower_components/Ionicons/css/ionicons.min.css">
+
+
+   <link rel="stylesheet" href="/admin/dist/css/AdminLTE.min.css">
+
+  <!-- Morris chart -->
+<link rel="stylesheet" href="/admin/dist/css/skins/_all-skins.min.css">
+
+
+  <link rel="stylesheet" href="/admin/bower_components/morris.js/morris.css">
+
+ 
+  <link rel="stylesheet" href="/admin/bower_components/jvectormap/jquery-jvectormap.css">
+
+  <link rel="stylesheet" href="/admin/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+
    
-              </ul>
-            </nav>
-          </div>
-        </div>
-        <!-- /top navigation -->
+  <!-- bootstrap wysihtml5 - text editor -->
+  <link rel="stylesheet" href="/admin/bower_components/bootstrap-daterangepicker/daterangepicker.css">
+
+ 
+   <link rel="stylesheet" href="/admin/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+  <!-- Google Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+  
+  <link rel="stylesheet" href="/admin/cust/sweetalert.css">
+  <style>
+#customers {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#customers td, #customers th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}
+</style>
+<style>
+  .select2-selection__rendered{
+    background: rgb(0, 1, 1);
+    border: 1px solid rgba(115, 115, 115, 0.48)!important;
+    /* color: #fff; */
+    float: left;
+    width: 350px;
+    height: 40px;
+    border-radius: 5px;
+    /* border: 0; */
+    box-shadow: none;
+    border: 2px solid #d7d7d7;
+    margin-top: 10px;
+        color: white!important;
+  }
+ 
+  .select2 select2-container select2-container 
+  {
+width:300px;
+  }
+ 
+
+  .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 57px!important;
+   }
+  .select2-container .select2-selection--single
+  {
+    height: 0px!important;
+  }
+  .select2-container--default .select2-selection--single{    background-color: 0!important;border: 0!important}
+  .watchvideo img{
+    height: 20%!important;
+    width:100%
+  }
+  .select2 select2-container select2-container--default
+  {
+    width: 300px;
+  }
+  .select2 select2-container select2-container--default select2-container--below
+  {
+    width:300px;
+  }
+</style>
+</head>
+

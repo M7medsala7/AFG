@@ -5,7 +5,7 @@ use App\Notifications\RepliedToThread;
 use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use App\packageattribute;
 
 
 class User extends Authenticatable
@@ -101,6 +101,7 @@ class User extends Authenticatable
         }
  //dd($alljobCan);
         $TopCandidate=\App\CandidateInfo::whereIN('job_id',$alljobCan)->get();
+        
         return $TopCandidate;
     }
 
@@ -158,7 +159,7 @@ class User extends Authenticatable
     }
     public function company()
     {
-        return $this->hasOne('App\Company','created_by');
+        return $this->hasOne('App\Company','Created_by');
     }
     public function likes()
     {
@@ -173,5 +174,12 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\SuccessStories');
     }
+    function getpackattribute($id)
+   {
+       $packattribute=packageattribute::join('attribute','attribute.id','=','package_attribute.attribute_id')
+       ->where('packages_id',$id)
+       ->select('*')->get();
+       return $packattribute;
+   }
 }
 

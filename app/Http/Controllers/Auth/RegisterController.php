@@ -12,11 +12,21 @@ use App\CandidateInfo;
 use App\EmployerProfile;
 use App\Educational;
 use App\CandidateExperience;
+use App\Notifications\AddEmployer;
+use App\Notifications\PostJobs;
+use App\Notifications\Candidate_notification;
+use App\Notifications;
+use Carbon\Carbon;
 use Socialite;
 use Session;
 use Mail;
 use App\Country;
 use App\City;
+use App\Http\Requests\RegisterFormRequest;
+use App\Http\Requests\FullCanRegisterFormRequest;
+use  App\Http\Requests\CanRegisterFormRequest;
+use  App\Http\Requests\EmpRegisterFormRequest;
+use JsValidator;
 
 class RegisterController extends Controller
 {
@@ -58,26 +68,19 @@ class RegisterController extends Controller
      */
    
 
-    Public function StoreVideo(request $request)
+     Public function StoreVideo(request $request)
     {
      try
         {
-            $blobInput = $request->file('data');
-            $VideoName =  $request->get('name');
-            $path=public_path("/assets/video").$VideoName;
-            if (!file_exists($path)) {
-            $random_string = md5(microtime());
-            $blobInput->move(("/assets/video"),$VideoName);
-            Session::put('VideoPath',"/assets/video".$random_string.".webm ");
-            }
-            else
-            {
-            $random_string = md5(microtime());
-            $blobInput->move(public_path("/assets/video"),$random_string.".webm");
 
-            Session::put('VideoPath',"/assets/video".$random_string.".webm ");
-
-            }
+           $blobInput =$request->file("video-blob");
+           $VideoName =  md5(microtime());
+         //  dd($request->file("video-blob"));
+           $blobInput->move(("upload/video"),$VideoName);
+           Session::put('VideoPath',"upload/video/".$VideoName);
+           return response()->json([
+            'success' => true,
+        ]);
         }    
     catch(Exception $e) 
         {
@@ -220,20 +223,23 @@ class RegisterController extends Controller
         ]);
     }
 
-       public function emplyReg(Request $request)
+       public function emplyReg(RegisterFormRequest $request)
+
     {
+         
     try
     {
-        $this->validate($request, [
-            'job_id' => 'required',
-            'job_for'=>'required',
-            'name'=>'required',
-            'phone'=>'required',
-            'email'=>'required|email|unique:users',
-            'password'=>'required',
-            'country_id'=>'required',
 
-        ]);
+        // $this->validate($request, [
+        //     'job_id' => 'required',
+        //     'job_for'=>'required',
+        //     'name'=>'required',
+        //     'phone'=>'required',
+        //     'email'=>'required|email|unique:users',
+        //     'password'=>'required',
+        //     'country_id'=>'required',
+
+        // ]);
         $code = 1000;
         $points=0;
 
@@ -263,8 +269,10 @@ $totalpoints=$points*5;
         {
             $code = $lastUser->code++;
         }
-          $user = User::create(['name'=>$request['name'],'email'=>$request['email'],'password' => bcrypt($request['password']),'type'=>'employer','code'=>$code]);
-
+          $user = User::create(['name'=>$request['name'],
+          'email'=>$request['email'],'password' => bcrypt($request['password']),
+          'type'=>'employer','code'=>$code]);
+          //dd($user);
 
         $input = $request->all();
         unset($input['name'],$input['email'],$input['password']);
@@ -272,12 +280,24 @@ $totalpoints=$points*5;
         PostJob::create($input);
         if($user)
         {
-            EmployerProfile::create(['type'=>$request['job_for'],'name'=>$request['name'],'last_name'=>'.','user_id'=>$user->id,'coins'=>$totalpoints]);
+            $job = EmployerProfile::create(['type'=>$request['job_for'],
+            'name'=>$request['name'],'last_name'=>'.',
+            'user_id'=>$user->id,'coins'=>$totalpoints]);
+           
+      
         }
+       
         \App\Company::create(['name'=>$request['name'],'size'=>'5','country_id'=>$request['country_id'],'lat'=>'0','lang'=>'0','created_by'=>$user->id,'industry_id'=>0]);
 
 
+        $user->notify(new PostJobs($job));     
+        //Sending Mail after adding
+        $data=array('Email'=>$request['email']);
+        Mail::send('emails.NewJob', $data, function($message) use ($data) {
+        $message->to('Social@maidandhelper.com');
+        $message->subject('new job is added ');
 
+        });
 
         //Sending Mail after regestration
       
@@ -299,26 +319,18 @@ $totalpoints=$points*5;
          return redirect('/');
          }
     }
-    public function candReg(Request $request)
+ 
+   
+    public function candReg(CanRegisterFormRequest $request)
     {
           try
           {
        
-     
-
-      
-        $this->validate($request, [
-            'job_id' => 'required',
-            'industry_id'=>'required',
-            'name'=>'required',
-            'gender' =>'required',
-            'email'=>'required|email|unique:users',
-            'password'=>'required',
-            'country_id'=>'required',
-        ]);
+    
         $code = 1000;
-$vedio_path='';
+        $vedio_path='';
                 $vedio_path = Session::get('VideoPath');
+              //  dd("dd",$vedio_path);
                 $points=0;
                  $videopoint=0;
 
@@ -331,7 +343,10 @@ $vedio_path='';
             $code = $lastUser->code++;
         }
 
-        $user = User::create(['name'=>$request['name'],'email'=>$request['email'],'password' => bcrypt($request['password']),'type'=>'candidate','code'=>$code]);
+        $user = User::create(['name'=>$request['name'],
+        'email'=>$request['email'],
+        'password' => bcrypt($request['password']),
+        'type'=>'candidate','code'=>$code]);
         $input = $request->all();
 
  
@@ -341,11 +356,20 @@ $vedio_path='';
             $input['vedio_path']=$vedio_path;
             $videopoint=30;
         }
+        else
+        {
+            $vedio_path =  Session::get('VideoPath');
+            $input['vedio_path']=$vedio_path;
+            $videopoint=30;
+        }
 
         unset($input['name'],$input['email'],$input['password']);
         $input['user_id']= $user->id;
-                                  $countcoins=['name'=>$request['name'],
+        $countcoins=['name'=>$request['name'],
         'email'=>$request['email'],
+        'industry_id'=>$request['industry_id'],
+        'job_id'=>$request['job_id'],
+        'gender'=>$request['gender'],
         'password' => bcrypt($request['password']),
         
         'country_id'=>$request['country_id'],
@@ -365,8 +389,16 @@ $totalpoints=$points*5+$videopoint;
  $input['coins']=$totalpoints;
  
 
-        CandidateInfo::create($input);
+ $CandidateInfo= CandidateInfo::create($input);
+        
+        $user->notify(new Candidate_notification($CandidateInfo));
+        //Sending Mail after adding
+        $data=array('Email'=>$request['email']);
+        Mail::send('emails.NewEmployer', $data, function($message) use ($data) {
+        $message->to('Social@maidandhelper.com');
+        $message->subject('new user is added ');
 
+        });
 
 
 
@@ -444,22 +476,12 @@ $totalpoints=$points*5+$videopoint;
         return view('auth.create_account',compact('type'));
     }
 
-    public function f_reg_emp(Request $request)
+    public function f_reg_emp(EmpRegisterFormRequest $request)
     {
     try
     {
-    /**
-    **Validation 
-    **/
-     // return $request->all();
-
-
-        $request['email_confirmation']= strtolower($request['email_confirmation']);
-        $request['email']= strtolower($request['email']);
        
-    /***
-    ***increment code for the new user***
-    ***/
+   
         $code = 1000;
         $points=0;
           $countcoins=['name'=>$request['name'],
@@ -525,22 +547,44 @@ $citynam->save();
     //*code generated*/
 
     //**create user
-        $user = User::create(['name'=>$request['first_name'].' '.$request['last_name'],'email'=>$request['email'],'password' => bcrypt($request['password']),'type'=>'employer','code'=>$code]);
+        $user = User::create(['name'=>$request['first_name'].' '.$request['last_name'],
+        'email'=>$request['email'],'password' => bcrypt($request['password']),
+        'type'=>'employer','code'=>$code]);
     //**user created
 
         $input = $request->all();
         if($user)
         {
-            EmployerProfile::create(['city_id'=>$cityQuery->id,'type'=>$request['type'],'first_name'=>$request['first_name'],'last_name'=>$request['last_name'],'country_id'=>$countryQueryCityID->id,'user_id'=>$user->id,'coins'=>$totalpoints]);
+            $emptype= EmployerProfile::create(['city_id'=>$cityQuery->id,
+            'type'=>$request['type'],'first_name'=>$request['first_name'],
+            'last_name'=>$request['last_name'],'country_id'=>$countryQueryCityID->id,
+            'user_id'=>$user->id,'coins'=>$totalpoints]);
+         
+          
+           // dd($emp);
+         
         }
-        \App\Company::create(['name'=>$request['first_name'],'size'=>'5','country_id'=>$countryQueryCityID->id,'lat'=>'0','lang'=>'0','created_by'=>$user->id,'industry_id'=>0]);
- //Sending Mail after regestration
-        $data=array('Email'=>$request['email']);
-        Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
-        $message->to($data['Email']);
-        $message->subject('registeration completed');
+       
+          
 
-        });
+        \App\Company::create(['name'=>$request['first_name'],'size'=>'5','country_id'=>$countryQueryCityID->id,'lat'=>'0','lang'=>'0','created_by'=>$user->id,'industry_id'=>0]);
+        // $user->notify(new AddEmployer($emptype));
+        //Sending Mail after adding
+         $data=array('Email'=>$request['email']);
+         // Mail::send('emails.NewJob', $data, function($message) use ($data) {
+         // $message->to('Social@maidandhelper.com');
+         // $message->subject('new job is added ');
+ 
+       //  });
+ 
+ 
+        //Sending Mail after regestration
+        $data=array('Email'=>$request['email']);
+        // Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
+        // $message->to($data['Email']);
+        // $message->subject('registeration completed');
+
+        // });
 
 
         \Auth::loginUsingId($user->id);
@@ -563,20 +607,20 @@ $citynam->save();
     }
 
    
-    public function f_reg_cand(Request $request)
+    public function f_reg_cand(FullCanRegisterFormRequest $request)
     {
  try{
  
 
         //return $request->hasFile('logo')?"true":"pase";
-        $this->validate($request,[
-            'first_name'=>'required',
-            'email' => 'email|required|unique:users',
-            'gender' =>'required',
-            'visa_type'=>'required',
-            'looking_for_job'=>'required',
-            'agreeBox' => 'required',
-            ]);
+        // $this->validate($request,[
+        //     'first_name'=>'required',
+        //     'email' => 'email|required|unique:users',
+        //     'gender' =>'required',
+        //     'visa_type'=>'required',
+        //     'looking_for_job'=>'required',
+        //     'agreeBox' => 'required',
+        //     ]);
     /***
     ***increment code for the new user***
     ***/
@@ -694,7 +738,7 @@ $totalpoints=$points*5+$cvgpoint+$logopoint+$edupoint+$skillpoint+$videopoint+$l
 //dd($totalpoints);
     if($user)
         {
-            CandidateInfo::create(['last_name'=>$request['last_name'],
+            $CandidateInfos=['last_name'=>$request['last_name'],
             'phone_number'=>$request['phone_number'],
             'religion_id'=>$request['religion_id'],
             'birthdate'=>$request['birthdate'],
@@ -712,8 +756,12 @@ $totalpoints=$points*5+$cvgpoint+$logopoint+$edupoint+$skillpoint+$videopoint+$l
             'nationality_id'=>$request['nationality_id'],
             'vedio_path'=>$video_path, 
             'cv_path'=>$cv_path, 
-            'user_id'=>$user->id,'coins'=>$totalpoints]);
+            'user_id'=>$user->id,'coins'=>$totalpoints];
         }
+        $CandidateInfo = new CandidateInfo;
+         $CandidateInfo->create($CandidateInfos);
+    
+
 
         $can_experience = ['working_in'=>$request['working_in'],'start_date'=>$request['start_date'],'end_date'=>$request['end_date'],'employer_nationality_id'=>$request['employer_nationality_id'],'company_name'=>$request['company_name'],'country_id'=>$request['work_country_id'],'salary'=>$request['salary'],'role'=>$request['role'],'user_id'=>$user->id];
           //dd($can_experience);
@@ -740,7 +788,14 @@ $totalpoints=$points*5+$cvgpoint+$logopoint+$edupoint+$skillpoint+$videopoint+$l
         }
 
 
-
+        $user->notify(new Candidate_notification($CandidateInfo));
+        //Sending Mail after adding
+         $data=array('Email'=>$request['email']);
+         Mail::send('emails.NewEmployer', $data, function($message) use ($data) {
+         $message->to('Social@maidandhelper.com');
+         $message->subject('new user is added ');
+ 
+         });
 
          //Sending Mail after regestration
         //$data=array('Email'=>$request['email']);

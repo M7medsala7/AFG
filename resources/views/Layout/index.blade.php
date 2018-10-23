@@ -194,6 +194,46 @@
     <h3 class="title-con">recently added jobs</h3>
     <div class="row">
 
+
+       @foreach($RecentlyAddedJobsAgg as $AddJobs)
+      <div class="col-sm-3 company">
+        <div class="ineercompany">
+          <div class="tidiv"> <img src="/images/car1.jpg"> <span>{{$AddJobs->job_for}}</span></div>
+          <!--tidiv-->
+         
+          <h4 class="innertitltext">{{$AddJobs->CompanyName}} </h4>
+          <p class="officer">{{$AddJobs->JobName}}</p>
+          <ul class="hassle salary">
+            <li> <strong>loc.</strong> {{$AddJobs->CountryName}}</li>
+            <li> <strong>salary.</strong>{{number_format(($AddJobs->min_salary))?number_format($AddJobs->min_salary):"0"}}:{{number_format(($AddJobs->max_salary))?number_format($AddJobs->max_salary):"0"}} {{($AddJobs->Currency)?$AddJobs->Currency->name:""}}</li>
+          </ul>
+          <div class="tidivbotom"> <a href="/ViewJob/{{$AddJobs->id}}">View Job</a> <span>{{ \Carbon\Carbon::parse($AddJobs->Jobdate)->format('d/M/Y')}}</span></div>
+          <!--tidiv--> 
+   
+
+
+
+
+         <a href="https://www.facebook.com/dialog/share?
+app_id=1112718265559949
+&display=popup
+&title='maid and helper'
+
+&description='Mohamed salah'
+&quote={{$AddJobs->job_descripton}}
+&caption='Dody'
+&href=https://www.maidandhelper.com/ViewJob/{{$AddJobs->id}}
+&redirect_uri=https://www.facebook.com/" onclick="" ><i class="fas fa-share-alt"></i></a>
+
+     
+
+        </div>
+        <!--inernews--> 
+    
+
+      </div>
+      @endforeach
+
        @foreach($RecentlyAddedJobsCompany as $AddJobs)
       <div class="col-sm-3 company">
         <div class="ineercompany">
@@ -204,7 +244,7 @@
           <p class="officer">{{$AddJobs->JobName}}</p>
           <ul class="hassle salary">
             <li> <strong>loc.</strong> {{$AddJobs->CountryName}}</li>
-            <li> <strong>salary.</strong> {{number_format($AddJobs->max_salary)}}</li>
+            <li> <strong>salary.</strong>{{number_format(($AddJobs->min_salary))?number_format($AddJobs->min_salary):"0"}}:{{number_format(($AddJobs->max_salary))?number_format($AddJobs->max_salary):"0"}} {{($AddJobs->Currency)?$AddJobs->Currency->name:""}}</li>
           </ul>
           <div class="tidivbotom"> <a href="/ViewJob/{{$AddJobs->id}}">View Job</a> <span>{{ \Carbon\Carbon::parse($AddJobs->Jobdate)->format('d/M/Y')}}</span></div>
           <!--tidiv--> 
@@ -245,7 +285,8 @@ app_id=1112718265559949
           <p class="officer">{{$AddJobs->JobName}}</p>
           <ul class="hassle salary">
             <li> <strong>loc.</strong> {{$AddJobs->CountryName}}</li>
-            <li> <strong>salary.</strong> {{number_format($AddJobs->max_salary)}}</li>
+           
+            <li> <strong>salary.</strong>{{number_format(($AddJobs->min_salary))?number_format($AddJobs->min_salary):"0"}}:{{number_format(($AddJobs->max_salary))?number_format($AddJobs->max_salary):"0"}} {{($AddJobs->Currency)?$AddJobs->Currency->name:""}}</li>
           </ul>
           <div class="tidivbotom"> <a href="/ViewJob/{{$AddJobs->id}}">View Job</a> <span>{{ \Carbon\Carbon::parse($AddJobs->Jobdate)->format('d/M/Y')}}</span></div>
           <!--tidiv--> 
@@ -412,17 +453,16 @@ app_id=1112718265559949
 
 
 <div class="your-stud">
-@foreach($SuccessStories as $SuccessStor)
+@foreach($allSuccessStories as $SuccessStor)
       <div>
-        <h4 class="titltop"><span>finding a maid was never that easy and less expensive,thanks</span><br>
-          maid and helper</h4>
-          @if($SuccessStor->logo==null)
+        <h4 class="titltop"><span>{{$SuccessStor['description']}}</h4>
+          @if($SuccessStor['logo']==null)
           <img src="images/callto-action.png">
           @else
-        <img src="{{$SuccessStor->logo}}">
+        <img src="{{$SuccessStor['logo']}}">
         @endif
-        <h5 class="gebox-tit">{{$SuccessStor->name}}</h5>
-        <p class="viewsdriver">{{$SuccessStor->description}}</p>
+        <h5 class="gebox-tit">{{$SuccessStor['name']}}</h5>
+        <p class="viewsdriver">{{$SuccessStor['type']}}</p>
       </div>
       <!--div-->
       @endforeach
@@ -431,14 +471,7 @@ app_id=1112718265559949
 
       
 
-      
-      <div>
-        <h4 class="titltop"><span>finding a maid was never that easy and less expensive,thanks</span><br>
-          maid and helper</h4>
-        <img src="images/callto-action.png">
-        <h5 class="gebox-tit">mohamed ahmed</h5>
-        <p class="viewsdriver"> Office boy</p>
-      </div>
+  
       <!--div-->
       
       
@@ -497,7 +530,7 @@ app_id=1112718265559949
           <h4 class="modal-title">Watch Video</h4>
         </div>
         <div class="modal-body">
-             <iframe width="560" height="315" src="https://www.youtube.com/embed/_I4AxpE5byE" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+             <iframe width="560" height="400" src="https://www.youtube.com/embed/_I4AxpE5byE" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
         </div>
        
       </div>
@@ -511,9 +544,11 @@ app_id=1112718265559949
       <div class="modal-header"> watch video
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
-      <div class="textbox" id="v1">
-      
-      </div>
+     
+      <div class="modal-body" id="v1">
+       
+        </div>
+    
       <!--textbox--> 
       
     </div>
@@ -590,7 +625,7 @@ function ShowVideo($id,$type)
 var int="";
 $("#v1").html('');
 
-$("#v1").html('<video style="text-align: center;width: 100%;" controls><source src="'+$id+'" type='+$typeM+'></source></video>' );
+$("#v1").html('<video style="text-align: center;width="560" ;height="315";" controls><source src="'+$id+'" type='+$typeM+'></source></video>' );
 
  $('#myModal').modal('show');
 }

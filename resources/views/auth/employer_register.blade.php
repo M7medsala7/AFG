@@ -20,7 +20,14 @@
     height: 0px!important;
   }
   .select2-container--default .select2-selection--single{    background-color: 0!important;border: 0!important}
+  #step-2{
+    display:none;
+  }
+   #step-3{
+    display:none;
+  }
 </style>
+
 @section('content')
 <section class="sliderphoto innerphoto" style="background:url(/images/slide5.jpg) fixed center center no-repeat; background-size:cover;">
   <div class="container">
@@ -32,13 +39,14 @@
       </ul>
       <!--tabssteps-->
       
-      <form  method="POST" action="/registeremployer" class="formlogin">
+      <form  method="POST" action="/registeremployer" class="formlogin" >
             {{csrf_field()}}
         <div class="tab-content">
-          <div role="tabpanel" class="tab-pane tabs-inner active" id="step-1">
+          <div id="step-1">
+          <div role="tabpanel" class="tab-pane tabs-inner active" >
             <div class="divwits"> 
               <!-- <label class="desired"> job tilte</label>-->
-                <select class="form-control requirments" name="job_id" id="job_id" required="required" onblur="processForm(this.form)">
+                <select class="form-control requirments" name="job_id" id="job_id" required="" onblur="processForm(this.form)">
                   <option selected="" disabled="disabled">job tilte</option>
                     @foreach(\App\Job::all() as $job)
                       <option value="{{$job->id}}">{{$job->name}}</option>
@@ -98,7 +106,7 @@
                     <span>earn points <i class="fas fa-trophy"></i><br>
                     with each step</span> </div>
                 </div>
-                <div class="col-sm-4  stepotw"> <a href="#" id="step-1-next" class="largeredbtn">Next <i class="fas fa-long-arrow-alt-right"></i></a> </div>
+                <div class="col-sm-4  stepotw"> <a href="#" id="step-1-next" class="largeredbtn  ">Next <i class="fas fa-long-arrow-alt-right"></i></a> </div>
               </div>
               <!--row--> 
               
@@ -108,8 +116,8 @@
             
           </div>
           <!--tab-pane-->
-          
-          <div role="tabpanel" class="tab-pane tabs-inner" id="step-2">
+          </div>
+          <div role="tabpanel" class="tab-pane tabs-inner " id="step-2">
             <div class="divwits"> 
               <!--<label class="desired"> job description</label>-->
               <textarea class="form-control requirments" name="job_descripton" placeholder="job description... " onblur="processForm(this.form)"></textarea>
@@ -208,7 +216,7 @@
       </form>
     </div>
 
-  
+  {!! JsValidator::formRequest('App\Http\Requests\RegisterFormRequest', '.formlogin'); !!}
     <!--nonebac-->
     
     <div class="col-sm-4 inputbox margmadia">
@@ -218,31 +226,31 @@
         having the mostmodern profile</p>
     </div>
     <!--margmadia--> 
-    <div class="col-sm-4">
-       @if ($errors->any())
-        <div class="alert alert-danger">
-          <ul>
-            @foreach ($errors->all() as $error)
-                  <li>{{ $error }}</li>
-              @endforeach
-            </ul>
-         </div>
-        @endif
-    </div>
+ 
     
   </div>
   <!--container--> 
-  
+ 
 </section>
 <!--section-->
-
+  
 @endsection
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+<<<<<<< Updated upstream
+<script type="text/javascript" src="/vendor/jsvalidation/js/jsvalidation.js"></script>
+<script src="/dist/jquery.validate.js"></script>
+=======
+
+>>>>>>> Stashed changes
 <script>
 
 
   $(document).ready(function(){
+$.validator.setDefaults({
+    ignore: ""
+});
+   
     $('#job_id').select2();
     $('#country_id').select2();
     $('#currency_id').select2();
@@ -251,6 +259,51 @@
 
 
   </script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+
+ $("#step-1-next").click(function(){
+
+
+ var form = $(".formlogin");
+ console.log(form.valid());
+    if (form.valid() == true){
+      
+      current_fs = $('#step-1');
+      next_fs = $('#step-2');
+      next_fs.show(); 
+      current_fs.hide();
+    }
+  });
+
+  $("#step-2-next").click(function(){
+ var form = $(".formlogin");
+    if (form.valid() == true){
+      current_fs = $('#step-2');
+      next_fs = $('#step-3');
+      next_fs.show(); 
+      current_fs.hide();
+    }
+  });
+ 
+        $('#step-1-back').click(function(){
+            current_fs = $('#step-2');
+            next_fs = $('#step-1');
+            next_fs.show(); 
+            current_fs.hide();
+        });
+
+         $('#step-2-back').click(function(){
+            current_fs = $('#step-3');
+            next_fs = $('#step-2');
+            next_fs.show(); 
+            current_fs.hide();
+        });
+    });
+</script>
+
+
 <script>
 
    $(document).on('submit','#emplyReg',function(ev) {
@@ -261,6 +314,7 @@
      $.get("/congrats", function(data, status){
       $('#congrats').append(data);
      });
+   });
    </script>
     
     <script>

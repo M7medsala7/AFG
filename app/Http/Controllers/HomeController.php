@@ -14,6 +14,12 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Response;
 use App\Country;
+use DB;
+use Session;
+use App\PackagesUser;
+use App\Packages;
+use App\packagecount;
+use App\packageattribute;
 class HomeController extends Controller
 {
     /**
@@ -43,15 +49,49 @@ class HomeController extends Controller
 
     public function index()
     {
+      
            try
            {
                 if(\Auth::user())
                 {
                     if(\Auth::user()->type=='employer')
-                        return $this->employerDashboard();
-                    else
+                    {
+                        $Packages=DB::table('package_user')
+                        ->where('users_id','=',\Auth::user()->id)
+                        ->first();
+                        if($Packages != null )
+                        {
+                            
+                            if(session::get('payment')==1)
+                            {
+                                  session::Put('payment','');
+                                  return redirect(session::get('Profile'));
+                            }
+                            else
+                            {
+                                return $this->employerDashboard();
+                            }
+                        }
+                        else
+                        {
 
-                    return $this->CanadatiesDashboard();
+                            
+                            if(session::get('payment')==1)
+                            {
+                               return redirect('/Payment') ;
+                            }
+                            else
+                            {
+                                return $this->employerDashboard();
+                            }
+                        }
+                        
+                    }
+                    else{
+                        return $this->CanadatiesDashboard();
+                    }
+
+                    
                 }
                 else
                     return view('home');
@@ -361,13 +401,16 @@ class HomeController extends Controller
             $RecommandJobs=[];
             $CandidateInfo=\Auth::user()->CanInfo()->first(); 
             
-            $JobName=Job::where('id',$CandidateInfo->job_id)->select('name')->limit(2)->first();
+            $jobName=Job::where('id',$CandidateInfo->job_id)->first();
+                 
+        $JobNames=Job::where('id',$CandidateInfo->job_id)->select('name')->first();
 
-            $JobNameLiks=Job::where('name', 'LIKE', '%'.$JobName->name.'%')->limit(2)->get();
-            foreach($JobNameLiks as $JobNameLiks)
-                {
-                    $MatchingJos = PostJob::where('job_id',$JobNameLiks->id)
-                    ->orwhere('country_id',$CandidateInfo->country_id)->with('job')->with('country')->limit(3)->get();  
+            $JobNameLiks=Job::where('name', 'LIKE', '%'.$JobNames->name.'%')->get();
+
+        foreach($JobNameLiks as $JobNameLiks)
+            {
+                    $MatchingJos = PostJob::where('job_id',$JobNameLiks->id) 
+                    ->orwhere('country_id',$CandidateInfo->country_id)->with('job')->with('country')->get();  
                     
 
             foreach ($MatchingJos as $Matching) {
@@ -393,16 +436,28 @@ class HomeController extends Controller
                           
     }
 
-
     
 
     //employer dashboard
     public function employerDashboard()
     {
+<<<<<<< Updated upstream
+     
+=======
+      
+>>>>>>> Stashed changes
         try
         {
+           // dd("frf");
             $employerJobs = \Auth::user()->postJobs;
+            $employerJobsShow = \Auth::user()->postJobs->first();
+<<<<<<< Updated upstream
+            $employerJobsfor = EmployerProfile::where('user_id',\Auth()->user()->id)->first();
+      
+=======
             
+          
+>>>>>>> Stashed changes
             $countrynames= EmployerProfile::
             join('countries','countries.id','=','employer_profiles.country_id')
             ->select('countries.name  AS CName' )
@@ -411,8 +466,77 @@ class HomeController extends Controller
             join('cities','cities.id','=','employer_profiles.city_id')
             ->select('cities.name  AS cityName' )
             ->where('user_id',\Auth()->user()->id)->get();
+             $jobStatstics = \Auth::user()->postJobs->first();
+             $ownCan=CandidateInfo::where('Agency_ID',\Auth::user()->id)->get();
 
-            return view('employer.dashboard',compact('employerJobs','countrynames','citynames'));
+             $PackagesUser=PackagesUser::join('packages','packages.id','=','package_user.packages_id')
+             ->where('users_id',\Auth::user()->id)
+             ->first();
+if($PackagesUser != null || $PackagesUser != []){
+    $Packageattr1=packageattribute::where('packages_id',$PackagesUser->packages_id)
+             ->where('attribute_id',1)
+             ->first();
+
+             $Packageattr2=packageattribute::where('packages_id',$PackagesUser->packages_id)
+             ->where('attribute_id',2)
+             ->first();
+
+             $Packageattr3=packageattribute::where('packages_id',$PackagesUser->packages_id)
+             ->where('attribute_id',3)
+             ->first();
+
+             $packagecount1=DB::table('packagecount')
+             ->where('attribute_id',1)
+             ->select(DB::raw('count(packagecount.candidate_id)  as total'))
+             ->first();
+
+             $packagecount2=DB::table('packagecount')
+             ->where('attribute_id',2)
+             ->select(DB::raw('count(packagecount.candidate_id)  as total'))
+             ->first();
+
+             $packagecount3=DB::table('packagecount')
+             ->where('attribute_id',3)
+             ->select(DB::raw('count(packagecount.candidate_id)  as total'))
+             ->first();
+
+             if($PackagesUser->PackType == 1)
+             {
+                //Remail
+
+                $Remain1=$Packageattr1->Value-$packagecount1->total;
+                $Remain2=$Packageattr2->Value-$packagecount2->total;
+                $Remain3=$Packageattr3->Value- $packagecount3->total;
+                $Packageattr1=$Packageattr1->Value;
+                $Packageattr2=$Packageattr2->Value;
+                $Packageattr3=$Packageattr3->Value;
+
+             }
+             else
+             {
+                
+                $Remain1=$Packageattr1->Valueyear-$packagecount1->total;
+                $Remain2=$Packageattr2->Valueyear-$packagecount2->total;
+                $Remain3=$Packageattr3->Valueyear- $packagecount3->total;
+                $Packageattr1=$Packageattr1->Valueyear;
+                $Packageattr2=$Packageattr2->Valueyear;
+                $Packageattr3=$Packageattr3->Valueyear;
+             }
+}
+     else
+     {
+         
+        $Remain1=0;
+        $Remain2=0;
+        $Remain3=0;
+        $Packageattr1=0;
+        $Packageattr2=0;
+        $Packageattr3=0;
+                     
+     }    
+
+            return view('employer.dashboard',compact('ownCan','employerJobsfor','employerJobs','Remain1','Remain2','Remain3','Packageattr1','Packageattr2','Packageattr3','PackagesUser','countrynames','citynames','employerJobsShow','jobStatstics'));
+       
         }
         catch(Exception $e) 
 
@@ -430,11 +554,13 @@ class HomeController extends Controller
 
         try
         {
-
+$jobid=\App\PostJob::where('id',$request['jobId'])->select('job_id')->first();
+// dd($jobid->job_id);
                 $topCandidates = collect();
                 $job = \App\PostJob::find($request['jobId']);
             
                 $candidates = \App\CandidateInfo::where('id','>',$request['last_candidate_id'])->get();
+            
                 foreach ($candidates as $key => $candidate) {
                     if($candidate->job_id == $job->job_id && $candidate->nationality == $job->nationality && $candidate->country_id == $job->country_id)
                     {
@@ -457,6 +583,7 @@ class HomeController extends Controller
                     if(count($topCandidates)>5)
                         break;
                 }
+             
                 $html = view('employer.load_more_c',compact('topCandidates'))->render();
                 return ['html'=>$html,'new_last_id'=>$topCandidates->last()->id];
             }
@@ -538,7 +665,6 @@ class HomeController extends Controller
 
             }
        }
-
 
 
        

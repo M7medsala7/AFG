@@ -15,7 +15,7 @@ class CandidateInfo extends Model
         'birthdate','visa_type','visa_expire_date','industry_id',
         'country_id','gender','martial_status','type','vedio_path',
         'cv_path','descripe_yourself','looking_for_job','coins',
-        'user_id','nationality_id','salary','MaxSalary','CurrencyId','Eductionlevel',
+        'user_id','Agency_ID','nationality_id','salary','MaxSalary','CurrencyId','Eductionlevel',
     ];
 
     public function user()
@@ -32,11 +32,20 @@ class CandidateInfo extends Model
     {
         return $this->belongsTo('App\Country');
     }
+
+     public function religion()
+    {
+        return $this->belongsTo('App\Religion');
+    }
     public function job()
     {
         return $this->belongsTo('App\Job');
     }
    
+    public function industry()
+    {
+        return $this->belongsTo('App\Industry');
+    }
     public function canjob()
     {
         return $this->belongsTo('App\Job');
@@ -46,15 +55,36 @@ class CandidateInfo extends Model
         return $this->belongsTo('App\Nationality');
     }
 
+ public function CanExperince()
+    {
+        return $this->belongsTo('App\CandidateExperience','user_id','user_id');
+    }
         public function getCandidateSkill()
     {
         return $this->belongsToMany('App\Skills','user_skills','user_id','skill_id','user_id');
         
     }
 
+         public function getCandidateLang()
+    {
+ return $this->belongsToMany('App\Language','user_languages','user_id','language_id','user_id')->withPivot('degree');
+        
+    }
+
+          public function getCandidatePreferedLoc()
+    {
+ return $this->belongsToMany('App\Country','user_prefered_locations','user_id','country_id','user_id');
+        
+    }
+
      public function skills()
     {
         return $this->belongsToMany('App\User','job_applications','job_post_id','user_id');
+    }
+
+      public function currency()
+    {
+        return $this->belongsTo('App\Currency','CurrencyId');
     }
     protected $searchableColumns = [
         'country.name' => 20,

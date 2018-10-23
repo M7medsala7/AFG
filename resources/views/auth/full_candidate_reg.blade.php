@@ -1,4 +1,13 @@
 @extends('Layout.app')
+
+<script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
+    <script src="https://cdn.webrtc-experiment.com/gif-recorder.js"></script>
+    <script src="https://cdn.webrtc-experiment.com/getScreenId.js"></script>
+
+    <!-- for Edige/FF/Chrome/Opera/etc. getUserMedia support -->
+    <script src="https://cdn.webrtc-experiment.com/gumadapter.js"></script>
+
+
 @section('content')
 <style>
   .select2-selection__rendered{
@@ -15,7 +24,145 @@
     margin-top: 10px;
         color: white!important;
   }
- 
+  
+#loader {
+    bottom: 0;
+    height: 175px;
+    left: 0;
+    margin: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 175px;
+}
+#loader {
+    bottom: 0;
+    height: 175px;
+    left: 0;
+    margin: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 175px;
+}
+#loader .dot {
+    bottom: 0;
+    height: 100%;
+    left: 0;
+    margin: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 87.5px;
+}
+#loader .dot::before {
+    border-radius: 100%;
+    content: "";
+    height: 87.5px;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: scale(0);
+    width: 87.5px;
+}
+#loader .dot:nth-child(7n+1) {
+    transform: rotate(45deg);
+}
+#loader .dot:nth-child(7n+1)::before {
+    animation: 0.8s linear 0.1s normal none infinite running load;
+    background: #00ff80 none repeat scroll 0 0;
+}
+#loader .dot:nth-child(7n+2) {
+    transform: rotate(90deg);
+}
+#loader .dot:nth-child(7n+2)::before {
+    animation: 0.8s linear 0.2s normal none infinite running load;
+    background: #00ffea none repeat scroll 0 0;
+}
+#loader .dot:nth-child(7n+3) {
+    transform: rotate(135deg);
+}
+#loader .dot:nth-child(7n+3)::before {
+    animation: 0.8s linear 0.3s normal none infinite running load;
+    background: #00aaff none repeat scroll 0 0;
+}
+#loader .dot:nth-child(7n+4) {
+    transform: rotate(180deg);
+}
+#loader .dot:nth-child(7n+4)::before {
+    animation: 0.8s linear 0.4s normal none infinite running load;
+    background: #0040ff none repeat scroll 0 0;
+}
+#loader .dot:nth-child(7n+5) {
+    transform: rotate(225deg);
+}
+#loader .dot:nth-child(7n+5)::before {
+    animation: 0.8s linear 0.5s normal none infinite running load;
+    background: #2a00ff none repeat scroll 0 0;
+}
+#loader .dot:nth-child(7n+6) {
+    transform: rotate(270deg);
+}
+#loader .dot:nth-child(7n+6)::before {
+    animation: 0.8s linear 0.6s normal none infinite running load;
+    background: #9500ff none repeat scroll 0 0;
+}
+#loader .dot:nth-child(7n+7) {
+    transform: rotate(315deg);
+}
+#loader .dot:nth-child(7n+7)::before {
+    animation: 0.8s linear 0.7s normal none infinite running load;
+    background: magenta none repeat scroll 0 0;
+}
+#loader .dot:nth-child(7n+8) {
+    transform: rotate(360deg);
+}
+#loader .dot:nth-child(7n+8)::before {
+    animation: 0.8s linear 0.8s normal none infinite running load;
+    background: #ff0095 none repeat scroll 0 0;
+}
+#loader .lading {
+    background-image: url("../images/loading.gif");
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    bottom: -40px;
+    height: 20px;
+    left: 0;
+    position: absolute;
+    right: 0;
+    width: 180px;
+}
+@keyframes load {
+100% {
+    opacity: 0;
+    transform: scale(1);
+}
+}
+@keyframes load {
+100% {
+    opacity: 0;
+    transform: scale(1);
+}
+}
+  #step-2{
+    display:none;
+  }
+   #step-3{
+    display:none;
+  }
+ .pass{
+           -webkit-text-security:disc;
+       }
+
+ button.vjs-device-button.vjs-control.vjs-icon-av-perm:before, button.vjs-device-button.vjs-control.vjs-icon-audio-perm:before, button.vjs-device-button.vjs-control.vjs-icon-video-perm:before {
+   
+    background-color: #3c763d
+}
+    .video-js .vjs-control
+{
+
+}
   .select2 select2-container select2-container 
   {
 width:300px;
@@ -42,6 +189,33 @@ width:300px;
   {
     width:300px;
   }
+
+ #step-2{
+    display:none;
+  }
+   #step-3{
+    display:none;
+  }
+    #step-4{
+    display:none;
+  }
+    #step-5{
+    display:none;
+  }
+     #step-6{
+    display:none;
+  }
+     #step-7{
+    display:none;
+  }
+   .pass{
+           -webkit-text-security:disc;
+       }
+
+       .chosen-container-multi .chosen-choices li.search-field input, .chosen-container-multi .chosen-choices li.search-field input[type=text] {
+padding: 0!important;
+ width: 100% !important;
+}
 </style>
 
 <section class="sliderphoto innerphoto" style="background:url(/images/slide5.jpg) fixed center center no-repeat; background-size:cover;">
@@ -87,24 +261,14 @@ width:300px;
               <!--instructionsleft--> 
             </div>
             <!--row--> 
-             <div class="col-sm-4">
-               @if ($errors->any())
-                <div class="alert alert-danger">
-                  <ul>
-                    @foreach ($errors->all() as $error)
-                          <li>{{ $error }}</li>
-                      @endforeach
-                    </ul>
-                 </div>
-                @endif
-            </div>
+             
           </div>
           <!--innertabs--> 
           
         </div>
         <!--tab-pane-->
-        
-        <div role="tabpanel" class="tab-pane nonebac witsteptow" id="step-2">
+        <div id="step-2">
+        <div role="tabpanel" class="tab-pane nonebac witsteptow" >
           <div class="headtop nonbord borderbox">
             <div class="stapson active"><span>1</span>
               <h4 class="personalinfo">personal info</h4>
@@ -128,7 +292,7 @@ width:300px;
                 
                 <div class="col-sm-12 airports witpostslid">
                 <select class="form-control requirments" name="nationality_id" id="nation_id" required="" style="width: 90%;"  onblur="processForm(this.form)">
-                  <option selected="" >Nationality</option>
+                  <option selected="" disabled="disabled">Nationality</option>
                   @foreach(\App\Nationality::all() as $nation)
                     <option value="{{$nation->id}}" >{{$nation->name}}</option>
                   @endforeach
@@ -152,19 +316,19 @@ width:300px;
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                  <input type="email" class="form-control requirments" name="email" placeholder="email" onblur="processForm(this.form)">
+                  <input type="text" class="form-control requirments" name="email" placeholder="email" onblur="processForm(this.form)">
                 </div>
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
-                  <input type="password" class="form-control requirments" name="password"  placeholder="password" onblur="processForm(this.form)">
+                  <input type="text" class="form-control requirments pass" name="password"  placeholder="password" autocomplete="off"  onblur="processForm(this.form)">
                 </div>
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid" style"width:100%">
                 
                   <select class="form-control requirments" name="gender" id="gender" required="" style="width: 90%;" onblur="processForm(this.form)">
-                    <option selected="" style="width: 90%;"> gender</option>
+                    <option selected="" style="width: 90%;"  disabled="disabled"> gender</option>
                     <option value="0">Male</option>
                     <option value="1" >female</option>
                   </select>
@@ -181,7 +345,7 @@ width:300px;
               <div class="row">
                 <div class="col-sm-12 airports witpostslid">
                   <select class="form-control requirments" id ="martial_status" name="martial_status" required="" style="width: 90%;" >
-                    <option selected="" > marital status</option>
+                    <option selected=""  disabled="disabled" > marital status</option>
 
                     
                     <option value="single" >single</option>
@@ -230,7 +394,7 @@ width:300px;
                 
                 <div class="col-sm-12 airports witpostslid">
                   <select class="form-control requirments" id="visa_type"  name="visa_type" required="" style="width: 90%;" onblur="processForm(this.form)">
-                     <option selected=""> Emploer-type of visa</option>
+                     <option selected="" disabled="disabled"> Emploer-type of visa</option>
                     <option  value="None" >None</option>
                     <option  value="Employed" >Employed</option>
                     <option value="Visit">Visit</option>
@@ -275,7 +439,7 @@ width:300px;
           
         </div>
         <!--tab-pane-->
-        
+        </div>
         <div role="tabpanel" class="tab-pane nonebac" id="step-3">
           <div class="headtop nonbord borderbox">
             <div class="stapson active"><span>2</span>
@@ -287,8 +451,8 @@ width:300px;
           
           <div class="row">
             <div class="col-sm-12 airports witpostslid">
-              <select class="form-control chosen-select types" name="language_ids[]" id="language_id" multiple="multiple" required="" style="width: 90%;" onblur="processForm(this.form)">
-                <option value="" disabled selected>Choose your languages</option>
+              <select class="form-control chosen-select types" data-placeholder="Choose a Language..." name="language_ids[]" id="language_id" multiple="multiple" required="" style="width: 100%;" onblur="processForm(this.form)">
+               
                 @foreach(\App\Language::all() as $lang)
                   <option value="{{$lang->id}}">{{$lang->name}}</option>
                 @endforeach
@@ -312,8 +476,8 @@ width:300px;
             <!--witpostslid-->
             
             <div class="col-sm-12 airports witpostslid">
-              <select class="form-control chosen-select types" name="skill_ids[]" id="skill_ids" multiple="multiple" required="" style="width: 90%;" onblur="processForm(this.form)">
-              <option value="" disabled selected>Choose your Skills</option>
+              <select class="form-control chosen-select types" data-placeholder="Choose a Skill.." name="skill_ids[]" id="skill_ids" multiple="multiple" required="" style="width: 90%;" onblur="processForm(this.form)">
+            
                 @foreach(\App\Skills::all() as $skill)
                   <option value="{{$skill->id}}">{{$skill->name}}</option>
                 @endforeach
@@ -368,7 +532,7 @@ width:300px;
             <div class="row">
               
               <label class="col-sm-3 airports cololabox">
-                <input type="radio" value="1" name="looking_for_job" onblur="processForm(this.form)">
+                <input type="radio" value="1" name="looking_for_job" onblur="processForm(this.form)" checked>
                 <span class="label-text" >yes</span> </label>
               <label class="col-sm-3 airports cololabox">
                 <input type="radio" value="0" name="looking_for_job" onblur="processForm(this.form)">
@@ -403,7 +567,7 @@ width:300px;
                     <option value="{{$currency->id}}">{{$currency->name}}</option>
                   @endforeach
                 </select>
-            </select>
+        
           </div>
           <!--divwits-->
           <div class="divwits" style="margin-bottom: 15px;">
@@ -413,19 +577,19 @@ width:300px;
                     <option value="{{$country->id}}">{{$country->name}}</option>
                   @endforeach
                 </select>
-            </select>
+          
           </div>
           <!--divwits-->
           
           <div class="divwits" style="margin-bottom: 15px;">
-            <select class="form-control chosen-select types" name="prefered_location_ids[]" multiple="multiple" required="" style="width: 90%;" onblur="processForm(this.form)">
+            <select class="form-control chosen-select types" name="prefered_location_ids[]" multiple="multiple" data-placeholder="you can select multicountries you wish to work at" required="" style="width: 90%;" onblur="processForm(this.form)">
               
-                <option value="" disabled selected>you can select multicountries you wish to work at</option>
+               
                     @foreach(\App\Country::all() as $country)
                       <option value="{{$country->id}}">{{$country->name}}</option>
                     @endforeach
                   </select>
-            </select>
+           
           </div>
           <!--divwits-->
           
@@ -507,17 +671,17 @@ width:300px;
                       <option value="{{$country->id}}">{{$country->name}}</option>
                     @endforeach
                   </select>
-            </select>
+         
           </div>
 
              <div class="divwits">
           <select class="form-control requirments" name="employer_nationality_id" id="emp_nation_id" required="" style="width: 90%;" onblur="processForm(this.form)">
-              <option selected="">Employer Nationality</option>
+              <option selected=""  disabled="disabled">Employer Nationality</option>
                   @foreach(\App\Nationality::all() as $nation)
                     <option value="{{$nation->id}}">{{$nation->name}}</option>
                   @endforeach
                 </select>
-            </select>
+      
           </div>
           <!--divwits-->
           
@@ -599,7 +763,7 @@ width:300px;
           <div class="divwits">
             <div class="row">
               <div class="col-sm-6 clickupload"><input type="file" id="video_file" style="display: none;" name="video_file"> <a href="#" data-toggle="modal" data-target="#myMo" class="file_input largeredbtn" onblur="processForm(this.form)">Upload Video</a> </div>
-              <div class="col-sm-6 clickupload"> <a href="#" data-toggle="modal" data-target="#myModa2" class="largeredbtn" onblur="processForm(this.form)">Record Video</a> </div>
+              <div class="col-sm-6 clickupload"> <a href="#" data-toggle="modal" data-target="#record_video" class="largeredbtn" onblur="processForm(this.form)">Record Video</a> </div>
             </div>
             <!--row--> 
             
@@ -706,7 +870,7 @@ width:300px;
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="textbox">
- <iframe width="560" height="315" src="https://www.youtube.com/embed/_I4AxpE5byE" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+ <iframe width="560" height="315" src="https://www.youtube.com/embed/Hp_HySkpTa8" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
       </div>
       <!--textbox--> 
       
@@ -721,22 +885,9 @@ width:300px;
        
       </div>
       <div class="textbox">
-      <div class="sk-circle">
-        <div class="sk-circle1 sk-child"></div>
-        <div class="sk-circle2 sk-child"></div>
-        <div class="sk-circle3 sk-child"></div>
-        <div class="sk-circle4 sk-child"></div>
-        <div class="sk-circle5 sk-child"></div>
-        <div class="sk-circle6 sk-child"></div>
-        <div class="sk-circle7 sk-child"></div>
-        <div class="sk-circle8 sk-child"></div>
-        <div class="sk-circle9 sk-child"></div>
-        <div class="sk-circle10 sk-child"></div>
-        <div class="sk-circle11 sk-child"></div>
-        <div class="sk-circle12 sk-child"></div>
-      </div>
-      <div class="linksing"> Be patiant  <span class="nambers">7</span> seconds to uploading sucessfully</div>
-    </div>
+      
+      Congratulation,your video uploaded sucessfuly please enter finsh to submit your profile
+     </div>
   </div>
       </div>
       <!--textbox--> 
@@ -746,39 +897,81 @@ width:300px;
 </div>
 
 
-<div id="myModa2" class="modal fade">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header"> record a video
-        <button type="button" class="close" data-dismiss="modal">X</button>
-      </div>
-      <div class="textbox">
-        <form action="#" method="" class="formlogin video-rc" id="MyFormInput">
-         
-          <video id="myVideo" class="video-js vjs-default-skin"></video>
-          <div class="divwits iconfont">
-            <label style="color: red" id="Sucessrecord"></label>
-           
-          </div>
-          <!--divwits-->
-          
-        
-          <!--divwits-->
-          
-        </form>
-      </div>
-      <!--textbox--> 
-      
-    </div>
+
+<div id="record_video" class="modal fade record_video stream" role="dialog">
+        <div class="modal-dialog ">
+            <!-- Modal content-->
+          <div class="modal-content inpudata">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Record your Video</h4>
+                </div>
+                <div class="modal-body inpudata">
+                    <div id="container">
+                        <div class="col-sm-12" hidden>
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-3">
+                                <label class="pull-right">:<span style="color: red;">*</span> </label>
+                            </div>
+                            <div class="col-sm-4 inpudata"  >
+                                <input type="text" name="video_title" id="video_title" class="form-control">
+                            </div>
+                        </div>
+                        <div class="in-iframe">
+                          <video id="gum" autoplay muted style="width: 100%;
+                          margin:0px 0px 0px 0px;background-color:black"></video>
+                          <video id="recorded" hidden style="width: 100%;
+                          margin: 10px 10px 10px;"></video>
+</div>
+<div class="divwits">
+            <div class="row" style="Background-color:#009df4">
+            <div class="col-sm-3 record-ve" style="margin-bottom:-30px">
+                            <button class=" largeredbtn"   id="record" ><i class="fas fa-video"></i>record</button>
+                            </div>
+                            <div class="col-sm-3 record-ve">
+                            <button class=" largeredbtn"  id="play" disabled> <i class="fas fa-play"></i>play</button>
+                            </div>
+                            <div class="col-sm-3 record-ve">
+                            <button class=" largeredbtn"  id="uploadv" disabled> <i class="fas fa-upload"></i>save</button>
+                            </div>
+                            <div class="col-sm-3 record-ve">
+                            <button class=" largeredbtn"  id="download" disabled><i class="fas fa-download"></i>Download</button>
+                       
+                            </div>
+</div>
+</div>
+                        <div class="row" id="progress_v" hidden>
+                            <div id="loader">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="lading"> uploading wait please ...</div>
+
+                        </div>
+                     </div>
+                  </div>
+
+     
+                <div class="modal-footer">
+                    <!-- <button type="button" class="btn btn-default close_vedio" data-dismiss="modal"></button> -->
+                </div>
+  </div>
   </div>
 </div>
 <!--myModa2-->
-
+{!! JsValidator::formRequest('App\Http\Requests\FullCanRegisterFormRequest', '.formlogin'); !!}
 
 <!--myModa3-->
 
 @endsection
 @section('scripts')
+<script type="text/javascript" src="/vendor/jsvalidation/js/jsvalidation.js"></script>
+<script src="/dist/jquery.validate.js"></script>
 <script>
   $('.clear_all').on('click',function(){
     document.getElementById('full_cand_reg').reset();
@@ -789,6 +982,127 @@ width:300px;
   $('.file_input').on('click',function(){
     $('#video_file').click();
   });
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+
+   $("#step-1-next").click(function(){
+
+ var form = $("#full_cand_reg");
+ console.log(form.valid());
+    if (form.valid() == true){
+      current_fs = $('#step-1');
+      next_fs = $('#step-2');
+      next_fs.show(); 
+      current_fs.hide();
+    }
+  });
+ $('#step-1-back').click(function(){
+            current_fs = $('#step-2');
+            next_fs = $('#step-1');
+            next_fs.show(); 
+            current_fs.hide();
+        });
+  $("#step-2-next").click(function(){
+
+ var form = $("#full_cand_reg");
+ console.log(form.valid());
+    if (form.valid() == true){
+      current_fs = $('#step-2');
+      next_fs = $('#step-3');
+      next_fs.show(); 
+      current_fs.hide();
+    }
+  });
+ 
+       
+
+         $('#step-2-back').click(function(){
+            current_fs = $('#step-3');
+            next_fs = $('#step-2');
+            next_fs.show(); 
+            current_fs.hide();
+        });
+
+           $("#step-3-next").click(function(){
+
+ var form = $("#full_cand_reg");
+ console.log(form.valid());
+    if (form.valid() == true){
+      current_fs = $('#step-3');
+      next_fs = $('#step-4');
+      next_fs.show(); 
+      current_fs.hide();
+    }
+  });
+ 
+       
+
+         $('#step-3-back').click(function(){
+            current_fs = $('#step-4');
+            next_fs = $('#step-3');
+            next_fs.show(); 
+            current_fs.hide();
+        });
+    
+
+               $("#step-4-next").click(function(){
+
+ var form = $("#full_cand_reg");
+ console.log(form.valid());
+    if (form.valid() == true){
+      current_fs = $('#step-4');
+      next_fs = $('#step-5');
+      next_fs.show(); 
+      current_fs.hide();
+    }
+  });
+ 
+       
+
+         $('#step-4-back').click(function(){
+            current_fs = $('#step-5');
+            next_fs = $('#step-4');
+            next_fs.show(); 
+            current_fs.hide();
+        });
+
+
+                       $("#step-5-next").click(function(){
+
+ var form = $("#full_cand_reg");
+ console.log(form.valid());
+    if (form.valid() == true){
+      current_fs = $('#step-5');
+      next_fs = $('#step-6');
+      next_fs.show(); 
+      current_fs.hide();
+    }
+  });
+ 
+       
+
+         $('#step-5-back').click(function(){
+            current_fs = $('#step-6');
+            next_fs = $('#step-5');
+            next_fs.show(); 
+            current_fs.hide();
+        });
+
+                            $("#step-6-next").click(function(){
+
+ var form = $("#full_cand_reg");
+ console.log(form.valid());
+    if (form.valid() == true){
+      current_fs = $('#step-6');
+      next_fs = $('#step-7');
+      next_fs.show(); 
+      current_fs.hide();
+    }
+  });
+ 
+    });
 </script>
 
     <script>
@@ -823,6 +1137,7 @@ $("#eductional_level").select2({
 });
 
 
+
  $(".types").chosen({ 
                    width: '100%',
                    color:'red',
@@ -831,75 +1146,302 @@ $("#eductional_level").select2({
                    search_contains:true, });
  $(".types").trigger("chosen:updated");
  
-var player = videojs("myVideo", {
-    controls: true,
-    width: 580,
-    height: 240,
-    fluid: false,
-    plugins: {
-        record: {
-            audio: true,
-            video: true,
-            maxLength: 120,
-            debug: true
-        }
-    }
-}, function(){
-    // print version information at startup
-    videojs.log('Using video.js', videojs.VERSION,
-        'with videojs-record', videojs.getPluginVersion('record'),
-        'and recordrtc', RecordRTC.version);
-});
-// error handling
-player.on('deviceError', function() {
-    console.log('device error:', player.deviceErrorCode);
-});
-player.on('error', function(error) {
-    console.log('error:', error);
-});
-// user clicked the record button and started recording
-player.on('startRecord', function() {
-  document.getElementById("Sucessrecord").innerHTML = "Video Start record after finish press stop";
-  
-});
-// user completed recording and stream is available
-player.on('finishRecord', function() {
-  document.getElementById("Sucessrecord").innerHTML = "";
-  $('#myModa2').modal('hide');
-  $('#myModalcongratulation').modal('show');
-console.log( player.recordedData);
+ var mediaSource = new MediaSource();
+        mediaSource.addEventListener('sourceopen', handleSourceOpen, false);
+        var mediaRecorder;
+        var recordedBlobs;
+        var sourceBuffer;
 
-     var fd = new FormData();
-    fd.append('name', player.recordedData.video.name);
-    fd.append('data', player.recordedData.video);
-    $.ajax({
-        type: 'POST',
-        url: '/StoreVideo',
-        processData: false,
-        contentType: false,
-        data: fd
-    }).done(function(data) {
-      $('#myModa2').modal('hide');
-    // document.getElementById("Sucessrecord").innerHTML = "Video record Sucessfully";
-        console.log('yarab');
+        var gumVideo = document.querySelector('video#gum');
+        var recordedVideo = document.querySelector('video#recorded');
+
+
+        var recordButton = document.querySelector('button#record');
+        var playButton = document.querySelector('button#play');
+        var downloadButton = document.querySelector('button#download');
+        recordButton.onclick = toggleRecording;
+        playButton.onclick = play;
+        downloadButton.onclick = download;
+
+        // window.isSecureContext could be used for Chrome
+        var isSecureOrigin = location.protocol === 'https:' ||
+                location.hostname === 'localhost';
+        if (!isSecureOrigin) {
+
+            var alert_content='';
+            alert_content+='getUserMedia() must be run from a secure origin: HTTPS or localhost.' +
+                    '\n\nChanging protocol to HTTPS';
+
+            $('#alert_box').append(alert_content);
+            $('#record_video').modal('hide');
+
+            location.protocol = 'HTTPS';
+        }
+
+        var constraints = {
+            audio: true,
+            video: true
+        };
+
+        var uploadfiles = document.querySelector('button#uploadv');
+        uploadfiles.onclick = uploadFile;
+        //uploadfiles.addEventListener('change', function () {
+
+        //v/ar files = this.files;
+
+        // for(var i=0; i<files.length; i++){
+
+        //    uploadFile(this.files[i]); // call the function to upload the file
+
+        //  }
+
+        //}, false);
+
+
+        function uploadFile(){
+            $('#progress_v').show();
+            var blob = new Blob(recordedBlobs, {type: 'video/webm'});
+            var fileType = blob.type.split('/')[0] || 'audio';
+            var fileName = (Math.random() * 1000).toString().replace('.', '');
+            if (fileType === 'audio') {
+                fileName += '.' + (!!navigator.mozGetUserMedia ? 'ogg' : 'wav');
+            } else {
+                fileName += '.webm';
+            }
+            
+
+            var url = window.URL.createObjectURL(blob);
+    
+            var a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.upload = 'test.webm';
+            document.body.appendChild(a);
+            // a.click();
+
+            var surl = '/StoreVideo';
+
+            var xhr = new XMLHttpRequest();
+
+            var fd = new FormData();
+
+            xhr.open("POST", surl, true);
+
+            xhr.onreadystatechange = function() {
+
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                  $('#myModalcongratulation').modal('show');
+                  
+                  //  var alert_content='';
+                  //   alert_content+=' <div class="alert alert-success alert-dismissable fade in " id="profile_alert">';
+                  //   alert_content+=' <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
+                  //   alert_content+='<strong>{{trans('ocs/registration::massages/message.success.video_uploaded')}}</strong>';
+                  //   alert_content+=' </div>';
+                  
+                    $('#record_video').modal('hide');
+                    $('#video_data').val("{{asset('/candidates/videos/')}}"+'/'+fileName);
+                    return;
+                    // Every thing ok, file uploaded
+                    console.log(xhr.responseText); // handle response.
+
+
+                }
+                else
+
+                {
+
+                }
+
+            };
+
+            fd.append(fileType + '-filename', fileName);
+            fd.append(fileType + '-blob', blob);
+            fd.append('video_title',$('#video_title').val());
+            fd.append('_token','{{csrf_token()}}');
+            xhr.send(fd);
+
+
+        }
+
+        function handleSuccess(stream) {
+
+            recordButton.disabled = false;
+            console.log('getUserMedia() got stream: ', stream);
+            window.stream = stream;
+            if (window.URL) {
+                gumVideo.src = window.URL.createObjectURL(stream);
+            }
+            else {
+                gumVideo.src = stream;
+            }
+        }
+
+        function handleError(error) {
+
+            console.log('navigator.getUserMedia error: ', error);
+        }
+        $('.record_video').on('click',function(){
+
+            navigator.mediaDevices.getUserMedia(constraints).
+                    then(handleSuccess).catch(handleError);
+
+        });
+
+        $('.stream').on('hidden.bs.modal', function () {
+
+            $('#gum').hide();
+            $('#recorded').hide();
+            recordButton.textContent = 'record';
+            if (mediaStream.getVideoTracks().length && mediaStream.getVideoTracks()[0].stop) {
+    mediaStream.getVideoTracks().forEach(function(track) {
+        track.stop();
     });
-});
+}
+
+
+           // stream.getVideoTracks()[0].stop();
+        });
+
+
+
+
+
+        function handleSourceOpen(event) {
+            console.log('MediaSource opened');
+            sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vp8"');
+            console.log('Source buffer: ', sourceBuffer);
+        }
+
+        recordedVideo.addEventListener('error', function(ev) {
+            console.error('MediaRecording.recordedMedia.error()');
+
+            var alert_content='';
+            alert_content+='Your browser can not play\n\n' + recordedVideo.src
+                    + '\n\n media clip. event: ' + JSON.stringify(ev);
+
+            $('#alert_box').append(alert_content);
+            $('#record_video').modal('hide');
+
+        }, true);
+
+        function handleDataAvailable(event) {
+
+            if (event.data && event.data.size > 0) {
+                recordedBlobs.push(event.data);
+            }
+        }
+
+        function handleStop(event) {
+
+            console.log('Recorder stopped: ', event);
+        }
+
+        function toggleRecording() {
+         
+
+            if (recordButton.textContent === 'record') {
+                startRecording();
+            }
+            else
+            {
+                stopRecording();
+                recordButton.textContent = 'record';
+                playButton.disabled = false;
+                downloadButton.disabled = false;
+                uploadfiles.disabled = false;
+
+
+            }
+        }
+
+        function startRecording() {
+
+
+var recorder = new window.MediaRecorder(stream);
+            $('#gum').show();
+            recordedBlobs = [];
+            var options = {mimeType: 'video/webm;'};
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+
+                console.log(options.mimeType + ' is not Supported');
+                options = {mimeType: 'video/webm;codecs=vp8'};
+                if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                    console.log(options.mimeType + ' is not Supported');
+                    options = {mimeType: 'video/webm'};
+                    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                        console.log(options.mimeType + ' is not Supported');
+                        options = {mimeType: ''};
+                    }
+                }
+            }
+
+            try
+            {
+              console.log("StartRecord");
+              mediaRecorder = new MediaRecorder(window.stream, options);
+
+            }
+
+            catch (e)
+            {
+              console.log("StartRecord Wrong");
+                console.error('Exception while creating MediaRecorder: ' + e);
+                var alert_content='';
+                alert_content+='Exception while creating MediaRecorder: '
+                        + e + '. mimeType: ' + options.mimeType;
+                $('#alert_box').append(alert_content);
+                $('#record_video').modal('hide');
+
+                return;
+            }
+            console.log('Created MediaRecorder', mediaRecorder, 'with options', options);
+            recordButton.textContent = 'Stop record';
+            playButton.disabled = true;
+            downloadButton.disabled = true;
+            uploadfiles.disabled = true;
+
+            mediaRecorder.onstop = handleStop;
+            mediaRecorder.ondataavailable = handleDataAvailable;
+            mediaRecorder.start(10); // collect 10ms of data
+            console.log('MediaRecorder started', mediaRecorder);
+        }
+
+        function stopRecording() {
+            // $('#gum').hide();
+            mediaRecorder.stop();
+            console.log('Recorded Blobs: ', recordedBlobs);
+            recordedVideo.controls = true;
+        }
+
+        function play() {
+          $('#gum').hide();
+            $('#recorded').show();
+            var superBuffer = new Blob(recordedBlobs, {type: 'video/webm'});
+            recordedVideo.src = window.URL.createObjectURL(superBuffer);
+        }
+
+        function download() {
+
+            var blob = new Blob(recordedBlobs, {type: 'video/webm'});
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'test.webm';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 100);
+        }
+
+
+
+
 
  });
-// function default_value($m)
-// {
-//  //var N=document.getElementById($m).innerHTML;
-//  var check = $("#"+$m).val();
 
-//     if(check !="")
-//     {
-//       alert("dddd");
-//       document.getElementById("Points").innerHTML = 5+parseInt(document.getElementById("Points").innerHTML);
-//     }
-    
- 
-
-// }
 function processForm(form) {
   
   document.getElementById("Points").innerHTML=0;

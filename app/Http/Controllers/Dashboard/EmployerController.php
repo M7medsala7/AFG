@@ -12,9 +12,7 @@ use App\EmployerProfile;
 use App\Educational;
 use App\CandidateExperience;
 use App\Notifications\Employer;
-use App\Notifications;
-
-
+use Notification;
 use Carbon\Carbon;
 use Socialite;
 use Session;
@@ -171,12 +169,23 @@ class EmployerController extends Controller
                 }
                 $emp = new EmployerProfile;
                 $emp->create($empdata);
-                auth()->user()->notify(new Employer($emp));
-                //Notification::route('mail','Social@maidandhelper.com')->notify(new Employer($emp));
+               
                 \App\Company::create(['name'=>$request['first_name'],'size'=>'5','country_id'=>$request['country_id'],'lat'=>'0','lang'=>'0','industry_id'=>0]);
 
+                auth()->user()->notify(new Employer($emp));
+                //Notification::route('mail','7asnaakhalaf@gmail.com')->notify(new Employer($emp));
+                    //Sending Mail after regestration
+        $data=array('Email'=>$request['email']);
+         Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
+        $message->to('Social@maidandhelper.com');
+        $message->subject('new employer is added ');
 
+        });
                 return Redirect()->back()->withFlashMessage('employr added correctly');
+            
+               
+
+     
             }    
             catch(Exception $e) 
                 {
@@ -269,8 +278,10 @@ class EmployerController extends Controller
                 
                 $employer->save();
                 
-                $company=\App\Company::find($id);
-                $company->name = $request->first_name;
+                $emp_id=$employer->id;
+               
+                $company=\App\Company::find($emp_id);
+                $company->name = $request->name;
                 $company->country_id = $request->country_id;
                 $company->industry_id = 0;
                 $company->lang = '0';

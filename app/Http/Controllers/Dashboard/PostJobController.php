@@ -41,20 +41,22 @@ class PostJobController extends Controller
         //search in postjob
         public function search(Request $request) 
         {
-            $posts = PostJob::where('job_for', 'LIKE', '%' . $request->s . '%')
+            $posts = PostJob::
+            join('jobs','jobs.id','=','post_jobs.job_id')
+            ->select('jobs.name as name','jobs.*','post_jobs.*')
+            ->where('post_jobs.job_for', 'LIKE', '%' . $request->s . '%')
+            ->orWhere('name', 'LIKE', '%' . $request->s . '%')
             ->orWhere('job_id', 'LIKE', '%' . $request->s . '%')
-            ->orWhere('created_by', 'LIKE', '%' . $request->s . '%')
-            ->orWhere('created_at', 'LIKE', '%' . $request->s . '%');
-        
+            ->orWhere('created_by', 'LIKE', '%' . $request->s . '%');
+            
         
             $posts =$posts->get();
             //dd($posts);
-            $post1 = Job::where('name', 'LIKE', '%' . $request->s . '%');
-            
-            $post1 =$post1->get();
+           
+          
         // dd($post1);
         
-            return view('Dashboardadmin.Postjob.search_index', compact('posts','post1'));
+            return view('Dashboardadmin.Postjob.search_index', compact('posts'));
         }
 
 
@@ -154,8 +156,7 @@ class PostJobController extends Controller
             unset($input['name'],$input['email'],$input['password']);
             $input['created_by']= $user->id;
             $job=PostJob::create($input);
-            auth()->user()->notify(new PostJobs($job));
-            //Notification::route('mail','hasnaa2727@gmail.com')->notify(new PostJobs($job));
+           
             if($user)
             {
                 EmployerProfile::create(['type'=>$request['job_for'],
@@ -188,7 +189,14 @@ class PostJobController extends Controller
         'country_id'=>$request['country_id'],'lat'=>'0','lang'=>'0',
         'created_by'=>$user->id,'industry_id'=>0]);
 
-        
+        auth()->user()->notify(new PostJobs($job));
+           //Sending Mail after adding
+           $data=array('Email'=>$request['email']);
+           Mail::send('emails.NewJob', $data, function($message) use ($data) {
+           $message->to('Social@maidandhelper.com');
+           $message->subject('new job is added ');
+
+           });
         return Redirect()->back()->withFlashMessage('Job Added correctly');
     }
        

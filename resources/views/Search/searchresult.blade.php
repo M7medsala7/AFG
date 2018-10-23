@@ -91,7 +91,7 @@
           
           <div class="filterbottom">
             <h4 class="contenttype">Desired Location </h4>
-          <select class="form-control chosen" name="country_id" id="country_id"  required=""  onchange="Doaaasd()">
+          <select class="form-control chosen-select types" name="country_id" id="country_id"  required=""  onchange="Doaaasd()">
                   <option selected=""  value="0">None</option>
                    @foreach(\App\Country::all() as $country)
                       <option value="{{$country->id}}" name="country" id="country">{{$country->name}}</option>
@@ -181,7 +181,7 @@
                 <div class="currencytext">
               <h5>currency</h5>
 
-               <select class="form-control chosen" name="currencyID" id="currencyID"  required=""  onchange="Doaaasd()">
+               <select class="form-control chosen-select types" name="currencyID" id="currencyID"  required=""  onchange="Doaaasd()">
                 
                    @foreach(\App\Currency::all() as $Curren)
                       <option value="{{$Curren->id}}" name="currency" id="currency">{{$Curren->name}}</option>
@@ -393,7 +393,7 @@
   </div>
 </div>
 <!--myModal-->
-@stop
+@endsection
 
 
 @section('scripts')
@@ -412,11 +412,18 @@
         }
     });
  
-    $('.chosen').chosen({width: "95%"});     
+      
 
 
 
 });
+   $(".types").chosen({ 
+                   width: '100%',
+                   color:'red',
+                   no_results_text: "No Results",
+                   allow_single_deselect: true, 
+                   search_contains:true, });
+ $(".types").trigger("chosen:updated");
  
 $(document).on("click", ".show-more a", function(e) {
     e.preventDefault();
@@ -526,18 +533,22 @@ var skills=$('#skills_id').find(":selected").val();
      experince=JSON.stringify(experince); 
     console.log(employertype);
 
-var dataString = "Jobtitle="+Jobtitle+"&country="+country+"&jobcheck="+jobcheck+"&candidate="+candidate+"&words="+words+"&employertype="+employertype+"&salary="+salary+"&fromsalary="+fromsalary+"&tosalary="+tosalary+"&currency="+currency+"&experince="+experince+"&fromsexperince="+fromexperince+"&toexperince="+toexperince+"&nationality="+nationality+"&skills="+skills;
+var dataString = "Jobtitle="+Jobtitle+"&country="+country+"&jobcheck="+jobcheck+"&words="+words+"&employertype="+employertype+"&salary="+salary+"&fromsalary="+fromsalary+"&tosalary="+tosalary+"&currency="+currency+"&experince="+experince+"&fromsexperince="+fromexperince+"&toexperince="+toexperince+"&nationality="+nationality+"&skills="+skills;
+console.log(dataString);
     $.ajax({
+      url: '/filtersearch',
         type: 'POST',
-        url: '/filtersearch',
-        data: dataString,
+    
+      headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+               data:dataString,
+
   
            success:function(response)
             {
                             
             $('#myPartialDiv').html(response);
           
-location.hash;
+
 
             // $('#asd').hidden=fal
          

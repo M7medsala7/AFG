@@ -2,7 +2,15 @@
 <html>
 <head>
 	  
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-124778189-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'UA-124778189-1');
+</script>
 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,10 +23,9 @@
 <meta http-equiv="expires"       content="Tue, 01 Jan 1980 1:00:00 GMT" />
 <meta http-equiv="pragma"        content="no-cache" />
 
-
+ <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="/css/bootstrap.min.css" />
-<!--<link rel="stylesheet" href="css/bootstrap-rtl.css" />-->
-<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="/css/style.css" />
 <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
 
 
@@ -46,6 +53,8 @@
 
 <script src="http://code.jquery.com/ui/1.9.1/jquery-ui.min.js" type="text/javascript"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.jquery.min.js"></script>
+<script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js')}}"></script>
+
 
 <title>Maid & Helper</title>
 

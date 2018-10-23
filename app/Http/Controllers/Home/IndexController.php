@@ -31,21 +31,39 @@ class IndexController extends Controller
         $TotalCandidate= CandidateInfo::count();
         $TotalVideoCvs= CandidateInfo::where('vedio_path','!=',NULL)->count();
         $TotalAnsweredQuestions= DB::table('candidate_infos')->count()*21;
-
+    $RecentlyAddedJobsAgg= PostJob::join('users','users.id','=','post_jobs.created_by')
+        ->join('jobs','jobs.id','=','post_jobs.job_id')
+        ->join('countries','countries.id','=','post_jobs.country_id')
+->whereNotIn('job_for',['family,company,Agency'])
+        ->orderBy('post_jobs.created_at', 'DEC')->limit(2)
+        ->select('jobs.name AS JobName','post_jobs.job_for',
+        'users.name AS CompanyName','users.type','post_jobs.max_salary',
+        'countries.name AS CountryName','post_jobs.min_salary','post_jobs.currency_id',
+        'post_jobs.created_at AS Jobdate','post_jobs.id'
+        )
+        ->get();
         $RecentlyAddedJobsCompany= PostJob::join('users','users.id','=','post_jobs.created_by')
         ->join('jobs','jobs.id','=','post_jobs.job_id')
         ->join('countries','countries.id','=','post_jobs.country_id')
 ->where('job_for','company')
-        ->orderBy('post_jobs.created_at', 'DEC')->limit(2)
-        ->select('jobs.name AS JobName','post_jobs.job_for','users.name AS CompanyName','users.type','post_jobs.max_salary','countries.name AS CountryName','post_jobs.created_at AS Jobdate','post_jobs.id')->get();
-   
+        ->orderBy('post_jobs.created_at', 'DEC')->limit(1)
+        ->select('jobs.name AS JobName','post_jobs.job_for',
+        'users.name AS CompanyName','users.type','post_jobs.max_salary',
+        'countries.name AS CountryName','post_jobs.min_salary','post_jobs.currency_id',
+        'post_jobs.created_at AS Jobdate','post_jobs.id'
+        )
+        ->get();
       $RecentlyAddedJobsFamily= PostJob::join('users','users.id','=','post_jobs.created_by')
         ->join('jobs','jobs.id','=','post_jobs.job_id')
         ->join('countries','countries.id','=','post_jobs.country_id')
-->where('job_for','family')
-        ->orderBy('post_jobs.created_at', 'DEC')->limit(2)
-        ->select('jobs.name AS JobName','post_jobs.job_for','users.name AS CompanyName','users.type','post_jobs.max_salary','countries.name AS CountryName','post_jobs.created_at AS Jobdate','post_jobs.id')->get();
-
+        ->where('job_for','family')
+        ->orderBy('post_jobs.created_at', 'DEC')->limit(1)
+        ->select('jobs.name AS JobName','post_jobs.job_for',
+        'users.name AS CompanyName','users.type','post_jobs.max_salary',
+        'countries.name AS CountryName','post_jobs.min_salary','post_jobs.currency_id',
+        'post_jobs.created_at AS Jobdate','post_jobs.id'
+        )
+        ->get();
         $SuccessStories =SuccessStories::join('users','users.id','=','success_stories.user_id')
         ->join('employer_profiles','employer_profiles.id','=','success_stories.emp_id')
        ->orderBy('success_stories.created_at', 'DEC')
@@ -84,42 +102,20 @@ class IndexController extends Controller
 
         $TopCandidate =CandidateInfo::orderBy('candidate_infos.created_at', 'DEC')->where('seen','=',1)->limit(4)->get();
         
-        return view('Layout.index',compact('allSuccessStories','Success','TotalJob','TotalCandidate','TotalVideoCvs','TotalAnsweredQuestions','RecentlyAddedJobsFamily','RecentlyAddedJobsCompany','SuccessStories','TopCandidate'));
+        return view('Layout.index',compact('allSuccessStories','Success','TotalJob','TotalCandidate','TotalVideoCvs','TotalAnsweredQuestions','RecentlyAddedJobsFamily','RecentlyAddedJobsCompany','SuccessStories','RecentlyAddedJobsAgg','TopCandidate'));
    }
 
 
 
    //more
-   public function loadmore()
-   {
-   $data= PostJob::search($words)->orderBy('job_for')->get();
-   return response()->json($data);
-   } 
-   public function MatchingCandidates()
-   {
-
-    $alljobCan=[];
-    $Alljobs=postJob::where('created_by',\Auth::user()->id)->select('job_id')->get();
- 
-    foreach ($Alljobs as  $value)
-     {
    
-     array_push($alljobCan,$value->job_id);
-       
-    }
-
- //dd($alljobCan);
-    $TopCandidate=CandidateInfo::whereIN('job_id',$alljobCan)->get();
-     //dd($TopCandidate);
-
-        return view('candidates.SuggestedCandidates',compact('TopCandidate'));
-   } 
-//more sub candidates
 
 
    public function search(Request $request)
    {
-  //dd($request->all());
+    try
+    {
+ 
         $words = $request['words'];
         $type = $request['type'];
  $GLOBALS['jobsIndeed'] =array();
@@ -147,548 +143,549 @@ $candidates= collect();
 
 
 
-$jobfor=PostJob::select('job_for')->distinct('job_for')->get();
-    
+$jobfor=PostJob::select('job_for')->orderByRaw('FIELD(job_for, "Family", "Company", "Agency","Jobs In KSA","Jobs In Oman","Jobs In Qatar","Jobs In UAE","Maidcv.Com","Jobs In USA")','DESC')
+ ->distinct('job_for')->get();
 
  if($type =="I am Candidate" )
         {
-          $client = new Client();
+//           $client = new Client();
 
-    $crawler = $client->request('GET', 'https://www.indeed.com/jobs?q='.$words.'&l=');
+//     $crawler = $client->request('GET', 'https://www.indeed.com/jobs?q='.$words.'&l=');
 
-    $crawler->filter('h2.jobtitle a')->each(function ($node) {
+//     $crawler->filter('h2.jobtitle a')->each(function ($node) {
         
- array_push( $GLOBALS['jobsIndeed'],$node->text());
-// dd( $GLOBALS['jobsIndeed']);
+//  array_push( $GLOBALS['jobsIndeed'],$node->text());
+//  //dd( $GLOBALS['jobsIndeed']);
 
  
 
-array_push( $GLOBALS['job_for'],'Jobs in USA');
+// array_push( $GLOBALS['job_for'],'Jobs in USA');
 
-array_push( $GLOBALS['currency'],NULL);
-array_push( $GLOBALS['minsalary'],NULL);
-array_push( $GLOBALS['maxsalary'],NUll);
+// array_push( $GLOBALS['currency'],NULL);
+// array_push( $GLOBALS['minsalary'],NULL);
+// array_push( $GLOBALS['maxsalary'],NUll);
    
   
-});
+// });
 
 
 
-          for($i=0 ;$i<count($GLOBALS['jobsIndeed']);$i++)
-{
-  try
-  {
-$pageCrawler=$crawler->filter('h2.jobtitle a')->eq($i)->text();
-$link = $crawler->selectLink($pageCrawler)->link();
+//           for($i=0 ;$i<count($GLOBALS['jobsIndeed']);$i++)
+// {
+//   try
+//   {
+// $pageCrawler=$crawler->filter('h2.jobtitle a')->eq($i)->text();
+// $link = $crawler->selectLink($pageCrawler)->link();
   
-    $lin = $client->click($link );
+//     $lin = $client->click($link );
 
 
 
-     $crawlerIndeedusa = $client->request('GET', $lin->baseHref);
-array_push( $GLOBALS['links'],$lin->baseHref);
-   $summ=$crawlerIndeedusa->filter('span.summary')->text()  ;
-array_push( $GLOBALS['summary'],$summ);
+//      $crawlerIndeedusa = $client->request('GET', $lin->baseHref);
+// array_push( $GLOBALS['links'],$lin->baseHref);
+//    $summ=$crawlerIndeedusa->filter('span.summary')->text()  ;
+// array_push( $GLOBALS['summary'],$summ);
   
-  }
+//   }
 
-  catch(\InvalidArgumentException $e) 
-  {
-    array_push( $GLOBALS['links'],'Na');
-     array_push( $GLOBALS['summary'],'NA');
-  }
+//   catch(\InvalidArgumentException $e) 
+//   {
+//     array_push( $GLOBALS['links'],'Na');
+//      array_push( $GLOBALS['summary'],'NA');
+//   }
 
-}
-
-
+// }
 
 
 
 
 
-          for($i=0 ;$i<count($GLOBALS['jobsIndeed']);$i++)
-{
-  try
-  {
-    // dd($crawler2->filter('span.location')->eq($i)->text());
-     array_push( $GLOBALS['company'],$crawler->filter('span.company')->eq($i)->text());
-  }
-
-  catch(\InvalidArgumentException $e) 
-  {
-     array_push( $GLOBALS['company'],'NA');
-  }
-
-}
-
-          for($i=0 ;$i<count($GLOBALS['jobsIndeed']);$i++)
-{
-  try
-  {
-    // dd($crawler2->filter('span.location')->eq($i)->text());
-     array_push( $GLOBALS['location'],$crawler->filter('span.location')->eq($i)->text());
-  }
-
-  catch(\InvalidArgumentException $e) 
-  {
-     array_push( $GLOBALS['location'],'NA');
-  }
-
-}
 
 
+//           for($i=0 ;$i<count($GLOBALS['jobsIndeed']);$i++)
+// {
+//   try
+//   {
+//     // dd($crawler2->filter('span.location')->eq($i)->text());
+//      array_push( $GLOBALS['company'],$crawler->filter('span.company')->eq($i)->text());
+//   }
+
+//   catch(\InvalidArgumentException $e) 
+//   {
+//      array_push( $GLOBALS['company'],'NA');
+//   }
+
+// }
+
+//           for($i=0 ;$i<count($GLOBALS['jobsIndeed']);$i++)
+// {
+//   try
+//   {
+//     // dd($crawler2->filter('span.location')->eq($i)->text());
+//      array_push( $GLOBALS['location'],$crawler->filter('span.location')->eq($i)->text());
+//   }
+
+//   catch(\InvalidArgumentException $e) 
+//   {
+//      array_push( $GLOBALS['location'],'NA');
+//   }
+
+// }
 
 
 
- $crawler2 = $client->request('GET', 'https://om.indeed.com/jobs?q='.$words.'&l=');
 
-     $crawler2->filter('h2.jobtitle a')->each(function ($node) {
+
+//  $crawler2 = $client->request('GET', 'https://om.indeed.com/jobs?q='.$words.'&l=');
+
+//      $crawler2->filter('h2.jobtitle a')->each(function ($node) {
         
- array_push( $GLOBALS['jobsIndeed'],$node->text());
+//  array_push( $GLOBALS['jobsIndeed'],$node->text());
  
-array_push( $GLOBALS['CountjobsIndeedOM'],$node->text());
+// array_push( $GLOBALS['CountjobsIndeedOM'],$node->text());
 
 
 
 
-array_push( $GLOBALS['job_for'],'Jobs in Oman');
-array_push( $GLOBALS['currency'],NULL);
-array_push( $GLOBALS['minsalary'],NULL);
-array_push( $GLOBALS['maxsalary'],NUll);
+// array_push( $GLOBALS['job_for'],'Jobs in Oman');
+// array_push( $GLOBALS['currency'],NULL);
+// array_push( $GLOBALS['minsalary'],NULL);
+// array_push( $GLOBALS['maxsalary'],NUll);
    
   
-});
+// });
 
 
 
 
 
-          for($i=0 ;$i<count($GLOBALS['CountjobsIndeedOM']);$i++)
-{
-  try
-  {
-$pageCrawler=$crawler2->filter('h2.jobtitle a')->eq($i)->text();
-$link = $crawler2->selectLink($pageCrawler)->link();
+//           for($i=0 ;$i<count($GLOBALS['CountjobsIndeedOM']);$i++)
+// {
+//   try
+//   {
+// $pageCrawler=$crawler2->filter('h2.jobtitle a')->eq($i)->text();
+// $link = $crawler2->selectLink($pageCrawler)->link();
   
-    $lin = $client->click($link );
+//     $lin = $client->click($link );
 
 
 
-     $crawlerIndeedOm = $client->request('GET', $lin->baseHref);
-array_push( $GLOBALS['links'],$lin->baseHref);
-   $summ=$crawlerIndeedOm->filter('span.summary')->text()  ;
-array_push( $GLOBALS['summary'],$summ);
+//      $crawlerIndeedOm = $client->request('GET', $lin->baseHref);
+// array_push( $GLOBALS['links'],$lin->baseHref);
+//    $summ=$crawlerIndeedOm->filter('span.summary')->text()  ;
+// array_push( $GLOBALS['summary'],$summ);
   
-  }
+//   }
 
-  catch(\InvalidArgumentException $e) 
-  {
-    array_push( $GLOBALS['links'],'Na');
-     array_push( $GLOBALS['summary'],'NA');
-  }
+//   catch(\InvalidArgumentException $e) 
+//   {
+//     array_push( $GLOBALS['links'],'Na');
+//      array_push( $GLOBALS['summary'],'NA');
+//   }
 
-}
-
-
-
-          for($i=0 ;$i<count($GLOBALS['CountjobsIndeedOM']);$i++)
-{
-  try
-  {
-    // dd($crawler2->filter('span.location')->eq($i)->text());
-     array_push( $GLOBALS['location'],$crawler2->filter('span.company')->eq($i)->text());
-  }
-
-  catch(\InvalidArgumentException $e) 
-  {
-     array_push( $GLOBALS['location'],'NA');
-  }
-
-}
+// }
 
 
 
-          for($i=0 ;$i<count($GLOBALS['CountjobsIndeedOM']);$i++)
-{
-  try
-  {
-    // dd($crawler2->filter('span.company')->eq($i)->text());
-     array_push( $GLOBALS['company'],$crawler2->filter('span.company')->eq($i)->text());
-  }
+//           for($i=0 ;$i<count($GLOBALS['CountjobsIndeedOM']);$i++)
+// {
+//   try
+//   {
+//     // dd($crawler2->filter('span.location')->eq($i)->text());
+//      array_push( $GLOBALS['location'],$crawler2->filter('span.company')->eq($i)->text());
+//   }
 
-  catch(\InvalidArgumentException $e) 
-  {
-     array_push( $GLOBALS['company'],'NA');
-  }
+//   catch(\InvalidArgumentException $e) 
+//   {
+//      array_push( $GLOBALS['location'],'NA');
+//   }
 
-}
-
-
- $crawler3 = $client->request('GET', 'https://sa.indeed.com/jobs?q='.$words.'&l=');
+// }
 
 
 
+//           for($i=0 ;$i<count($GLOBALS['CountjobsIndeedOM']);$i++)
+// {
+//   try
+//   {
+//     // dd($crawler2->filter('span.company')->eq($i)->text());
+//      array_push( $GLOBALS['company'],$crawler2->filter('span.company')->eq($i)->text());
+//   }
 
-     $crawler3->filter('h2.jobtitle a')->each(function ($node) {
+//   catch(\InvalidArgumentException $e) 
+//   {
+//      array_push( $GLOBALS['company'],'NA');
+//   }
+
+// }
+
+
+//  $crawler3 = $client->request('GET', 'https://sa.indeed.com/jobs?q='.$words.'&l=');
+
+
+
+
+//      $crawler3->filter('h2.jobtitle a')->each(function ($node) {
      
- array_push( $GLOBALS['jobsIndeed'],$node->text());
-  array_push( $GLOBALS['CountjobsIndeedSa'],$node->text());
+//  array_push( $GLOBALS['jobsIndeed'],$node->text());
+//   array_push( $GLOBALS['CountjobsIndeedSa'],$node->text());
 
 
-array_push( $GLOBALS['job_for'],'Jobs in KSA');
+// array_push( $GLOBALS['job_for'],'Jobs in KSA');
 
-array_push( $GLOBALS['currency'],NULL);
-array_push( $GLOBALS['minsalary'],NULL);
-array_push( $GLOBALS['maxsalary'],NUll);
+// array_push( $GLOBALS['currency'],NULL);
+// array_push( $GLOBALS['minsalary'],NULL);
+// array_push( $GLOBALS['maxsalary'],NUll);
 
    
   
-});
+// });
 
 
 
 
 
 
-          for($i=0 ;$i<count($GLOBALS['CountjobsIndeedSa']);$i++)
-{
-  try
-  {
-$pageCrawler=$crawler3->filter('h2.jobtitle a')->eq($i)->text();
-$link = $crawler3->selectLink($pageCrawler)->link();
+//           for($i=0 ;$i<count($GLOBALS['CountjobsIndeedSa']);$i++)
+// {
+//   try
+//   {
+// $pageCrawler=$crawler3->filter('h2.jobtitle a')->eq($i)->text();
+// $link = $crawler3->selectLink($pageCrawler)->link();
   
-    $lin = $client->click($link );
+//     $lin = $client->click($link );
 
 
 
-     $crawlerIndeedSa = $client->request('GET', $lin->baseHref);
-array_push( $GLOBALS['links'],$lin->baseHref);
-   $summ=$crawlerIndeedSa->filter('span.summary')->text()  ;
-array_push( $GLOBALS['summary'],$summ);
+//      $crawlerIndeedSa = $client->request('GET', $lin->baseHref);
+// array_push( $GLOBALS['links'],$lin->baseHref);
+//    $summ=$crawlerIndeedSa->filter('span.summary')->text()  ;
+// array_push( $GLOBALS['summary'],$summ);
   
-  }
+//   }
 
-  catch(\InvalidArgumentException $e) 
-  {
-    array_push( $GLOBALS['links'],'Na');
-     array_push( $GLOBALS['summary'],'NA');
-  }
+//   catch(\InvalidArgumentException $e) 
+//   {
+//     array_push( $GLOBALS['links'],'Na');
+//      array_push( $GLOBALS['summary'],'NA');
+//   }
 
-}
-
-
-
-
-for($i=0 ;$i<count($GLOBALS['CountjobsIndeedSa']);$i++)
-{
-  try
-  {
-    // dd($crawler3->filter('span.location')->eq($i)->text());
-     array_push( $GLOBALS['location'],$crawler3->filter('span.company')->eq($i)->text());
-  }
-
-  catch(\InvalidArgumentException $e) 
-  {
-     array_push( $GLOBALS['location'],'NA');
-  }
-
-}
+// }
 
 
 
-for($i=0 ;$i<count($GLOBALS['CountjobsIndeedSa']);$i++)
-{
-  try
-  {
-    // dd($crawler3->filter('span.company')->eq($i)->text());
-     array_push( $GLOBALS['company'],$crawler3->filter('span.company')->eq($i)->text());
-  }
 
-  catch(\InvalidArgumentException $e) 
-  {
-     array_push( $GLOBALS['company'],'NA');
-  }
+// for($i=0 ;$i<count($GLOBALS['CountjobsIndeedSa']);$i++)
+// {
+//   try
+//   {
+//     // dd($crawler3->filter('span.location')->eq($i)->text());
+//      array_push( $GLOBALS['location'],$crawler3->filter('span.company')->eq($i)->text());
+//   }
 
-}
+//   catch(\InvalidArgumentException $e) 
+//   {
+//      array_push( $GLOBALS['location'],'NA');
+//   }
+
+// }
+
+
+
+// for($i=0 ;$i<count($GLOBALS['CountjobsIndeedSa']);$i++)
+// {
+//   try
+//   {
+//     // dd($crawler3->filter('span.company')->eq($i)->text());
+//      array_push( $GLOBALS['company'],$crawler3->filter('span.company')->eq($i)->text());
+//   }
+
+//   catch(\InvalidArgumentException $e) 
+//   {
+//      array_push( $GLOBALS['company'],'NA');
+//   }
+
+// }
               
 
 
-// dd('l');
+// // dd('l');
 
- $crawler4 = $client->request('GET', 'https://maidcv.com/ViewJobs');
-
-
+//  $crawler4 = $client->request('GET', 'https://maidcv.com/ViewJobs');
 
 
-     $crawler4->filter('a.joblist_title ')->each(function ($node) {
-      // dd($node->text());
 
- array_push( $GLOBALS['jobsIndeed'],$node->text());
 
-  array_push( $GLOBALS['links'],'https://maidcv.com/ViewJobs');
-array_push( $GLOBALS['job_for'],'maidcv.com');
+//      $crawler4->filter('a.joblist_title ')->each(function ($node) {
+//       // dd($node->text());
+
+//  array_push( $GLOBALS['jobsIndeed'],$node->text());
+
+//   array_push( $GLOBALS['links'],'https://maidcv.com/ViewJobs');
+// array_push( $GLOBALS['job_for'],'maidcv.com');
 
 
 
    
   
-});
+// });
 
 
-                                $crawler4->filter('div.joblist_desc p ')->each(function ($node) {
+//                                 $crawler4->filter('div.joblist_desc p ')->each(function ($node) {
 
-                  array_push( $GLOBALS['summary'],$node->text());
+//                   array_push( $GLOBALS['summary'],$node->text());
                            
 
     
- });
+//  });
 
 
-                                $crawler4->filter('div.joblist_jobinfo  ')->each(function ($node) {
+//                                 $crawler4->filter('div.joblist_jobinfo  ')->each(function ($node) {
 
 
-$arr = explode('at', $node->text());
-$variable =$arr[2];
+// $arr = explode('at', $node->text());
+// $variable =$arr[2];
 
 
-$variable = substr($variable, 0, strpos($variable, "\r\n"));
+// $variable = substr($variable, 0, strpos($variable, "\r\n"));
 
 
 
 
-                  array_push( $GLOBALS['location'],$variable);
+//                   array_push( $GLOBALS['location'],$variable);
                            
 
     
- });
+//  });
 
 
-                                $crawler4->filter('div.joblist_jobinfo  ')->each(function ($node) {
+//                                 $crawler4->filter('div.joblist_jobinfo  ')->each(function ($node) {
 
 
-$arr = explode('by', $node->text());
-$variable =$arr[1];
+// $arr = explode('by', $node->text());
+// $variable =$arr[1];
 
 
-$variable = substr($variable, 0, strpos($variable, "\r\n"));
+// $variable = substr($variable, 0, strpos($variable, "\r\n"));
 
 
 
 
 
-                  array_push( $GLOBALS['company'],$variable);
+//                   array_push( $GLOBALS['company'],$variable);
                            
 
     
- });
+//  });
 
 
 
            
-                                $crawler4->filter('span.joblist_sal ')->each(function ($node) {
+//                                 $crawler4->filter('span.joblist_sal ')->each(function ($node) {
 
-                                  if (strpos($node->text(), 'over') !== false) {
+//                                   if (strpos($node->text(), 'over') !== false) {
                                    
-                                     $splitSalary = explode(' ', $node->text(), 3);
+//                                      $splitSalary = explode(' ', $node->text(), 3);
 
 
-                                     array_push( $GLOBALS['currency'],$splitSalary[0]);
-array_push( $GLOBALS['minsalary'],'0');
-$splitSalary[2]= str_replace(',', '.', $splitSalary[2]);
-array_push( $GLOBALS['maxsalary'],$splitSalary[2]);
+//                                      array_push( $GLOBALS['currency'],$splitSalary[0]);
+// array_push( $GLOBALS['minsalary'],'0');
+// $splitSalary[2]= str_replace(',', '.', $splitSalary[2]);
+// array_push( $GLOBALS['maxsalary'],$splitSalary[2]);
 
    
-}
-else
-{
+// }
+// else
+// {
 
-                                       $splitSalary = explode('-', $node->text(), 2);
-                                       $splitSalary2 = explode(' ', $splitSalary[0], 2);
+//                                        $splitSalary = explode('-', $node->text(), 2);
+//                                        $splitSalary2 = explode(' ', $splitSalary[0], 2);
 
   
-array_push( $GLOBALS['currency'],$splitSalary2[0]);
-$splitSalary2[1]= str_replace(',', '.', $splitSalary2[1]);
-array_push( $GLOBALS['minsalary'],$splitSalary2[1]);
-$splitSalary[1]= str_replace(',', '.', $splitSalary[1]);
-array_push( $GLOBALS['maxsalary'],$splitSalary[1]);
+// array_push( $GLOBALS['currency'],$splitSalary2[0]);
+// $splitSalary2[1]= str_replace(',', '.', $splitSalary2[1]);
+// array_push( $GLOBALS['minsalary'],$splitSalary2[1]);
+// $splitSalary[1]= str_replace(',', '.', $splitSalary[1]);
+// array_push( $GLOBALS['maxsalary'],$splitSalary[1]);
 
-}
+// }
                   
                         
 
     
- });
+//  });
 
 
                    
                            
- $crawler5 = $client->request('GET', 'https://www.indeed.ae/jobs?q='.$words.'&l=');
+//  $crawler5 = $client->request('GET', 'https://www.indeed.ae/jobs?q='.$words.'&l=');
 
 
 
 
-     $crawler5->filter('h2.jobtitle a')->each(function ($node) {
+//      $crawler5->filter('h2.jobtitle a')->each(function ($node) {
      
- array_push( $GLOBALS['jobsIndeed'],$node->text());
-  array_push( $GLOBALS['CountjobsIndeedAE'],$node->text());
+//  array_push( $GLOBALS['jobsIndeed'],$node->text());
+//   array_push( $GLOBALS['CountjobsIndeedAE'],$node->text());
 
 
-array_push( $GLOBALS['job_for'],'Jobs in UAE');
+// array_push( $GLOBALS['job_for'],'Jobs in UAE');
 
-array_push( $GLOBALS['currency'],NULL);
-array_push( $GLOBALS['minsalary'],NULL);
-array_push( $GLOBALS['maxsalary'],NUll);
+// array_push( $GLOBALS['currency'],NULL);
+// array_push( $GLOBALS['minsalary'],NULL);
+// array_push( $GLOBALS['maxsalary'],NUll);
 
    
   
-});
+// });
 
 
 
-          for($i=0 ;$i<count($GLOBALS['CountjobsIndeedAE']);$i++)
-{
-  try
-  {
-$pageCrawler=$crawler5->filter('h2.jobtitle a')->eq($i)->text();
-$link = $crawler5->selectLink($pageCrawler)->link();
+//           for($i=0 ;$i<count($GLOBALS['CountjobsIndeedAE']);$i++)
+// {
+//   try
+//   {
+// $pageCrawler=$crawler5->filter('h2.jobtitle a')->eq($i)->text();
+// $link = $crawler5->selectLink($pageCrawler)->link();
   
-    $lin = $client->click($link );
+//     $lin = $client->click($link );
 
 
 
-     $crawlerIndeedAE = $client->request('GET', $lin->baseHref);
-array_push( $GLOBALS['links'],$lin->baseHref);
-   $summ=$crawlerIndeedAE->filter('span.summary')->text()  ;
-array_push( $GLOBALS['summary'],$summ);
+//      $crawlerIndeedAE = $client->request('GET', $lin->baseHref);
+// array_push( $GLOBALS['links'],$lin->baseHref);
+//    $summ=$crawlerIndeedAE->filter('span.summary')->text()  ;
+// array_push( $GLOBALS['summary'],$summ);
   
-  }
+//   }
 
-  catch(\InvalidArgumentException $e) 
-  {
-    array_push( $GLOBALS['links'],'Na');
-     array_push( $GLOBALS['summary'],'NA');
-  }
+//   catch(\InvalidArgumentException $e) 
+//   {
+//     array_push( $GLOBALS['links'],'Na');
+//      array_push( $GLOBALS['summary'],'NA');
+//   }
 
-}
-
-
-for($i=0 ;$i<count($GLOBALS['CountjobsIndeedAE']);$i++)
-{
-  try
-  {
-    // dd($crawler5->filter('span.location')->eq($i)->text());
-     array_push( $GLOBALS['location'],$crawler5->filter('span.company')->eq($i)->text());
-  }
-
-  catch(\InvalidArgumentException $e) 
-  {
-     array_push( $GLOBALS['location'],'NA');
-  }
-
-}
+// }
 
 
+// for($i=0 ;$i<count($GLOBALS['CountjobsIndeedAE']);$i++)
+// {
+//   try
+//   {
+//     // dd($crawler5->filter('span.location')->eq($i)->text());
+//      array_push( $GLOBALS['location'],$crawler5->filter('span.company')->eq($i)->text());
+//   }
 
-for($i=0 ;$i<count($GLOBALS['CountjobsIndeedAE']);$i++)
-{
-  try
-  {
-    // dd($crawler5->filter('span.company')->eq($i)->text());
-     array_push( $GLOBALS['company'],$crawler5->filter('span.company')->eq($i)->text());
-  }
+//   catch(\InvalidArgumentException $e) 
+//   {
+//      array_push( $GLOBALS['location'],'NA');
+//   }
 
-  catch(\InvalidArgumentException $e) 
-  {
-     array_push( $GLOBALS['company'],'NA');
-  }
+// }
 
-}
+
+
+// for($i=0 ;$i<count($GLOBALS['CountjobsIndeedAE']);$i++)
+// {
+//   try
+//   {
+//     // dd($crawler5->filter('span.company')->eq($i)->text());
+//      array_push( $GLOBALS['company'],$crawler5->filter('span.company')->eq($i)->text());
+//   }
+
+//   catch(\InvalidArgumentException $e) 
+//   {
+//      array_push( $GLOBALS['company'],'NA');
+//   }
+
+// }
     
- $crawler6 = $client->request('GET', 'https://qa.indeed.com/jobs?q='.$words.'&l=');
+//  $crawler6 = $client->request('GET', 'https://qa.indeed.com/jobs?q='.$words.'&l=');
 
-     $crawler6->filter('h2.jobtitle a')->each(function ($node) {
+//      $crawler6->filter('h2.jobtitle a')->each(function ($node) {
         
- array_push( $GLOBALS['jobsIndeed'],$node->text());
+//  array_push( $GLOBALS['jobsIndeed'],$node->text());
  
-array_push( $GLOBALS['CountjobsIndeedQA'],$node->text());
+// array_push( $GLOBALS['CountjobsIndeedQA'],$node->text());
 
 
 
-array_push( $GLOBALS['job_for'],'Jobs in Qatar');
-array_push( $GLOBALS['currency'],NULL);
-array_push( $GLOBALS['minsalary'],NULL);
-array_push( $GLOBALS['maxsalary'],NUll);
+// array_push( $GLOBALS['job_for'],'Jobs in Qatar');
+// array_push( $GLOBALS['currency'],NULL);
+// array_push( $GLOBALS['minsalary'],NULL);
+// array_push( $GLOBALS['maxsalary'],NUll);
    
   
-});
+// });
 
 
 
 
 
-          for($i=0 ;$i<count($GLOBALS['CountjobsIndeedQA']);$i++)
-{
-  try
-  {
-$pageCrawler=$crawler6->filter('h2.jobtitle a')->eq($i)->text();
-$link = $crawler6->selectLink($pageCrawler)->link();
+//           for($i=0 ;$i<count($GLOBALS['CountjobsIndeedQA']);$i++)
+// {
+//   try
+//   {
+// $pageCrawler=$crawler6->filter('h2.jobtitle a')->eq($i)->text();
+// $link = $crawler6->selectLink($pageCrawler)->link();
   
-    $lin = $client->click($link );
+//     $lin = $client->click($link );
 
 
 
-     $crawlerIndeedQa = $client->request('GET', $lin->baseHref);
-array_push( $GLOBALS['links'],$lin->baseHref);
-   $summ=$crawlerIndeedQa->filter('span.summary')->text()  ;
-array_push( $GLOBALS['summary'],$summ);
+//      $crawlerIndeedQa = $client->request('GET', $lin->baseHref);
+// array_push( $GLOBALS['links'],$lin->baseHref);
+//    $summ=$crawlerIndeedQa->filter('span.summary')->text()  ;
+// array_push( $GLOBALS['summary'],$summ);
   
-  }
+//   }
 
-  catch(\InvalidArgumentException $e) 
-  {
-    array_push( $GLOBALS['links'],'Na');
-     array_push( $GLOBALS['summary'],'NA');
-  }
+//   catch(\InvalidArgumentException $e) 
+//   {
 
-}
+//     array_push( $GLOBALS['links'],'Na');
+//      array_push( $GLOBALS['summary'],'NA');
+//   }
 
-
-
-          for($i=0 ;$i<count($GLOBALS['CountjobsIndeedQA']);$i++)
-{
-  try
-  {
-    // dd($crawler2->filter('span.location')->eq($i)->text());
-     array_push( $GLOBALS['location'],$crawler6->filter('span.company')->eq($i)->text());
-  }
-
-  catch(\InvalidArgumentException $e) 
-  {
-     array_push( $GLOBALS['location'],'NA');
-  }
-
-}
+// }
 
 
 
-          for($i=0 ;$i<count($GLOBALS['CountjobsIndeedQA']);$i++)
-{
-  try
-  {
-    // dd($crawler6->filter('span.company')->eq($i)->text());
-     array_push( $GLOBALS['company'],$crawler6->filter('span.company')->eq($i)->text());
-  }
+//           for($i=0 ;$i<count($GLOBALS['CountjobsIndeedQA']);$i++)
+// {
+//   try
+//   {
+//     // dd($crawler2->filter('span.location')->eq($i)->text());
+//      array_push( $GLOBALS['location'],$crawler6->filter('span.company')->eq($i)->text());
+//   }
 
-  catch(\InvalidArgumentException $e) 
-  {
-     array_push( $GLOBALS['company'],'NA');
-  }
+//   catch(\InvalidArgumentException $e) 
+//   {
+//      array_push( $GLOBALS['location'],'NA');
+//   }
 
-}
+// }
 
 
 
-               //dd( $GLOBALS['minsalary'],$GLOBALS['maxsalary']);
+//           for($i=0 ;$i<count($GLOBALS['CountjobsIndeedQA']);$i++)
+// {
+//   try
+//   {
+//     // dd($crawler6->filter('span.company')->eq($i)->text());
+//      array_push( $GLOBALS['company'],$crawler6->filter('span.company')->eq($i)->text());
+//   }
+
+//   catch(\InvalidArgumentException $e) 
+//   {
+//      array_push( $GLOBALS['company'],'NA');
+//   }
+
+// }
+
+
+
+               //dd( $GLOBALS['jobsIndeed']);
 
 for ($i=0; $i <count( $GLOBALS['jobsIndeed']) ; $i++) { 
 $jobIds = Job::where('name','=',$GLOBALS['jobsIndeed'][$i])->first();
@@ -830,6 +827,34 @@ $jobtitle= CandidateInfo::search($words)->with('job')->groupBy('job_id')->get();
             $jobcheck=0;
 $count=count($candidates);
 
+ $data = array();
+
+        //Get current page form url e.g. &page=6
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+
+        //Create a new Laravel collection from the array data
+        $collection = new Collection($candidates);
+
+        //Define how many items we want to be visible in each page
+        $per_page = 21;
+
+        //Slice the collection to get the items to display in current page
+        $currentPageResults = $collection->slice(($currentPage-1) * $per_page, $per_page)->all();
+
+        //Create our paginator and add it to the data array
+        $data['candidates'] = new LengthAwarePaginator($currentPageResults, count($collection), $per_page);
+
+        //Set base url for pagination links to follow e.g custom/url?page=6
+        $data['candidates']->setPath($request->url());
+
+$candidates=$data['candidates'];
+
+
+if($request->ajax())
+{
+  return Response::json(\View::make('Search.searchpartial',compact('words','candidates','jobcheck','count','jobtitle','jobtitleresult','Country','jobfor'), array('candidates' => $candidates))->render());
+}
+
 
             return  view('Search.searchresult',compact('candidates','words','jobcheck','count','jobtitle','jobtitleresult','Country','jobfor'));
         }
@@ -910,39 +935,56 @@ return  view('Search.searchresult',compact('candidates','words','jobcheck','coun
 
         if($type =="I am Candidate" && $words!=null)
         {
-            $jobs=PostJob::search($words)->orderBy('job_for')->get();
-$jobcheck=1;
-   $jobtitle=PostJob::search($words)->with('job')->groupBy('job_id')->get();
-$count=count($jobs);
+           $alljobs=PostJob::search($words)->orderBy('created_at','DESC')->paginate(21);
 
-            return  view('Search.searchresult', compact('jobs','words','jobcheck','count','jobtitle','jobtitleresult','Country','jobfor'));
-        }
+               $jobs=PostJob::search($words)->orderBy('created_at','DESC')->paginate(21);
+               $countjobs=PostJob::search($words)->orderBy('created_at','DESC')->get();
 
-               if($type =="I am Candidate" && $words==null)
-
-        {
-          
-               $alljobs=PostJob::search($words)->orderBy('job_for')->paginate(20);
-
-               $jobs=PostJob::search($words)->orderBy('job_for')->paginate(20);
-// dd($jobs);
               
         $jobtitle=PostJob::search($words)->with('job')->groupBy('job_id')->get();
 $jobcheck=1;
     
-$count=count($alljobs);
+$count=count($countjobs);
 
        
 if($request->ajax())
 {
-  return Response::json(\View::make('Search.searchpartial',compact('words','jobs','jobcheck','count','jobtitle','jobtitleresult','Country','jobfor'), array('jobs' => $jobs))->render());
+  return Response::json(\View::make('Search.searchpartial',compact('countjobs','words','jobs','jobcheck','count','jobtitle','jobtitleresult','Country','jobfor'), array('jobs' => $jobs))->render());
 }
     
    
 //dd("dcgcu");
    
     
-            return  view('Search.searchresult', compact('words','jobs','jobcheck','count','jobtitle','jobtitleresult','Country','jobfor'), array('jobs' => $jobs));
+            return  view('Search.searchresult', compact('countjobs','words','jobs','jobcheck','count','jobtitle','jobtitleresult','Country','jobfor'), array('jobs' => $jobs));
+        }
+
+               if($type =="I am Candidate" && $words==null)
+
+        {
+          
+        $alljobs=PostJob::search($words)->orderBy('created_at','DESC')->paginate(21);
+
+               $jobs=PostJob::search($words)->orderBy('created_at','DESC')->paginate(21);
+               $countjobs=PostJob::search($words)->orderBy('created_at' ,'DESC')->get();
+
+              
+        $jobtitle=PostJob::search($words)->with('job')->groupBy('job_id')->get();
+$jobcheck=1;
+    
+$count=count($countjobs);
+
+       
+if($request->ajax())
+{
+  return Response::json(\View::make('Search.searchpartial',compact('countjobs','words','jobs','jobcheck','count','jobtitle','jobtitleresult','Country','jobfor'), array('jobs' => $jobs))->render());
+}
+    
+   
+//dd("dcgcu");
+   
+    
+            return  view('Search.searchresult', compact('countjobs','words','jobs','jobcheck','count','jobtitle','jobtitleresult','Country','jobfor'), array('jobs' => $jobs));
         }
         
         {
@@ -950,11 +992,15 @@ if($request->ajax())
             $result=collect();
          
             $count=count($result);
-                return  view('Search.searchresult',compact('$alljobs','result','words','count','jobtitle','jobtitleresult','Country','jobfor') );
+                return  view('Search.searchresult',compact('countjobs','alljobs','result','words','count','jobtitle','jobtitleresult','Country','jobfor') );
 
         }
     
-
+}
+catch(Exception $e) 
+        {
+         return redirect('/');
+         } 
    
 }
 
@@ -967,7 +1013,10 @@ if($request->ajax())
         $words=$request->words;
 
         $jobtitle=Job::where('name', 'LIKE', '%'.$words.'%')->get();
-$jobfor=PostJob::select('job_for')->distinct('job_for')->get();
+        
+$jobfor=PostJob::select('job_for')->orderByRaw('FIELD(job_for, "Family", "Company", "Agency","Jobs In KSA","Jobs In Oman","Jobs In Qatar","Jobs In UAE","Maidcv.Com","Jobs In USA")','DESC')
+ ->distinct('job_for')->get();
+
 
         $Jobtitles=json_decode($request->Jobtitle);
 
@@ -1060,23 +1109,19 @@ if($experince != [])
  //salary 
   
  if( $words != null) 
- {  
-  $resultQuery= PostJob::search($words)->get(); 
+ {  // dd($words);
+  $resultQuery= PostJob::search($words)->orderBy('created_at','DESC')->get(); 
  }  
 if( $words == 'undefined') 
  
  {
 
-   $resultQuery= PostJob::all();
+   $resultQuery= PostJob::orderBy('created_at','DESC')->get();
  }
- 
- else
- {
-   $resultQuery= PostJob::all();
- }
+  
 
 
-
+//dd($resultQuery);
 ////////////jobtitles with all//////////
 
 
@@ -1093,6 +1138,7 @@ if($Jobtitles !=[] && $Jobtitles[0] =="all" && $employertype==[] && $salary ==[]
 
     
       $jobts= PostJob::where('id',$resultQue->id)
+      ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -1134,6 +1180,7 @@ if($Jobtitles !=[] && $Jobtitles[0] =="all" && $employertype !=[] && $salary ==[
       for ($emp=0;$emp<count($employertype);$emp++) {
       $jobts= PostJob::where('id',$resultQue->id)
                       ->where('job_for',$employertype[$emp])
+                      ->orderBy('created_at','DESC')
                       ->get();
   foreach ($jobts as$jobt) {
   
@@ -1170,7 +1217,7 @@ if($Jobtitles !=[] && $Jobtitles[0] =="all" && $employertype !=[] && $salary !=[
             ->whereBetween('max_salary',array(reset($salaryf),last($salaryf))) 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
-            
+            ->orderBy('created_at','DESC')
             ->get();
   // dd($jobts);
 
@@ -1212,6 +1259,7 @@ if($Jobtitles !=[] && $Jobtitles[0] =="all" && $employertype !=[] && $salary !=[
             ->whereBetween('max_salary',array(reset($salaryf),last($salaryf))) 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
+            ->orderBy('created_at','DESC')
             
             ->get();
   // dd($jobts);
@@ -1254,6 +1302,7 @@ if($Jobtitles !=[] && $Jobtitles[0] =="all" && $employertype !=[] && $salary !=[
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
             ->whereBetween('experience',array(reset($experincef),last($experincef))) 
+            ->orderBy('created_at','DESC')
             ->get();
   // dd($jobts);
 
@@ -1292,7 +1341,7 @@ if($Jobtitles !=[] && $Jobtitles[0] =="all" && $employertype ==[] && $salary ==[
       $jobts= PostJob::where('id',$resultQue->id)
            
             ->where('country_id',$country)
-          
+          ->orderBy('created_at','DESC')
             ->get();
   // dd($jobts);
 
@@ -1330,7 +1379,7 @@ if($Jobtitles !=[] && $Jobtitles[0] =="all" && $employertype !=[] && $salary ==[
       $jobts= PostJob::where('id',$resultQue->id)
             ->where('job_for',$employertype[$emp]) 
             ->where('country_id',$country)
-        
+        ->orderBy('created_at','DESC')
            
             ->get();
   // dd($jobts);
@@ -1367,7 +1416,9 @@ if($Jobtitles !=[] && $Jobtitles[0] !="all" && $employertype==[] && $salary ==[]
 
     for ($i=0;$i<count($Jobtitles);$i++) {
       $jobts= PostJob::where('id',$resultQue->id)->where('job_id',$Jobtitles[$i])
-             ->get();
+            
+            ->orderBy('created_at','DESC') 
+            ->get();
 
 
   foreach ($jobts as$jobt) {
@@ -1407,7 +1458,8 @@ if($Jobtitles !=[] && $Jobtitles[0] !="all" && $employertype !=[] && $salary ==[
     for ($i=0;$i<count($Jobtitles);$i++) {
       for ($emp=0;$emp<count($employertype);$emp++) {
       $jobts= PostJob::where('id',$resultQue->id)
-      ->where('job_id',$Jobtitles[$i])->where('job_for',$employertype[$emp])
+            ->where('job_id',$Jobtitles[$i])->where('job_for',$employertype[$emp])
+            ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -1446,7 +1498,7 @@ if($Jobtitles !=[] && $Jobtitles[0] !="all" && $employertype !=[] && $salary !=[
             ->whereBetween('max_salary',array(reset($salaryf),last($salaryf))) 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
-            
+            ->orderBy('created_at','DESC')
             ->get();
   // dd($jobts);
 
@@ -1490,7 +1542,7 @@ if($Jobtitles !=[] && $Jobtitles[0] !="all" && $employertype !=[] && $salary !=[
             ->whereBetween('max_salary',array(reset($salaryf),last($salaryf))) 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
-            
+            ->orderBy('created_at','DESC')
             ->get();
   // dd($jobts);
 
@@ -1534,6 +1586,7 @@ if($Jobtitles !=[] && $Jobtitles[0] !="all" && $employertype !=[] && $salary !=[
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
             ->whereBetween('experience',array(reset($experincef),last($experincef))) 
+            ->orderBy('created_at','DESC')
             ->get();
   // dd($jobts);
 
@@ -1591,6 +1644,7 @@ if($Jobtitles ==[] && $employertype !=[] && $employertype[0] =="all" && $salary 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
             ->whereBetween('experience',array(reset($experincef),last($experincef))) 
+            ->orderBy('created_at','DESC')
             ->get();
   // dd($jobts);
 
@@ -1630,6 +1684,7 @@ if($Jobtitles ==[] && $employertype !=[] && $employertype[0] =="all" && $salary 
             
              ->where('country_id',$country)
             ->whereBetween('experience',array(reset($experincef),last($experincef))) 
+            ->orderBy('created_at','DESC')
             ->get();
   // dd($jobts);
 
@@ -1668,7 +1723,7 @@ if($Jobtitles ==[] && $employertype !=[] && $employertype[0] =="all" && $salary 
            
             ->where('job_for',$employertype[$emp])
              ->whereBetween('experience',array(reset($experincef),last($experincef))) 
-            
+            ->orderBy('created_at','DESC')
             ->get();
   // dd($jobts);
 
@@ -1705,7 +1760,7 @@ if($Jobtitles ==[] && $employertype !=[] && $employertype[0] =="all" && $salary 
       
 // dd(reset($experincef),last($experincef));
       $jobts= PostJob::where('id',$resultQue->id)
-            
+            ->orderBy('created_at','DESC')
            
             
             
@@ -1745,7 +1800,7 @@ if($Jobtitles !=[] && $Jobtitles[0] =="all" && $employertype !=[] && $employerty
 // dd(reset($experincef),last($experincef));
       $jobts= PostJob::where('id',$resultQue->id)
             
-              
+              ->orderBy('created_at','DESC')
               ->get();
   // dd($jobts);
 
@@ -1783,7 +1838,7 @@ if($Jobtitles !=[] && $Jobtitles[0] !="all" && $employertype !=[] && $employerty
 // dd(reset($experincef),last($experincef));
       $jobts= PostJob::where('id',$resultQue->id)
             ->where('job_id',$Jobtitles[$i])
-              
+              ->orderBy('created_at','DESC')
               ->get();
   // dd($jobts);
 
@@ -1828,6 +1883,7 @@ if($Jobtitles ==[] && $employertype !=[] && $employertype[0] !="all" && $salary 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
             ->whereBetween('experience',array(reset($experincef),last($experincef))) 
+            ->orderBy('created_at','DESC')
             ->get();
   // dd($jobts);
 
@@ -1867,6 +1923,7 @@ if($Jobtitles ==[] && $employertype !=[] && $employertype[0] !="all" && $salary 
             ->where('job_for',$employertype[$emp])
              ->where('country_id',$country)
             ->whereBetween('experience',array(reset($experincef),last($experincef))) 
+            ->orderBy('created_at','DESC')
             ->get();
   // dd($jobts);
 
@@ -1906,7 +1963,7 @@ if($Jobtitles ==[] && $employertype !=[] && $employertype[0] !="all" && $salary 
            
             ->where('job_for',$employertype[$emp])
              ->whereBetween('experience',array(reset($experincef),last($experincef))) 
-            
+            ->orderBy('created_at','DESC')
             ->get();
   // dd($jobts);
 
@@ -1932,7 +1989,7 @@ if($Jobtitles ==[] && $employertype !=[] && $employertype[0] !="all" && $salary 
 if($Jobtitles ==[] && $employertype !=[] && $employertype[0] !="all" && $salary ==[]   && $country  =="0" && $experince ==[])
 {
 
-// dd('l');
+
 
 
 
@@ -1945,7 +2002,7 @@ if($Jobtitles ==[] && $employertype !=[] && $employertype[0] !="all" && $salary 
       $jobts= PostJob::where('id',$resultQue->id)
             
             ->where('job_for',$employertype[$emp])
-            
+            ->orderBy('created_at','DESC')
             
             ->get();
   // dd($jobts);
@@ -1978,6 +2035,7 @@ if($Jobtitles ==[] && $employertype==[] && $salary ==[]   && $country  !="0" && 
 
     
       $jobts= PostJob::where('id',$resultQue->id)->where('country_id',$country)
+      ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2013,6 +2071,7 @@ if($Jobtitles !=[] && $employertype ==[] && $salary ==[]   && $country  !="0" &&
       $jobts= PostJob::where('id',$resultQue->id)
       ->where('job_id',$Jobtitles[$i])
       ->where('country_id',$country)
+      ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2048,6 +2107,7 @@ if($Jobtitles !=[] && $employertype !=[] && $salary ==[]   && $country  !="0" &&
       ->where('job_id',$Jobtitles[$i]) 
       ->where('job_for',$employertype[$emp])
       ->where('country_id',$country)
+      ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2086,6 +2146,7 @@ if($Jobtitles !=[] && $employertype !=[] && $salary !=[]   && $country  !="0" &&
       ->whereBetween('max_salary',array(reset($salaryf),last($salaryf))) 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
+            ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2122,7 +2183,8 @@ if($Jobtitles !=[] && $employertype !=[] && $salary ==[]   && $country  !="0" &&
       ->where('job_id',$Jobtitles[$i]) 
       ->where('job_for',$employertype[$emp])
       ->where('country_id',$country)
-       ->whereBetween('experience',array(reset($experincef),last($experincef))) 
+       ->whereBetween('experience',array(reset($experincef),last($experincef)))
+       ->orderBy('created_at','DESC') 
       
              ->get();
 
@@ -2161,7 +2223,7 @@ if($Jobtitles ==[] && $employertype !=[] && $salary ==[]   && $country  !="0" &&
       ->where('job_for',$employertype[$emp])
       ->where('country_id',$country)
        
-      
+      ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2196,6 +2258,7 @@ if($Jobtitles ==[] && $employertype==[] && $salary ==[]   && $country  =="0" && 
     
       $jobts= PostJob::where('id',$resultQue->id) 
       ->whereBetween('experience',array(reset($experincef),last($experincef))) 
+      ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2232,6 +2295,7 @@ if($Jobtitles !=[] && $employertype ==[] && $salary ==[]   && $country  =="0" &&
       $jobts= PostJob::where('id',$resultQue->id)
       ->where('job_id',$Jobtitles[$i])
       ->whereBetween('experience',array(reset($experincef),last($experincef))) 
+      ->orderBy('created_at','DESC')
       
              ->get();
 
@@ -2269,6 +2333,7 @@ if($Jobtitles !=[] && $employertype !=[] && $salary ==[]   && $country  =="0" &&
       ->where('job_id',$Jobtitles[$i]) 
       ->where('job_for',$employertype[$emp])
       ->whereBetween('experience',array(reset($experincef),last($experincef))) 
+      ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2308,6 +2373,7 @@ if($Jobtitles !=[] && $employertype !=[] && $salary !=[]   && $country  =="0" &&
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
             ->whereBetween('experience',array(reset($experincef),last($experincef))) 
+            ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2343,7 +2409,7 @@ if($Jobtitles ==[] && $employertype ==[] && $salary ==[]   && $country  !="0" &&
   ->whereBetween('experience',array(reset($experincef),last($experincef))) 
       
       ->where('country_id',$country)
-       
+       ->orderBy('created_at','DESC')
       
              ->get();
 
@@ -2377,6 +2443,8 @@ if($Jobtitles ==[] && $employertype==[] && $salary ==[]   && $country  =="0" && 
     
       $jobts= PostJob::where('id',$resultQue->id) 
       ->whereBetween('experience',array(reset($experincef),last($experincef))) 
+             
+             ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2414,6 +2482,7 @@ if($Jobtitles !=[] && $employertype ==[] && $salary ==[]   && $country  =="0" &&
       ->where('job_id',$Jobtitles[$i])
       ->whereBetween('experience',array(reset($experincef),last($experincef))) 
       
+            ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2450,6 +2519,7 @@ if($Jobtitles !=[] && $employertype !=[] && $salary ==[]   && $country  =="0" &&
       ->where('job_id',$Jobtitles[$i]) 
       ->where('job_for',$employertype[$emp])
       ->whereBetween('experience',array(reset($experincef),last($experincef))) 
+            ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2488,8 +2558,9 @@ if($Jobtitles !=[] && $employertype !=[] && $salary !=[]   && $country  =="0" &&
       ->whereBetween('max_salary',array(reset($salaryf),last($salaryf))) 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
-            ->whereBetween('experience',array(reset($experincef),last($experincef))) 
-             ->get();
+            ->whereBetween('experience',array(reset($experincef),last($experincef)))
+            ->orderBy('created_at','DESC')
+                  ->get();
 
 
   foreach ($jobts as$jobt) {
@@ -2525,7 +2596,7 @@ if($Jobtitles ==[] && $employertype ==[] && $salary ==[]   && $country  !="0" &&
       
       ->where('country_id',$country)
        
-      
+      ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2562,6 +2633,7 @@ if($Jobtitles ==[] && $employertype==[] && $salary !=[] &&  $salary[0] =="all"  
       ->whereBetween('max_salary',array(reset($salaryf),last($salaryf))) 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
+            ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2600,7 +2672,7 @@ if($Jobtitles !=[] && $employertype ==[] && $salary !=[] &&  $salary[0] =="all" 
       ->whereBetween('max_salary',array(reset($salaryf),last($salaryf))) 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
-      
+      ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2640,6 +2712,7 @@ if($Jobtitles ==[] && $employertype !=[] && $salary !=[] &&  $salary[0] =="all" 
       ->whereBetween('max_salary',array(reset($salaryf),last($salaryf))) 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
+            ->orderBy('created_at','DESC')
       
              ->get();
 
@@ -2678,6 +2751,7 @@ if($Jobtitles ==[] && $employertype !=[] && $salary !=[] &&  $salary[0] =="all" 
      ->whereBetween('max_salary',array(reset($salaryf),last($salaryf))) 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
+            ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2717,7 +2791,7 @@ if($Jobtitles !=[] && $employertype !=[] && $salary !=[] &&  $salary[0] =="all" 
       ->whereBetween('max_salary',array(reset($salaryf),last($salaryf))) 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
-            
+            ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2757,7 +2831,7 @@ if($Jobtitles ==[] && $employertype ==[] && $salary !=[] &&  $salary[0] =="all" 
       
       ->where('country_id',$country)
        
-      
+      ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2797,7 +2871,7 @@ if($Jobtitles ==[] && $employertype ==[] && $salary !=[] &&  $salary[0] =="all" 
 
               ->where('country_id',$country)
        
-      
+             ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2839,11 +2913,8 @@ if($Jobtitles !=[] && $employertype !=[] && $salary !=[] &&  $salary[0] =="all" 
             ->whereBetween('max_salary',array(reset($salaryf),last($salaryf))) 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
-      
-      
-       
-      
-             ->get();
+            ->orderBy('created_at','DESC')
+            ->get();
 
 
   foreach ($jobts as$jobt) {
@@ -2877,6 +2948,7 @@ if($Jobtitles ==[] && $employertype==[] && $salary !=[]  && $salary[0] !="all"  
       ->whereBetween('max_salary',array(reset($salaryf),last($salaryf))) 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
+            ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2915,7 +2987,7 @@ if($Jobtitles !=[] && $employertype ==[] && $salary !=[]  && $salary[0] !="all" 
       ->whereBetween('max_salary',array(reset($salaryf),last($salaryf))) 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
-      
+      ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2955,7 +3027,7 @@ if($Jobtitles ==[] && $employertype !=[] && $salary !=[]  && $salary[0] !="all" 
       ->whereBetween('max_salary',array(reset($salaryf),last($salaryf))) 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
-      
+      ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -2993,6 +3065,7 @@ if($Jobtitles ==[] && $employertype !=[] && $salary !=[]  && $salary[0] !="all" 
      ->whereBetween('max_salary',array(reset($salaryf),last($salaryf))) 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
+            ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -3032,7 +3105,7 @@ if($Jobtitles !=[] && $employertype !=[] && $salary !=[]  && $salary[0] !="all" 
       ->whereBetween('max_salary',array(reset($salaryf),last($salaryf))) 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
-            
+            ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -3071,7 +3144,7 @@ if($Jobtitles ==[] && $employertype ==[] && $salary !=[]  && $salary[0] !="all" 
             ->where('currency_id',$currency)
       
       ->where('country_id',$country)
-       
+       ->orderBy('created_at','DESC')
       
              ->get();
 
@@ -3111,7 +3184,7 @@ if($Jobtitles ==[] && $employertype ==[] && $salary !=[]  && $salary[0] !="all" 
               ->whereBetween('experience',array(reset($experincef),last($experincef))) 
 
               ->where('country_id',$country)
-       
+       ->orderBy('created_at','DESC')
       
              ->get();
 
@@ -3154,7 +3227,7 @@ if($Jobtitles !=[] && $employertype !=[] && $salary !=[]  && $salary[0] !="all" 
             ->whereBetween('max_salary',array(reset($salaryf),last($salaryf))) 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
-      
+          ->orderBy('created_at','DESC')
       
        
       
@@ -3168,9 +3241,6 @@ if($Jobtitles !=[] && $employertype !=[] && $salary !=[]  && $salary[0] !="all" 
   
   }
  
-
-
-
 
 
 }
@@ -3204,7 +3274,7 @@ if($Jobtitles !=[] && $employertype !=[] && $salary !=[]   && $country  !="0" &&
             ->whereBetween('max_salary',array(reset($salaryf),last($salaryf))) 
             //->orWhereBetween('min_salary',array(reset($salaryf),last($salaryf)))
             ->where('currency_id',$currency)
-      
+           ->orderBy('created_at','DESC')
       
        
       
@@ -3243,9 +3313,7 @@ if($Jobtitles ==[] && $employertype ==[] && $salary ==[]   && $country  =="0" &&
     
        
       $jobts= PostJob::where('id',$resultQue->id)
-
-       
-      
+             ->orderBy('created_at','DESC')
              ->get();
 
 
@@ -3269,6 +3337,7 @@ if($Jobtitles ==[] && $employertype ==[] && $salary ==[]   && $country  =="0" &&
 
          $count=count($jobs);
          // dd($count);
+
  $data = array();
 
         //Get current page form url e.g. &page=6
@@ -3290,13 +3359,13 @@ if($Jobtitles ==[] && $employertype ==[] && $salary ==[]   && $country  =="0" &&
         $data['jobs']->setPath($request->url());
 
 $jobs=$data['jobs'];
-
+ 
 if($request->ajax())
 {
   return Response::json(\View::make('Search.searchpartial',compact('words','jobs','jobcheck','count','jobtitle','jobtitleresult','Country','jobfor'), array('jobs' => $jobs))->render());
 }
 // $hadeel = new Collection($jobs);
-// dd($hadeel->paginate(20));
+// dd($hadeel->paginate(21));
   return  view('Search.searchpartial',compact('jobs','words','count','jobtitle','jobcheck','jobfor','data') );
 
 }

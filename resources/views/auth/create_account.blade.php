@@ -42,7 +42,7 @@
         <!--divwits-->
         
         <div class="divwits">
-          <select class="form-control " name="country_id" id="country_id" required="required" onblur="processForm(this.form)">
+          <select class="form-control " name="country_id" id="country_id" required onblur="processForm(this.form)">
           
           </select>
         </div>
@@ -97,7 +97,7 @@
         having the mostmodern profile</p>
     </div>
     <!--inputbox--> 
-    <div class='errors col-sm-4' style="color:red;"></div>
+     {!! JsValidator::formRequest('App\Http\Requests\EmpRegisterFormRequest', '.formlogin'); !!}
     
   </div>
   <!--container--> 
@@ -108,8 +108,22 @@
 @endsection
 @section('scripts')
  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-<script >
+ <script type="text/javascript" src="/vendor/jsvalidation/js/jsvalidation.js"></script>
+<script src="/dist/jquery.validate.js"></script>
+<script>
   populateCountries("country_id", "city_id"); // first parameter is id of country drop-down and second parameter is id of state drop-down
+
+</script>
+<script>
+
+
+$(document).ready(function(){
+  $('#job_id').select2();
+  $('#country_id').select2();
+  $('#city_id').select2();
+});
+
+
 
 </script>
 <script >
@@ -124,35 +138,37 @@
         ev.preventDefault();
 
     $('#main_section').css('diplay','none');
-     $.get("/congrats", function(data, status){
-      $('#congrats').append(data);
-     });
-     
+    console.log($('#f_reg_emp').attr('action'));
     
-    // $('#congrat_section').css('diplay','block');
+    
   
     $.ajax({
             type: $('#f_reg_emp').attr('method'),
             url: $('#f_reg_emp').attr('action'),
             data: $('#f_reg_emp').serialize(),
-            success: function(data,ev)
-            { 
+       
+        }).done(function(data){
+
+
+              console.log(data);
               if(data == 'true')
               {
-                window.location = "/home";
+                 $.get("/congrats", function(data, status){
+      $('#congrats').append(data);
+     });
+     
+        window.setTimeout(function(){
+window.location = "/home";
+        // Move to a new location or you can do something else
+     
+
+    }, 7000);
+                
 
               }
-            },
-            error:function(data,ev)
-            {
-              console.log(data);
-              $('#congrats').empty();
-               $('#main_section').css('diplay','block');
-               
-               $('.errors').append('<p style="color:red">'+data.responseText+'</p>'); 
-               
-            }
-        });
+
+  
+});
         // return false to
      });
 </script>
@@ -175,7 +191,7 @@ if(control.value !="" && control.value !=0)
 
 
  }   // Do something with the control
-   // console.log(control.name + ': ' + control.value);
+   
   }
 }
 

@@ -148,28 +148,21 @@ app_id=1112718265559949
          $(function() {
     $('body').on('click', '.pagination a', function(e) { 
         e.preventDefault(); 
-
-        var url = $(this).attr('href'); 
-    
+        var url = $(this).attr('href');  
         getJobs(url);
-
-      
+ 
     });
     function getJobs(url) {
         $.ajax({
           
             url : url
         }).done(function (data) {
-         
-           $('#myPartialDiv').html(data);
-           location.hash;
+           $('.rowemp').html(data);
         }).fail(function () {
             alert('Data could not be loaded.');
         });
     }
 });
-
-
     </script>
 
 

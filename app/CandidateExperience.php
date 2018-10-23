@@ -19,4 +19,15 @@ class CandidateExperience extends Model
         'role',
         'user_id',
     ];
+
+
+     public function experincecountry()
+    {
+        return $this->belongsTo('App\Country','country_id');
+    }
+
+      public function Empnationality()
+    {
+        return $this->belongsTo('App\Nationality','employer_nationality_id');
+    }
 }

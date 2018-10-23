@@ -7,18 +7,131 @@ use App\PostJob;
 use App\JobLanguage;
 use App\SuccessStories;
 use App\EmployerProfile;
+use App\Notifications\PostJobs;
+use App\Notification;
+use Facebook\Exceptions\FacebookSDKException;
+use Facebook\Facebook;
+use Carbon\Carbon;
 use Auth;
 use DB;
 use Session;
 use App\User;
+use Socialite;
+use Mail;
 use App\CandidateInfo;
 class JobPostController extends Controller
 {
     
+    private $api;
+    public function __construct(Facebook $fb)
+    {
+        $this->middleware(function ($request, $next) use ($fb) {
+           
+          //  dd($fb);
+        //  $fb->setDefaultAccessToken('256a2ea30f591c082b352a85a0f2de8c');
+            $this->api = $fb;
+          //  dd()
+            return $next($request);
+        });
+    }
+
+
     public function create()
     {
     	return view('employer.post_job');
     }
+
+public function sharefb()
+{
+
+
+
+
+			//`id`, `access_token`, `page_id`, `page_url`, `page_name`, `isActive`
+			$page_access_token = 'EAAT8wdZArTS4BAElIKMw9MItv0Rh5ha8oZA3yEIDjAEaLYtZB0pLJPHaoXUUnKaKZC1SxtuXIAsc8JxUYBBTrZAhcZA2LsZBDFI1ov24AHZAdroNRdbQmZBJCUHExQmh7ji72ZAJ7fUpYqmbMxTZCvRhQBKJG9TMnoeLPPdstCChYLN08iiDdhiObBJufuHu1LtzLih3wt7PKbykgZDZD';
+			$page_id = '185519658476147';
+			$url = 'http://stackoverflow.com/questions/7818667/simple-example-to-post-to-a-facebook-fan-page-via-php';
+
+		//	$data['picture'] = "https://scontent-cdg2-1.xx.fbcdn.net/v/t1.0-9/12715358_188921771469269_1065258198462261961_n.jpg?oh=5f5acbc707271bdd7809d7a2de99b04a&oe=58F14EEB";
+
+			$data['message'] = "Test message";
+			$data['caption'] = "Caption";
+			$data['description'] = "Description";
+
+			$data['link'] = $url;
+//            $data['link'] = URL::to($url);
+			$data['access_token'] = $page_access_token;
+           
+			$post_url = 'https://graph.facebook.com/'.$page_id.'/feed';
+
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $post_url);
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			$return = curl_exec($ch);
+			curl_close($ch);
+
+        dd($return);
+	
+
+
+   
+   
+      $pageId='185519658476147';
+    // initialize Facebook class using your own Facebook App credentials
+    // see: https://developers.facebook.com/docs/php/gettingstarted/#install
+    $config = array();
+    $config['appId'] = '282393199267611';
+    $config['secret'] = '1d67c563390477c4559c9666936e50b2';
+    $config['accessToken'] = 'EAAT8wdZArTS4BAElIKMw9MItv0Rh5ha8oZA3yEIDjAEaLYtZB0pLJPHaoXUUnKaKZC1SxtuXIAsc8JxUYBBTrZAhcZA2LsZBDFI1ov24AHZAdroNRdbQmZBJCUHExQmh7ji72ZAJ7fUpYqmbMxTZCvRhQBKJG9TMnoeLPPdstCChYLN08iiDdhiObBJufuHu1LtzLih3wt7PKbykgZDZD';
+    $config['fileUpload'] = true; // optional
+
+    
+    $fb = new Facebook($config);
+    $helper = $fb->getRedirectLoginHelper();
+   
+   
+    $helper = $fb->getRedirectLoginHelper('http://www.sportsector.bg/login-callback.php');
+    $accessToken = $helper->getAccessToken();  
+   
+    // define your POST parameters (replace with your own values)
+    $params = array(
+     // "access_token" => "256a2ea30f591c082b352a85a0f2de8c", // see: https://developers.facebook.com/docs/facebook-login/access-tokens/
+      "message" => "Here is a blog post about auto posting on Facebook using PHP #php #facebook",
+      "link" => "http://www.pontikis.net/blog/auto_post_on_facebook_with_php",
+      "picture" => "http://i.imgur.com/lHkOsiH.png",
+      "name" => "How to Auto Post on Facebook with PHP",
+      "caption" => "www.pontikis.net",
+      "description" => "Automatically post on Facebook with PHP using Facebook PHP SDK. How to create a Facebook app. Obtain and extend Facebook access tokens. Cron automation."
+    );
+
+    $page_access_token = 'EAAT8wdZArTS4BAElIKMw9MItv0Rh5ha8oZA3yEIDjAEaLYtZB0pLJPHaoXUUnKaKZC1SxtuXIAsc8JxUYBBTrZAhcZA2LsZBDFI1ov24AHZAdroNRdbQmZBJCUHExQmh7ji72ZAJ7fUpYqmbMxTZCvRhQBKJG9TMnoeLPPdstCChYLN08iiDdhiObBJufuHu1LtzLih3wt7PKbykgZDZD';
+ 
+   // see: https://developers.facebook.com/docs/reference/php/facebook-api/
+    try {
+
+      $ret = $fb->post('/185519658476147/feed',$params,  $page_access_token);
+      echo 'Successfully posted to Facebook';
+    } catch(Exception $e) {
+      echo $e->getMessage();
+    }
+
+
+    try {
+        $response = $this->api->post('/185519658476147/feed', [
+            'message' => "DODOd"
+        ])->getGraphNode()->asArray();
+        if($response['id']){
+           // post created
+        }
+    } catch (FacebookSDKException $e) {
+        dd($e); // handle exception
+    }
+
+
+
+}
 
 
     //job likes
@@ -180,7 +293,14 @@ class JobPostController extends Controller
                         ;
                     }
                 }
-                
+                auth()->user()->notify(new PostJobs($job));
+                //Sending Mail after adding
+                    $data=array('Email'=>$request['email']);
+                    Mail::send('emails.NewJob', $data, function($message) use ($data) {
+                    $message->to('Social@maidandhelper.com');
+                    $message->subject('new job is added ');
+
+                    });
                 return redirect('/home');
     }
     catch(Exception $e) 
@@ -384,7 +504,7 @@ class JobPostController extends Controller
                                                     ));
                                                 
                                                 }
-            return Response::json($dataresult,  200, [], JSON_NUMERIC_CHECK);
+            return \Response::json($dataresult,  200, [], JSON_NUMERIC_CHECK);
         }
         catch(Exception $e) 
 
@@ -399,7 +519,30 @@ class JobPostController extends Controller
     }
 
 
+    public function jobStatstics(Request $request)
+    {
+
+         $employerJobs = \Auth::user()->postJobs;
+            $employerJobsShow = \Auth::user()->postJobs->first();
+            //dd($employerJobs[0]->seen);
+            $countrynames= EmployerProfile::
+            join('countries','countries.id','=','employer_profiles.country_id')
+            ->select('countries.name  AS CName' )
+            ->where('user_id',\Auth()->user()->id)->get();
+            $citynames= EmployerProfile::
+            join('cities','cities.id','=','employer_profiles.city_id')
+            ->select('cities.name  AS cityName' )
+            ->where('user_id',\Auth()->user()->id)->get();
+
+            
+       $id=$request->selected;
+     $jobStatstics = PostJob::where('job_id',$id)->where('created_by',\Auth::user()->id)->first();
+
+     
+               return view('employer.JobsStatstics',compact('employerJobs','countrynames','citynames','employerJobsShow','jobStatstics'));
+
     
+    }
    
 
 

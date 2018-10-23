@@ -33,7 +33,7 @@
         <div class="inner-aboutus topmergline padbotnm">
           <div class="com-proftow aboutcompany">
             <h5 class="textcandidate">about company</h5>
-            <p class="textabout">{{($job->user->company)?$job->user->company->description:"No Description"}}</p>
+            <p class="textabout">{{($job['user']['company']['description'])?$job['user']['company']['description']:"No Description"}}</p>
           </div>
           
           <!--aboutcompany-->
@@ -46,7 +46,7 @@
               <div class="tidiv"> <img src="/images/callto-action.png"> <span> {{$sJob->job_for}} </span></div>
               <!--tidiv-->
               
-              <h4 class="innertitltext nameviwjobs">{{$sJob->user->name}} <span>{{$sJob->job->name}}</span> </h4>
+              <h4 class="innertitltext nameviwjobs">{{$sJob['user']['name']}} <span>{{$sJob->job->name}}</span> </h4>
               <p class="officer">{{($sJob->job)?$sJob->job->name:""}}</p>
               <ul class="hassle salary">
                 <li> <strong>loc.</strong> {{$sJob->country->name}}</li>
@@ -163,7 +163,7 @@
           <div class="cenbottom seejobs linkappley flotingbot"> <a href="" class="largeredbtn" style="width: 215;font-size: 12px;">apply without regestration</a> <a href="#" data-toggle="modal" data-target="#myModal" class="largeredbtn" style="width: 183px;    font-size: 12px;">apply</a> </div>
           <div class="com-proftow aboutcompany discription">
             <h5 class="textcandidate">About Company : </h5>
-            <p class="textabout">{{($job->user->company)?$job->user->company->description:"No Description "}}</p>
+            <p class="textabout">{{($job['user']['company']['description'])?$job['user']['company']['description']:"No Description "}}</p>
           </div>
           <!--aboutcompany-->
           
@@ -177,7 +177,7 @@
                   <div class="tidiv"> <img src="/images/callto-action.png"> <span> {{$Compjob->job_for}} </span></div>
                   <!--tidiv-->
                   
-                  <h4 class="innertitltext nameviwjobs">{{$Compjob->user->name}} </h4>
+                  <h4 class="innertitltext nameviwjobs">{{$Compjob['user']['name']}} </h4>
                   <p class="officer">{{($Compjob->job)?$Compjob->job->name:""}}</p>
                   <ul class="hassle salary">
                     <li> <strong>{{($Compjob->country)?$Compjob->country->name:""}}.</strong> </li>

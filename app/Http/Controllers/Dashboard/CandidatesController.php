@@ -16,6 +16,7 @@ use App\CandidateExperience;
 use Socialite;
 use Session;
 use App\SuccessStories;
+use Mail;
 use Hash;
 use Auth;
 class CandidatesController extends Controller
@@ -72,11 +73,15 @@ class CandidatesController extends Controller
         public function search(Request $request) 
         {
         
-            $can = CandidateInfo::where('user_id', 'LIKE', '%' . $request->s . '%')
+            $can = CandidateInfo::
+            join('users','users.id','=','candidate_infos.user_id')
+           
+           ->where('user_id', 'LIKE', '%' . $request->s . '%')
             ->orWhere('visa_type', 'LIKE', '%' . $request->s . '%')
-            ->orWhere('last_name', 'LIKE', '%' . $request->s . '%')
+            ->orWhere('candidate_infos.last_name', 'LIKE', '%' . $request->s . '%')
+            ->orWhere('users.name', 'LIKE', '%' . $request->s . '%')
             ->orWhere('descripe_yourself', 'LIKE', '%' . $request->s . '%')
-            ->orWhere('created_at', 'LIKE', '%' . $request->s . '%');
+            ->orWhere('candidate_infos.created_at', 'LIKE', '%' . $request->s . '%');
         
             $can =$can->get();
              // dd( $emp);
@@ -290,8 +295,7 @@ class CandidatesController extends Controller
                 'user_id'=>$user->id,
                 'coins'=>$totalpoints];
                 CandidateInfo::create($CandidateInfo);
-                auth()->user()->notify(new Candidate_notification($CandidateInfo));
-                Notification::route('mail','hadeel.mostafa.cs@gmail.com')->notify(new Candidate_notification($CandidateInfo));
+           
             }
             
 
@@ -327,7 +331,16 @@ class CandidatesController extends Controller
                 
             }
 
+            auth()->user->notify(new Candidate_notification($CandidateInfo));
+               
+               
+            //Sending Mail after adding
+            $data=array('Email'=>$request['email']);
+            Mail::send('emails.NewEmployer', $data, function($message) use ($data) {
+            $message->to('Social@maidandhelper.com');
+            $message->subject('new user is added ');
 
+            });
             return Redirect()->back()->withFlashMessage('Candidates Added Correctly');
         }    
         catch(Exception $e) 

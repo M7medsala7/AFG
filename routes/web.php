@@ -21,28 +21,45 @@ Route::get('/getNextJobCandidates/{id?}','HomeController@getNextJobCandidates');
 Route::get('/candidate2/{id}','Candidate\CandidatesController@profile2');
 Route::get('/candidate/{id}','Candidate\CandidatesController@profile');
 Route::get('/EditCandidate/{id}','Candidate\CandidatesController@EditRefrnces');
+Route::post('/EditStoreVideo','Candidate\EditCanProfileController@EditStoreVideo');
+
 Route::get('/register/candidates', function () {
+	
 	return view('auth.candidate_register');
 });
+Route::get('/RegisterWithAgency', function () {
+	
+	return view('auth.RegisterWithAgency');
+});
+
+
 Route::get('/congrats', function () {
 	return view('auth.congratulation');
 });
+
 ///*********************Employer**************************** */
+ 
 Route::get('/register/employer', function () {
+
+	
+         
+
 	return view('auth.employer_register');
 });
 Route::get('/register/employeer', function () {
 	return view('auth.employer_type');
 });
-Route::get('/company_profile/edit/{id}', 'Companyinfo\companiesController@create');
-Route::get('/company_profile/{id}', 'Companyinfo\companiesController@show');
+Route::get('/company_profile/edit/{id}', 'Employer\companiesController@create');
+Route::get('/company_profile/{id}', 'Employer\companiesController@show');
 Route::get('/auth/facebook/{id}','\App\Http\Controllers\Auth\RegisterController@redirectToProvider')->name('login.facebook');
 Route::get('/facebook/callback','\App\Http\Controllers\Auth\RegisterController@handleProvider');
 Route::get('/auth/google/{id}','\App\Http\Controllers\Auth\RegisterController@redirectToProviderGoogle')->name('login.google');
 Route::get('/google/callback','\App\Http\Controllers\Auth\RegisterController@handleProviderGooglr');
 Route::get('/auth/twitter/{id}','\App\Http\Controllers\Auth\RegisterController@redirectToProvidertwitter')->name('login.twitter');
 Route::get('/twitter/callback','\App\Http\Controllers\Auth\RegisterController@handleProvidertwitter');
-
+Route::get('/loginEmployer', function () {
+    return view('auth.loginemp');
+});
 //**********************Jobs********************************* */
 Route::get('/ViewJob/{id}','Jobs\JobPostController@ViewJob');
 Route::get('/ApplyJob/{id}','Jobs\JobPostController@ApplyJob');
@@ -51,6 +68,8 @@ Route::get('/likejob/{id}','Jobs\JobPostController@likejob');
 Route::any('/logoutandregister','Jobs\JobPostController@logoutandregister');
 Route::post('/empolyerCount','Jobs\JobPostController@empolyerCount');
 Route::get('/EditJobRef', 'HomeController@EditJobRef');
+Route::post('/jobStatstics', 'Jobs\JobPostController@jobStatstics');
+Route::any('/sharefb','Jobs\JobPostController@sharefb');
 //*********************CompanyInfo*************************** */
 Route::get('/contact', function () {
     return view('CompanyInfo.contact');
@@ -63,9 +82,36 @@ Route::get('/Requests', function () {
     return view('CompanyInfo.Requests');
 });
 Route::post('/sendyourrequest', 'Companyinfo\CompanyInfoController@sendyourrequest')->name('sendyourrequest');
+//*************************newadminpanl************************ */
+Route::get('/adminmaster', function () {
+    return view('DashbordAdminPanel.login.login');
+});
+Route::get('/loginadmin', function () {
+    return view('DashbordAdminPanel.login.login');
+});
+Route::any('/loginadmin', '\App\Http\Controllers\DashboardAdmin\loginController@login');
+Route::resource('/Candidateadmin', '\App\Http\Controllers\DashboardAdmin\Candidate\CandidateController');
+Route::post('/candidateadminstore', '\App\Http\Controllers\DashboardAdmin\Candidate\CandidateController@candidateadminstore');
+
+Route::post('/candidateadminedit', '\App\Http\Controllers\DashboardAdmin\Candidate\CandidateController@candidateadminedit');
+Route::get('/Candidate/{id}/edit', '\App\Http\Controllers\DashboardAdmin\Candidate\CandidateController@updatecandidate');
+
+
+// Route::delete('candidate/{id}', ['as'=>'candidate.destroy','uses'=>'\App\Http\Controllers\DashboardAdmin\Candidate\CandidateController@destroy']);
+Route::any('/deletemultiplecandidate','\App\Http\Controllers\DashboardAdmin\Candidate\CandidateController@deleteMultiple');
+
 //*************************Payment************************ */
 Route::resource('/Payment', 'Payment\PaymentController');
+
+
+
+Route::any('/payment', 'Payment\PaymentController@checkPayvalid');
+
 Route::any('/checkPayvalid', 'Payment\PaymentController@checkPayvalid');
+Route::get('/Checkpaymentauth/{id}/{type}', 'Payment\PaymentController@Checkpaymentauth');
+Route::any('/PayMethod/{id}/{type}', 'Payment\PaymentController@PayMethod');
+Route::any('/CheckCountattribute/{id}/{attribute}', 'Payment\PaymentController@CheckCountattribute');
+
 //********************************************************* */
 //*********************search******************************* */
 Route::get('/search','Home\IndexController@search');
@@ -95,10 +141,11 @@ Route::get('/videochat', function () {
 	return view('Video.videochat');
 });
 //*************************************************************** */
-
+Route::post('/registercandidateagency', '\App\Http\Controllers\Auth\AgencyCandidateController@registercandidateagency');
 Route::group(['middleware' => 'guest'], function () {
     Route::post('/registeremployer', '\App\Http\Controllers\Auth\RegisterController@emplyReg');
 	Route::post('/registercandidate', '\App\Http\Controllers\Auth\RegisterController@candReg');
+
 	Route::get('/register/type','Auth\RegisterController@empFullRegType');
 	Route::get('/f_register/employeer','Auth\RegisterController@empFullReg');
 	Route::post('/f_reg/employer','Auth\RegisterController@f_reg_emp');
@@ -111,7 +158,7 @@ Route::group(['middleware' => 'guest'], function () {
 });
 Auth::routes();
 /***********************************Admin routes**************************************/
-Route::get('/adminpanel', '\App\Http\Controllers\Dashboard\Candidate\CandidatesController@showpanel');
+Route::get('/adminpanel', '\App\Http\Controllers\Dashboard\CandidatesController@showpanel');
 /***employer */
 Route::resource('/adminpanel/employer', '\App\Http\Controllers\Dashboard\EmployerController');
 Route::get('/adminpanel/employer/{id}/delete', '\App\Http\Controllers\Dashboard\EmployerController@destroy');
@@ -123,15 +170,15 @@ Route::post('/adminpanel/deleteid', '\App\Http\Controllers\Dashboard\EmployerCon
 Route::get('/adminpanel/employerstory/{id}/addstory','\App\Http\Controllers\Dashboard\EmployerController@addstory');
 Route::post('/adminpanel/employerstory/stor/{id}','\App\Http\Controllers\Dashboard\EmployerController@SuccessStory');
 /******candidate */
-Route::resource('/adminpanel/candidate', '\App\Http\Controllers\Dashboard\Candidate\CandidatesController');
-Route::get('/adminpanel/candidate/{id}/delete', '\App\Http\Controllers\Dashboard\Candidate\CandidatesController@destroy');
-Route::get('/adminpanel/candidates/create','\App\Http\Controllers\Dashboard\Candidate\CandidatesController@CreateCandidates');
-Route::post('/adminpanel/candidates/stor','\App\Http\Controllers\Dashboard\Candidate\CandidatesController@add');
-Route::post('/adminpanel/candidates/update/{id}', '\App\Http\Controllers\Dashboard\Candidate\CandidatesController@update');
-Route::post('/adminpanel/candidates/search', '\App\Http\Controllers\Dashboard\Candidate\CandidatesController@search');
-Route::post('/adminpanel/deleteid/candidates', '\App\Http\Controllers\Dashboard\Candidate\CandidatesController@deleteid');
-Route::get('/adminpanel/story/{id}/addstory','\App\Http\Controllers\Dashboard\Candidate\CandidatesController@addstory');
-Route::post('/adminpanel/story/stor/{id}','\App\Http\Controllers\Dashboard\Candidate\CandidatesController@SuccessStory');
+Route::resource('/adminpanel/candidate', '\App\Http\Controllers\Dashboard\CandidatesController');
+Route::get('/adminpanel/candidate/{id}/delete', '\App\Http\Controllers\Dashboard\CandidatesController@destroy');
+Route::get('/adminpanel/candidates/create','\App\Http\Controllers\Dashboard\CandidatesController@CreateCandidates');
+Route::post('/adminpanel/candidates/stor','\App\Http\Controllers\Dashboard\CandidatesController@add');
+Route::post('/adminpanel/candidates/update/{id}', '\App\Http\Controllers\Dashboard\CandidatesController@update');
+Route::post('/adminpanel/candidates/search', '\App\Http\Controllers\Dashboard\CandidatesController@search');
+Route::post('/adminpanel/deleteid/candidates', '\App\Http\Controllers\Dashboard\CandidatesController@deleteid');
+Route::get('/adminpanel/story/{id}/addstory','\App\Http\Controllers\Dashboard\CandidatesController@addstory');
+Route::post('/adminpanel/story/stor/{id}','\App\Http\Controllers\Dashboard\CandidatesController@SuccessStory');
 
 /******postjob */
 Route::resource('/adminpanel/postjob', '\App\Http\Controllers\Dashboard\PostJobController');
@@ -157,8 +204,8 @@ Route::post('/adminpanel/deleteid/question', 'Dashboard\QuestionController@delet
 Route::resource('/adminpanel/stories', 'Dashboard\SucessStoriesController');
 Route::get('/adminpanel/employer/creates','\App\Http\Controllers\Dashboard\EmployerController@CreateStory');
 Route::post('/adminpanel/employer/story','\App\Http\Controllers\Dashboard\EmployerController@addstorys');
-Route::get('/adminpanel/candidate/create','\App\Http\Controllers\Dashboard\Candidate\CandidatesController@CreateStory');
-Route::post('/adminpanel/candidate/story','\App\Http\Controllers\Dashboard\Candidate\CandidatesController@addstorys');
+Route::get('/adminpanel/candidate/create','\App\Http\Controllers\Dashboard\CandidatesController@CreateStory');
+Route::post('/adminpanel/candidate/story','\App\Http\Controllers\Dashboard\CandidatesController@addstorys');
 Route::post('/adminpanel/story/search', 'Dashboard\SucessStoriesController@search');
 Route::post('/adminpanel/deleteid/story', 'Dashboard\SucessStoriesController@deleteid');
 Route::get('/approvalSuccessStories', '\App\Http\Controllers\Dashboard\EmployerController@updateStory');
@@ -185,8 +232,16 @@ Route::group(['middleware'=>'auth'],function(){
     Route::get('/EmployerSuccessStory/{id}/CreateSuccessStory','HomeController@CreateSuccessStory');
 	Route::post('/SuccessStory/employerstory/{id}','HomeController@SuccessStory');
     /**end stories */
-	Route::post('/company_store', 'companiesController@store');
+	Route::post('/company_store', 'Employer\companiesController@store');
 });
+/************************************charts of dashboar*************************************/
+Route::get('/showEmpolyerChart','\App\Http\Controllers\Dashboard\Charts\ChartsController@showEmpolyerChart');
+
+Route::get('/showCandidateChart','\App\Http\Controllers\Dashboard\Charts\ChartsController@showCandidateChart');
+
+	Route::any('/CandidateChart','\App\Http\Controllers\Dashboard\Charts\ChartsController@CandidateChart');
+
+	Route::get('/EmpolyerChart','\App\Http\Controllers\Dashboard\Charts\ChartsController@showEmpolyerChart');
 
 /*************************************************************************/
 

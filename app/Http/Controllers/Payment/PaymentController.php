@@ -15,41 +15,206 @@ use PayPal\Api\Transaction;
 use PayPal\Auth\OAuthTokenCredential;
 use PayPal\Rest\ApiContext;
 use Redirect;
+use Carbon\Carbon;
 use Session;
 use URL;
+use DB;
+use App\PackagesUser;
 use App\Packages;
-
-
-
+use App\packagecount;
+use App\packageattribute;
 class PaymentController extends Controller
 {
-
-
     private $_apiContext;
- 
 
     public function __construct()
     {
-
-
-       /** PayPal api context **/
-       $paypal_conf = \Config::get('paypal');
-       $this->_api_context = new ApiContext(new OAuthTokenCredential(
-        $paypal_conf['client_id'],
-        $paypal_conf['secret'])
-       );
-       $this->_api_context->setConfig(array(
-        'mode' => 'sandbox',
-        'log.LogEnabled' => true,
-        'log.FileName' => 'PayPal.log',
-        'log.LogLevel' => 'DEBUG',
-    ));
+      
     }
+    public function CheckCountattribute($id,$attribute)
+    {
+       
+    }
+    public function Checkpaymentauth($id,$type)
+    {
+    try
+        {
+            if(\Auth::user()==null)
+                {
+                    
+                    Session::put('payment',1);
+                    $View="/candidate/".$id;
+                    Session::put('Profile',$View);
+                    return false;
+                }
+                else
+                {
+                 
+    //Case Exsist
+    $Exsits=DB::table('packagecount')
+    ->where('attribute_id',$type)
+    ->where('candidate_id',$id)->first();
+  
+    if( $Exsits != null || $Exsits !=[] )
+    {
+        if($type==1 || $type==2)
+        return 1;
+        else
+        return 3;
+    }
+    else
+    {
+  
+    $DueDate=Carbon::now()->toDateString();
+    //check user if has Valid Date
+    $Packagevalid=PackagesUser::where('users_id',\Auth::user()->id)
+                    ->where('EndDate','!=' ,$DueDate)
+                    ->first();
+                  
+        if( $Packagevalid != null || $Packagevalid !=[])  
+        {
+            $packagecount=DB::table('packagecount')
+            ->where('attribute_id',$type)
+            ->where('candidate_id',$id)
+            ->select(DB::raw('count(packagecount.candidate_id)  as total'))
+            ->first();
+            if($packagecount->total == null)
+            {
+                //save Profile
+                $packagecount= New packagecount;
+                $packagecount->user_id=\Auth::user()->id;
+                $packagecount->attribute_id=$type;
+                $packagecount->candidate_id=$id;
+                $packagecount->save();
+                if($type==1 || $type==2)
+        return 1;
+        else
+        return 3;
+            }
+            else
+            {
+               // اجيب فاضل له قد ايد
+        $Packageattr=packageattribute::where('packages_id',$Packagevalid->packages_id)
+        ->where('attribute_id',$type)
+        ->first();
+        //if monthly
+        if($Packagevalid->PackType==$type)
+        {
+           if($Packageattr->Value >= $packagecount->total)
+           {
+                //save Profile
+                $packagecount= New packagecount;
+                $packagecount->user_id=\Auth::user()->id;
+                $packagecount->attribute_id=$type;
+                $packagecount->candidate_id=$id;
+                $packagecount->save();
+
+                if($type==1 || $type==2)
+        return 1;
+        else
+        return 3;
+           }
+           else
+           {
+            return 2; 
+           }
+        }
+        else
+        {
+            if($Packageattr->Valueyear >= $packagecount->total)
+            {
+                 //save Profile
+                 $packagecount= New packagecount;
+                 $packagecount->user_id=\Auth::user()->id;
+                 $packagecount->attribute_id=$type;
+                 $packagecount->candidate_id=$id;
+                 $packagecount->save();
+                 if($type==1 || $type==2)
+        return 1;
+        else
+        return 3;
+            }
+            else
+            {
+             return 2; 
+            }
+
+        }
+       
+
+            }
+           
+        }
+
+
+    }
+                }
+        }
+    catch(Exception $e) 
+        {
+         return redirect('/');
+        }    
+
+}
+public function PayMethod($id,$type)
+{
+    try
+    {
+        if(\Auth::user()==null)
+        {
+            return redirect('/loginEmployer');
+        }
+        else
+        {
+        //Record of Package 
+        $DueDate=Carbon::now()->toDateString();
+    //check user if has Valid Date
+    $Packagevalid=PackagesUser::where('users_id',\Auth::user()->id)
+                    ->where('EndDate','!=' ,$DueDate)
+                    ->first();
+                
+                if( $Packagevalid != null || $Packagevalid !=[])  
+                 {
+                    Session::flash('flash', "you already have payment dosenot finish yet");
+                    return redirect('/Payment');   
+                 }   
+                else
+                 {
+                    $PackageData= New PackagesUser;
+                    $PackageData->packages_id=$id;
+                    $PackageData->users_id=\Auth::user()->id;
+                   
+                    $Start=Carbon::now();
+                   // $End=$Start->addDays(30);
+                    $PackageData->StartDate=$Start->toDateString();
+                  
+                    if($type==1)
+                    $End=$Start->addDays(30);
+                    else
+                    $End=$Start->addDays(365);
+                    
+                    $PackageData->EndDate=$End->toDateString();
+                    $PackageData->PackType=$type;
+                   
+                    $PackageData->save();
+                   
+                    return redirect(Session::get('Profile'));
+                 } 
+                 
+                }
+    }
+    catch(Exception $e) 
+    {
+     return redirect('/');
+    } 
+}
     public function index()
     {
         try
         {
+
           $Packages=Packages::all();
+          
           return view('Payment.Payment',compact('Packages'));
         }
         catch(Exception $e) 
@@ -59,16 +224,33 @@ class PaymentController extends Controller
     }
     public function checkPayvalid()
     {
+        
         try
         {
             if(\Auth::user()==null)
             {
+          
                 //return response()->json(false);
                return "false";
             }
             else
             {
-                return "true";
+                $Packagevalid=PackagesUser::where('users_id',\Auth::user()->id)
+                    ->where('EndDate','!=' ,$DueDate)
+                    ->first();
+                  
+        if( $Packagevalid != null || $Packagevalid !=[])  
+        {
+            return "true";
+
+
+        }
+        else
+        {
+            $Packages=Packages::all();
+            return view('Payment.Payment',compact('Packages'));
+        }
+                
             }
         }
         catch(Exception $e) 

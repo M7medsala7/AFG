@@ -22,13 +22,7 @@
 <meta property="og:image" content="https://www.maidandhelper.com/uploads/398/152982589327604902_177527993019842_1858867125_o.jpg" />
 
 
-<meta http-equiv="cache-control" content="max-age=0" />
-<meta http-equiv="cache-control" content="no-cache" />
-<meta http-equiv="cache-control" content="no-store" />
-<meta http-equiv="cache-control" content="must-revalidate" />
-<meta http-equiv="expires"       content="0" />
-<meta http-equiv="expires"       content="Tue, 01 Jan 1980 1:00:00 GMT" />
-<meta http-equiv="pragma"        content="no-cache" />
+
 
  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="/css/bootstrap.min.css" />
@@ -39,12 +33,13 @@
   <link href="/node_modules/videojs-record/dist/css/videojs.record.css" rel="stylesheet">
 
 
-  
+
 <link href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.min.css" rel="stylesheet"/>
  
  <link rel="stylesheet" href="/css/bootstrap-select.min.css">
 
 <title>Maid & Helper</title>
+
 <script type="text/javascript" src="/js/jquery.js"></script>
 
 <script type="text/javascript" src="/js/bootstrap.min.js"></script>
@@ -57,9 +52,10 @@
   <script src="/node_modules/recordrtc/RecordRTC.js"></script>
   <script src="/node_modules/webrtc-adapter/out/adapter.js"></script>
    
-<script type="text/javascript" src="/js/chosen.jquery.min.js"></script>
+
 
   <script src="/node_modules/videojs-record/dist/videojs.record.js"></script>
+
 
 
 

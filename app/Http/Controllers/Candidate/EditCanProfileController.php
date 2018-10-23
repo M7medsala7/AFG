@@ -336,9 +336,9 @@ class EditCanProfileController extends Controller
                 {
                      try
                 {
-                    $blobInput = $request->file('data');
-        
-                    $VideoName =  $request->get('name');
+
+                    $blobInput = $request->file("video-blob");
+                    $VideoName =  md5(microtime());
                     $id=$request->get('id');
         
                     $path=("upload/video").$VideoName;
@@ -349,17 +349,17 @@ class EditCanProfileController extends Controller
                    $q= CandidateInfo::
                 where('id', $id)  // find your user by their email
                 ->limit(1)  // optional - to ensure only one record is updated.
-                ->update(array('vedio_path' => "/upload/video/".$VideoName));
+                ->update(array('vedio_path' => "upload/video/".$VideoName));
                     }
                     else
                     {
                     $random_string = md5(microtime());
-                    $blobInput->move(public_path("/upload/video"),$random_string.".webm");
+                    $blobInput->move(public_path("upload/video"),$random_string.".webm");
         
                        $q= CandidateInfo::
                 where('id', $id)  // find your user by their email
                 ->limit(1)  // optional - to ensure only one record is updated.
-                ->update(array('vedio_path' => "/upload/video/".$random_string.".webm "));
+                ->update(array('vedio_path' => "upload/video/".$random_string.".webm "));
         
                    
                     }

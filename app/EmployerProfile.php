@@ -20,10 +20,7 @@ class EmployerProfile extends Model
         'coins',
     ];
 
-     public function user()
-    {
-        return $this->belongsTo('App\User');
-    }
+  
     public function SuccessStory()
     {
         return $this->hasOne('App\SuccessStories');

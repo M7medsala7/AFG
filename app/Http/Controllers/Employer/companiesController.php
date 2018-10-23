@@ -10,7 +10,10 @@ class companiesController extends Controller
     //create company profile
     public function create($id)
     {
+   
+
         $company = Company::find($id);
+
 	    return view('employer.company_profile',compact('company'));
     	
     }
@@ -63,7 +66,8 @@ class companiesController extends Controller
     public function show($id ,Request $request)
     {
     
-        $company = Company::find($id);
+        $company = Company::with('user')->find($id);
+       // dd($company);
     	return view('employer.company_profile_show',compact('company'));
     }
 

@@ -132,10 +132,10 @@
               <!--formcompany-->
               
               <div class="col-sm-12 formcompany">
-                <label class="desired">company video</label>
+                <label class="desired">company photo</label>
                 <div class="coverphoto"> <img class="img_prev" src="images/coverphoto.jpg">
                   <label class="largeredbtn record"> <i class="fas fa-upload"></i> drop it heare or click to upload one
-                    <input type="file" name="video_path"   onchange="readURL(this);" style="display: none;">
+                    <input type="file" name="photos[]"   onchange="readURL(this);" style="display: none;">
                   </label>
                 </div>
               </div>
@@ -144,7 +144,7 @@
               
               <div class="col-sm-12 formcompany">
                 <label class="desired">vedio</label>
-                <input type="file" name="photos[]" class="form-control" placeholder="drop it heare or click to upload one" multiple />
+                <input type="file" name="video_path" class="form-control" placeholder="drop it heare or click to upload one" multiple />
              
               </div>
               <!--formcompany-->

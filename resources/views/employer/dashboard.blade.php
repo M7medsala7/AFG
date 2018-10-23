@@ -18,10 +18,9 @@
           
           <div class="row addicta">
             <div class="detalsprofile">
-                @foreach($employerJobs as $job)
-              
+             
                 
-              <h4 class="textcandidate">{{$job->job_for}}</h4>
+              <h4 class="textcandidate">{{$employerJobsfor->type}}</h4>
               <p>{{(\Auth::user()->name)?(\Auth::user()->name):'No Name'}}</p>
              
  
@@ -40,12 +39,12 @@
             <!--detalsprofile-->
             
             <div class="detalsprofile">
-             @if($job->job_for =='company' || $job->job_for =='agency' )
+             @if($employerJobsShow['job_for'] =='company' || $employerJobsShow['job_for'] =='agency' )
               <h4 class="textcandidate">5-20</h4>
               <span>employees</span>
             <!--detalsprofile-->
             @endif
-              @endforeach
+            
              </div>
 
             <div class="detalsprofile">
@@ -54,7 +53,21 @@
             <!--detalsprofile-->
             
             <div class="col-sm-12 cenbottom  edit-pro"> <a href="/company_profile/edit/{{\Auth::user()->company->id}}" class="largeredbtn">edit profile <i class="fas fa-pencil-alt"></i></a> </div>
-
+            <div class="row addicta">
+            <div class="detalsprofile">
+            <h6 class="textcandidate">your Curent Package</h4>
+            <br>
+            <br>
+            <h6 class="">PackageName :{{($PackagesUser)?($PackagesUser->name):''}}  </h6><br>
+            <h6 class="">DueDate :{{($PackagesUser)?($PackagesUser->EndDate):''}}</h6><br>
+            <h6 class="">Call Ramain :{{$Packageattr1}} / {{$Remain1}}</h6><br>
+            <h6 class="">Video Remain : {{$Packageattr2}} / {{$Remain2}}</h6><br>
+            <h6 class="">CV Remain : {{$Packageattr3}} / {{$Remain3}}</h6><br>
+            <a class="textcandidate" href="/Payment">More details on packages</a><br>
+           </div>
+           </div>
+           
+           
           </div>
           <!--addicta--> 
           
@@ -67,8 +80,14 @@
       <div class="col-sm-9 dashboardleft">
         <div class="headtext">
           <h3 class="title-con"> jobs statstics </h3>
-          <a href="/addPostJob" class="largeredbtn">add new job <i class="fas fa-plus"></i></a> </div>
+          <a href="/addPostJob" class="largeredbtn">add new job <i class="fas fa-plus"></i></a>
+         
+          @if($employerJobsfor->type == "Agency")
+          <a href="/RegisterWithAgency"  class="largeredbtn" style="margin-right: 20px;">add new Candidate <i class="fas fa-plus"></i></a> 
+          @endif
+          </div>
         <!--headtext-->
+
         
         <ul class="nav nav-tabs tebprofile">
           @foreach($employerJobs as $job)
@@ -78,98 +97,10 @@
         <div class="tab-content">
         @foreach($employerJobs as $job)
           <div id="{{$job->job->name}}_{{$job->id}}" class="tab-pane fade in {{($job->id == $employerJobs->first()->id)?'active':''}}">
-            <div class="row">
-              <div class="col-sm-8 leftprofile">
-                <div class="tidivbotom"> <span>{{$job->created_at}}</span></div>
-                <!--tidivbotom-->
-                
-                <ul class="lastviws">
-                  <li>
-                    <h3>{{$job->seen|0}}</h3>
-                    <i class="fas fa-eye"></i>
-                    <p>views</p>
-                  </li>
-                  <li class="stars_job" job-id = "{{$job->id}}">
-                    <h3>{{count($job->starred)}}</h3>
-                    <i class="far fa-star"></i>
-                    <p>starred</p>
-                  </li>
-                  <li>
-                    <h3>0</h3>
-                    <i class="fas fa-video"></i>
-                    <p>interviewed</p>
-                  </li>
-                  <li class="applicants_job" job-id = "{{$job->id}}">
-                    <h3>{{count($job->applicants)}}</h3>
-                    <i class="far fa-hand-point-up"></i>
-                    <p>applied</p>
-                  </li>
-                  <li class="liked_candidates" job-id = "{{$job->id}}">
-                    <h3>{{count(\Auth::user()->likes)}}</h3>
-                    <i class="far fa-thumbs-up"></i>
-                    <p>likes</p>
-                  </li>
-                </ul>
-              </div>
-              <!--leftprofile-->
-              
-              <div class="col-sm-4 leftprofile">
-                <div id="chartContainerTest"></div>
-              </div>
-              <!--leftprofile--> 
-              
-            </div>
-            <!--row--> 
-          <div class="inner-aboutus topmergline">
-            <div class="currencytext resultstext">
-              <h2>top candidates</h2>
-            </div>
-            <!--resultstext-->
-            
-            <div class="row topCanDiv_{{$job->id}}" >
-              @if($job->getTopCandidatesAttribute()->first())
-                @foreach($job->getTopCandidatesAttribute() as $candidate)
-                  <div class="col-sm-4 company com-dashboard ">
-                    <div class="ineercompany nonepad"> <a href="#" class="imgbox"> <img src="images/4.jpg"> <i class="fas fa-play"></i></a>
-                      <div class="padboxs">
-                       <span class="eyeicons"><i class="fas fa-eye"></i> 20,215</span> <span class="eyeicons"><i class="fas fa-flag"></i> 20,215</span>
-                        <h4 class="innertitltext">{{$candidate['user']['name']}}</h4>
-                        <p class="officer">nanny</p>
-                        <ul class="hassle salary">
-                          <li> 28 years</li>
-                        
-                        </ul>
-                        <div class="tidivbotom"> 
-                          <a href="/ViewJob/{{$candidate->id}}">know more</a> 
-                          <span>{{$candidate->created_at}}</span>
-                        </div>
-                        <!--tidiv--> 
-                        
-                      </div>
-                      <!--padboxs--> 
-                      
-                    </div>
-                    <!--inernews--> 
-                    
-                  </div>
-                @endforeach
-                <div class="top-can-div_{{$job->id}}"></div>
-              <!--com-dashboard-->
-              @else
-              <h3 class="cenbottom" style="text-align: center;"> No Candidates</h3>
-              @endif
-            </div>
-            <div class="can_links" style="text-align: center; margin-top: 5px;"></div>
-            <!--row-->
-            @if($job->getTopCandidatesAttribute()->first())
-              <div class="cenbottom nomergbotm" > <button type="button"  class="largeredbtn loadmoreCandidates" job-id="{{$job->id}}" last-candidate-id = "{{($job->topCandidates->last()['id'])?$job->getTopCandidatesAttribute()->last()['id']:0}}" id ="{{$job->id}}_loadmore" >load more candidates</button> 
-              </div>
-            @else
-              
-            @endif
-          </div>
-          <!--inner-aboutus-->
+            @include('employer.JobsStatstics')
 
+          <!--inner-aboutus-->
+      
           <div class="inner-aboutus topmergline">
           <div class="currencytext resultstext">
             <h2>jobs & candidates</h2>
@@ -258,6 +189,8 @@
 </section>
 <!--section-->
 
+
+
 <div id="myModal" class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -277,6 +210,8 @@
 <!--section-->
 @endsection
 @section('scripts')
+
+
 <script>
   $('.loadmoreCandidates').on('click',function(){
     var job_id = $(this).attr('job-id');
@@ -350,13 +285,15 @@
   });
 </script>
 <script>
-  $('.stars_job').on('click', function(){
-    var job_id = $(this).attr('job-id');
+
+
+function liked()
+{
+  var job_id =  $('.liked_candidates').attr('job-id');
     $.ajax(
       {
         type:'GET',
-        url:'/getCandidatesStaredJob',
-        data:"jobId="+job_id,
+        url:'/getLikes',
         success: function(data){
           console.log(data);
           $('.topCanDiv_'+job_id).empty();
@@ -367,36 +304,22 @@
           for (index = 1; index <= data[2].length; ++index) {
             if(index == 1)
             {
-              links+="<button type='button' class='next_can_link' job_id='"+job_id+"' b_url='/next_can/0'>"+index+"</button>";
+              links+="<button type='button' class='next_user_link' job_id='"+job_id+"' b_url='/next_likes/0'>"+index+"</button>";
             }
             else
-              links+="<button type='button' class='next_can_link' job_id='"+job_id+"' b_url='"+data[2][index-2]+"'>"+index+"</button>";
+              links+="<button type='button' class='next_user_link' job_id='"+job_id+"' b_url='"+data[2][index-2]+"'>"+index+"</button>";
             
           }
-                    console.log(links);
+          console.log(links);
           $('.loadmoreCandidates').css('display','none');
-          $('.can_links').append(links);        }
-      });
-  });
-  $(document).on('click','.next_can_link',function(){
-    url = $(this).attr('b_url');
-    job_id = $(this).attr('job_id');
-    $.ajax(
-      {
-        type:'GET',
-        url:url,
-        data:"job_id="+job_id,
-        success: function(data){
-          console.log(data);
-          $('.topCanDiv_'+job_id).empty();
-          $('.top-can-div_'+job_id).empty();
-          $('.topCanDiv_'+job_id).append(data);
+          $('.can_links').append(links);        
         }
       });
-  });
-
-  $('.applicants_job').on('click',function(){
-    var job_id = $(this).attr('job-id');
+}
+  
+function applicants()
+{
+  var job_id =$('.applicants_job').attr('job-id');
   $.ajax(
       {
         type:'GET',
@@ -423,14 +346,19 @@
           $('.can_links').append(links);        
         }
       });
-  });
+}
 
-  $('.liked_candidates').on('click',function(){
-    var job_id = $(this).attr('job-id');
+
+
+ function stars()
+ {
+ var job_id = $('.stars_job').attr('job-id');
+
     $.ajax(
       {
         type:'GET',
-        url:'/getLikes',
+        url:'/getCandidatesStaredJob',
+        data:"jobId="+job_id,
         success: function(data){
           console.log(data);
           $('.topCanDiv_'+job_id).empty();
@@ -441,20 +369,36 @@
           for (index = 1; index <= data[2].length; ++index) {
             if(index == 1)
             {
-              links+="<button type='button' class='next_user_link' job_id='"+job_id+"' b_url='/next_likes/0'>"+index+"</button>";
+              links+="<button type='button' class='next_can_link' job_id='"+job_id+"' b_url='/next_can/0'>"+index+"</button>";
             }
             else
-              links+="<button type='button' class='next_user_link' job_id='"+job_id+"' b_url='"+data[2][index-2]+"'>"+index+"</button>";
+              links+="<button type='button' class='next_can_link' job_id='"+job_id+"' b_url='"+data[2][index-2]+"'>"+index+"</button>";
             
           }
-          console.log(links);
+                    console.log(links);
           $('.loadmoreCandidates').css('display','none');
-          $('.can_links').append(links);        
+          $('.can_links').append(links);        }
+      });
+ }
+
+  $(document).on('click','.next_can_link',function(){
+    url = $(this).attr('b_url');
+    job_id = $(this).attr('job_id');
+    $.ajax(
+      {
+        type:'GET',
+        url:url,
+        data:"job_id="+job_id,
+        success: function(data){
+          console.log(data);
+          $('.topCanDiv_'+job_id).empty();
+          $('.top-can-div_'+job_id).empty();
+          $('.topCanDiv_'+job_id).append(data);
         }
       });
   });
 
-   $(document).on('click','.next_user_link',function(){
+     $(document).on('click','.next_user_link',function(){
     url = $(this).attr('b_url');
     job_id = $(this).attr('job_id');
     $.ajax(
@@ -476,21 +420,25 @@ $(document).ready(function() {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
- 
+
+
 $(".tab").click(function () {
     $(".tab").removeClass("active");
     // $(".tab").addClass("active"); // instead of this do the below 
     $(this).addClass("active");  
-
-
-
-
-
   var selected= this.value;
-   
-
-console.log(selected);
 $.ajax({
+
+type: "POST",
+    url: "/jobStatstics",
+    data:{'selected':selected },
+    
+    success:function(data) {
+
+
+ $('.jobStatstics').html(data);
+
+ $.ajax({
 
 type: "POST",
     url: "/empolyerCount",
@@ -516,6 +464,17 @@ var chart = new CanvasJS.Chart("chartContainerTest",
 chart.render();
 }
 });
+
+}
+});
+
+
+
+
+   
+
+console.log(selected);
+
 });
 });
 </script>

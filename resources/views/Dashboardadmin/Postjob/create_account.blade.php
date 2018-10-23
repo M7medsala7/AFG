@@ -1,34 +1,45 @@
-@extends('Dashboardadmin.layout.layout')
+<!DOCTYPE html>
+@include('Dashboardadmin.layout.header')
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
 
+@include('Dashboardadmin.layout.sidebar')
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      <!-- Sidebar user panel -->
+      <div class="user-panel">
+        <div class="pull-left image">
+          <img src="{{url('/admin/dist/img/user2-160x160.jpg')}}" class="img-circle" alt="User Image">
+        </div>
+        <div class="pull-left info">
+          <p>Alexander Pierce</p>
+          <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+        </div>
+      </div>
+      <!-- search form -->
+      <form action="#" method="get" class="sidebar-form">
+        <div class="input-group">
+          <input type="text" name="q" class="form-control" placeholder="Search...">
+              <span class="input-group-btn">
+                <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                </button>
+              </span>
+        </div>
+      </form>
+      <!-- /.search form -->
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu" data-widget="tree">
+      @include('/Dashboardadmin.layout.nav')
+        </ul>
+    </section>
+    <!-- /.sidebar -->
+  </aside>
 
-
-@section('head')
-
-<style>
-  .select2-selection__rendered{
-    background: rgb(0, 1, 1);
-    border: 1px solid rgba(115, 115, 115, 0.48)!important;
-    /* color: #fff; */
-    float: left;
-    width: 100%;
-    height: 40px;
-    border-radius: 5px;
-    /* border: 0; */
-    box-shadow: none;
-    border: 2px solid #d7d7d7;
-    margin-top: 10px;
-  }
-  .select2-container--default .select2-selection--single{    background-color: 0!important;border: 0!important}
-</style>
-@endsection
-
-
-
-
-
-
-
-@section('content')
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
       <section class="content-header"  style="background-color:; ">
       <h1 class="fa fa-dashboard">
      Add PostJob
@@ -261,28 +272,38 @@
        
  </section>
 
-@endsection
+  </div>
+  <!-- /.content-wrapper -->
+  <footer class="main-footer">
+    <div class="pull-right hidden-xs">
+      <b>Version</b> 2.4.0
+    </div>
+    <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
+    reserved.
+  </footer>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-<script >
-  populateCountries("country_id", "city_id"); // first parameter is id of country drop-down and second parameter is id of state drop-down
+ 
+  <!-- /.control-sidebar -->
+  <!-- Add the sidebar's background. This div must be placed
+       immediately after the control sidebar -->
+  <div class="control-sidebar-bg"></div>
+</div>
+<!-- ./wrapper -->
 
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-<script>
+<!-- jQuery 3 -->
 
+<!-- AdminLTE for demo purposes -->
+<script src="/admin/cust/sweetalert.js"></script>
 
-  $(document).ready(function(){
-    $('#job_id').select2();
-    $('#country_id').select2();
-    $('#currency_id').select2();
-  });
+<script src="/admin/cust/sweetalert.min.js"></script>
+  @include('Dashboardadmin.layout.flashMessage')
+  @include('Dashboardadmin.layout.footer')
+     </body>
+     
 
+</html>
 
-
-  </script>
-  @section('scripts')
-<script>
+ <script>
   $('.clear_all').on('click',function(){
     document.getElementById('full_cand_reg').reset();
   });
@@ -311,7 +332,7 @@ $(document).ready(function () {
 
 
  $(".types").chosen({ 
-                   width: '50%',
+                  
                    color:'red',
                    no_results_text: "No Results",
                    allow_single_deselect: true, 
@@ -376,4 +397,4 @@ console.log( player.recordedData);
 
  });
  </script>
-@endsection
+
