@@ -181,5 +181,28 @@ class User extends Authenticatable
        ->select('*')->get();
        return $packattribute;
    }
+
+       public static function boot() {
+        parent::boot();
+
+        static::deleting(function($user) { // before delete() method call this
+             $user->SuccessStory()->delete();
+             $user->postJobs()->delete();
+             $user->getUserSkill()->delete();
+             $user->CanInfo()->delete();
+             $user->EmpInfo()->delete();
+
+             $user->languages()->delete();
+$user->preferedLocations()->delete();
+  $user->educational()->delete();
+  $user->experience()->delete();
+  $user->employer()->delete();
+   $user->company()->delete();  
+    $user->likes()->delete();
+        $user->likesjob()->delete(); 
+                return parent::delete();
+            // do the rest of the cleanup...
+        });
+    }
 }
 

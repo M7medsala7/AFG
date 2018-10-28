@@ -207,6 +207,28 @@
                     @endforeach
                 </select>
             </div>
+            <div class="divwits marginclass">
+            <select class="form-control chosen-select types" data-placeholder="Choose a Language..." name="language_ids[]" id="language_id" multiple="multiple" required="" style="width: 100%;" >
+               @foreach(\App\Language::all() as $lang)
+                 <option value="{{$lang->id}}">{{$lang->name}}</option>
+               @endforeach
+             </select>
+            </div>
+            <div class="divwits marginclass">
+            <div class="input-group input-file" name="cv_path">
+                <input type="text" style="background: #ccc;color:rgba(0,0,0,0.7)!important" class="form-control requirments"  placeholder='cv...' onblur="processForm(this.form)" /> 
+                <span class="input-group-btn">
+                <button class="btn btn-default btn-choose largeredbtn brows" type="button" onblur="processForm(this.form)">upload</button>
+                </span> </div>
+            </div>
+
+            <div class="divwits marginclass">
+                <div class="input-group input-file" name="logo">
+                <input type="text" style="background: #ccc;color:rgba(0,0,0,0.7)!important" class="form-control requirments"  placeholder='image...'  />
+                <span class="input-group-btn">
+                <button class="btn btn-default btn-choose largeredbtn brows" type="button" onblur="processForm(this.form)">brows</button>
+                </span> </div>
+            </div>
              <div class="divwits marginclass">
                 <div class="row">
                   <div class="col-sm-4 airports availability"> gender</div>

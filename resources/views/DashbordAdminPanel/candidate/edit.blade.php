@@ -966,7 +966,7 @@
 
 
 
-
+ {!! JsValidator::formRequest('App\Http\Requests\AddCandidateAdminFormRequest', '.formlogin'); !!} 
 
 
                     
@@ -990,6 +990,8 @@
 
 
 @section('scripts')
+<script type="text/javascript" src="/vendor/jsvalidation/js/jsvalidation.js"></script>
+<script src="/dist/jquery.validate.js"></script>
 <script type="text/javascript">
   $(function() {
 

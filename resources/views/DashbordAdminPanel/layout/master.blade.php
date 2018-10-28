@@ -8,8 +8,8 @@
     <meta name="_token" content="{{ csrf_token() }}"/>
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Sufee Admin - HTML5 Admin Template</title>
-    <meta name="description" content="Sufee Admin - HTML5 Admin Template">
+    <title>Maid And Helper Admin Panel </title>
+    <meta name="description" content="Maid And Helper Admin Panel">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="apple-touch-icon" href="apple-icon.png">
@@ -76,6 +76,7 @@
     <script src="/AdminDashboard/assets/js/lib/vector-map/country/jquery.vmap.world.js"></script>
      <script src="/AdminDashboard/assets/js/lib/chosen/chosen.jquery.min.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.min.js"></script>
+     
     <script>
         ( function ( $ ) {
             "use strict";
@@ -112,8 +113,8 @@
 
         });
     </script>
- 
 </body>
 
-@yield('scripts')
+ @yield('scripts')
+
 </html>

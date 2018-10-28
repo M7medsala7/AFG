@@ -30,10 +30,26 @@ use JsValidator;
 
 class AgencyCandidateController extends Controller
 {
+    public function saveUploadedFile($file, $user){
+        $filename = time().$file->getClientOriginalName();
+        $type = $file->getMimeType();
+        $extension = $file->getClientOriginalExtension();
+        $path = 'uploads/'.$user->id;
+        $destPath ='uploads/'.$user->id.'/'.$filename;
+        if(!\File::exists($path)) {
+            // path does not exist
+            \File::makeDirectory($path, $mode = 0777, true, true);
+        }
+        $success =$file->move($path,$filename);
+       // $destPath = str_replace( $destPath);
+        return $destPath;
+    }
     public function registercandidateagency(Request $request)
     {
+
           try
           {
+          
         $code = 1000;
         $vedio_path='';
         $vedio_path = Session::get('VideoPath');
@@ -85,6 +101,8 @@ foreach ( $countcoins as   $value) {
 }
         //add skills 
         $skillpoint=0;
+        $langpoint=0;
+        $logopoint=0;
         if(count($request['skill_ids']))
         {
         foreach ($request['skill_ids'] as $key => $skill) {
@@ -93,9 +111,34 @@ foreach ( $countcoins as   $value) {
         }
         $skillpoint=5;
         }
-$totalpoints=$points*5+$videopoint+$skillpoint;
+        if($request['language_ids'])
+        {
+            foreach ($request['language_ids'] as $key => $lang) {
+                # code...
+                \App\UserLanguage::create(['language_id'=>$lang,'user_id'=>$user->id]);
+            }
+            $langpoint=5;
+        }
+        if($request->hasFile('cv_path'))
+        {
+            $cv_path = $this->saveUploadedFile($request['cv_path'],$user);
+
+            $cvgpoint=10;
+        }
+        if($request->hasFile('logo'))
+        {
+            $logo = $this->saveUploadedFile($request['logo'],$user);
+            $user->logo=$logo;
+            $user->save();
+
+            $logopoint=10;
+        }
+$totalpoints=$points*5+$videopoint+$skillpoint+$langpoint+$logopoint;
 $input['coins']=$totalpoints;
 $input['Agency_ID']= (\Auth::user()->id);
+$input['cv_path']=$cv_path;
+$EmployerProfile=EmployerProfile::where('user_id',\Auth::user()->id)->first();  
+$input['phone_number']=$EmployerProfile->phone;
  $CandidateInfo= CandidateInfo::create($input);
         
         $user->notify(new Candidate_notification($CandidateInfo));

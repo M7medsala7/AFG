@@ -282,7 +282,7 @@ $totalpoints=$points*5;
         {
             $job = EmployerProfile::create(['type'=>$request['job_for'],
             'name'=>$request['name'],'last_name'=>'.',
-            'user_id'=>$user->id,'coins'=>$totalpoints]);
+            'user_id'=>$user->id, 'phone'=>$request['phone'],'coins'=>$totalpoints]);
            
       
         }
@@ -486,6 +486,7 @@ $totalpoints=$points*5+$videopoint;
         $points=0;
           $countcoins=['name'=>$request['name'],
         'email'=>$request['email'],
+        'phone'=>$request['phone'],
         'password' => bcrypt($request['password']),
         'last_name'=>$request['last_name'],
         'job_for'=>$request['job_for'],
@@ -558,7 +559,7 @@ $citynam->save();
             $emptype= EmployerProfile::create(['city_id'=>$cityQuery->id,
             'type'=>$request['type'],'first_name'=>$request['first_name'],
             'last_name'=>$request['last_name'],'country_id'=>$countryQueryCityID->id,
-            'user_id'=>$user->id,'coins'=>$totalpoints]);
+            'user_id'=>$user->id,'phone'=>$request['phone'],'coins'=>$totalpoints]);
          
           
            // dd($emp);

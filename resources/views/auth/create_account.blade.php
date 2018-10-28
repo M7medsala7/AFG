@@ -21,10 +21,11 @@
   <div class="container">
     <div class="loginbok cand-1">
       <h4 class="createtitle"> create account</h4>
+    
       <form  action="/f_reg/employer" method="post" id="f_reg_emp" class="formlogin">
         {{csrf_field()}}
         <div class="divwits">
-           <input type="text" name="first_name" class="form-control" placeholder="first name" onblur="processForm(this.form)">
+           <input type="text" name="first_name" class="form-control requirments" placeholder="  {{$type}} name" onblur="processForm(this.form)">
         </div>
         <div class="divwits">
            <input type="hidden" name="type" value="{{$type}}" class="form-control" placeholder="first name" onblur="processForm(this.form)">
@@ -32,12 +33,16 @@
         <!--divwits-->
         
         <div class="divwits">
-           <input type="text" name="last_name" class="form-control" placeholder="last name" onblur="processForm(this.form)">
+           <input type="text" name="last_name" class="form-control requirments" placeholder="last name" onblur="processForm(this.form)">
         </div>
         <!--divwits-->
         
         <div class="divwits">
            <input type="text" name="address" class="form-control" placeholder="address" onblur="processForm(this.form)">
+        </div>
+
+         <div class="divwits">
+           <input type="number" name="phone" class="form-control requirments" placeholder="phone" onblur="processForm(this.form)">
         </div>
         <!--divwits-->
         
@@ -112,7 +117,6 @@
 <script src="/dist/jquery.validate.js"></script>
 <script>
   populateCountries("country_id", "city_id"); // first parameter is id of country drop-down and second parameter is id of state drop-down
-
 </script>
 <script>
 

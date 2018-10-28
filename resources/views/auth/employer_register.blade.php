@@ -47,7 +47,7 @@
             <div class="divwits"> 
               <!-- <label class="desired"> job tilte</label>-->
                 <select class="form-control requirments" name="job_id" id="job_id" required="" onblur="processForm(this.form)">
-                  <option selected="" disabled="disabled">job tilte</option>
+                  <option selected="" disabled="disabled">I'm looking for</option>
                     @foreach(\App\Job::all() as $job)
                       <option value="{{$job->id}}">{{$job->name}}</option>
                     @endforeach
@@ -150,13 +150,13 @@
               <div class="row">
                 <div class="col-sm-3 airports availability"> company</div>
                 <label class="col-sm-3 airports">
-                  <input type="radio" value="family" name="job_for" checked="" onblur="processForm(this.form)">
+                  <input type="radio" value="family" name="job_for" onchange="changeName(2)" checked="" onblur="processForm(this.form)">
                   <span class="label-text">family</span> </label>
                 <label class="col-sm-3 airports">
-                  <input type="radio" value="company" name="job_for" onblur="processForm(this.form)">
+                  <input type="radio" value="company" name="job_for" onchange="changeName(1)" onblur="processForm(this.form)">
                   <span class="label-text">company</span> </label>
                 <label class="col-sm-3 airports">
-                  <input type="radio" value="agency" name="job_for" onblur="processForm(this.form)">
+                  <input type="radio" value="Agency" name="job_for" onchange="changeName(3)" onblur="processForm(this.form)">
                   <span class="label-text">agency</span> </label>
               </div>
             </div>
@@ -164,7 +164,7 @@
             
             <div class="divwits"> 
               <!--<label class="desired">company name</label>-->
-              <input type="text" name="name" class="form-control requirments" placeholder="company name" onblur="processForm(this.form)">
+              <input type="text" name="name" id="nametype" class="form-control requirments"value="" placeholder="company name" onblur="processForm(this.form)">
             </div>
             <!--divwits-->
             
@@ -237,12 +237,10 @@
 @endsection
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-<<<<<<< Updated upstream
+
 <script type="text/javascript" src="/vendor/jsvalidation/js/jsvalidation.js"></script>
 <script src="/dist/jquery.validate.js"></script>
-=======
 
->>>>>>> Stashed changes
 <script>
 
 
@@ -319,6 +317,24 @@ $.validator.setDefaults({
     
     <script>
     // }
+    function changeName($id)
+    {
+      if($id==1)
+      {
+$('#nametype').val('Company Name');
+      }
+      else if ($id==2)
+      {
+        $('#nametype').val('Family Name');
+      }
+      else
+
+
+      {
+        $('#nametype').val('Agency Name');
+      }
+    //  alert($id);
+    }
 function processForm(form) {
   
   document.getElementById("Points").innerHTML=0;

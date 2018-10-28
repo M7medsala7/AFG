@@ -38,7 +38,6 @@
       
     <div class="modal-body">
   
-                    <br />
 <form  action="/candidateadminstore" method="POST" class="formlogin" enctype="multipart/form-data">
 	{{ csrf_field() }}
     <fieldset style="padding: .35em .625em .75em; margin: 0 2px; border: 1px solid silver;">
@@ -146,11 +145,11 @@
                     
                        
                      
-                    
+              
                   
 </fieldset> 
    
-</br>
+
 
    <div class="ln_solid"></div>
                       <div class="form-group">
@@ -162,7 +161,7 @@
                       </div>
 
 
-
+    
       </form>
 
 
@@ -335,6 +334,7 @@
                                 $(".checkbox:checked").each(function() {  
                                     $(this).parents("tr").remove();
                                 });
+                                 $(document).ajaxStop(function() { location.reload(true); });
                                 alert(data['message']);
                             } else {
                                 alert('Whoops Something went wrong!!');

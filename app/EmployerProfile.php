@@ -17,10 +17,14 @@ class EmployerProfile extends Model
         'country_id',
         'address',
         'nationality',
+        'phone',
         'coins',
     ];
 
-  
+     public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
     public function SuccessStory()
     {
         return $this->hasOne('App\SuccessStories');

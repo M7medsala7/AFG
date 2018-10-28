@@ -10,18 +10,20 @@ use App\CandidateInfo;
 use App\PostJob;
 use Input;
 use App\CandidateExperience;
+use App\Http\Requests\AddCandidateAdminFormRequest;
 class CandidateController extends Controller
 {
  
     public function index()
     {
        $allCandidate= User::with('CanInfo')->where('type','=','candidate')->orderBy('created_at','DESC')->get();
-
     return view('DashbordAdminPanel.candidate.index',compact('allCandidate'));
     }
 
-         public function candidateadminstore( Request $request)
+         public function candidateadminstore( AddCandidateAdminFormRequest $request)
     {
+        dd('l');
+        
      
  //get the code value;
         $lastUser =  User::orderBy('id', 'desc')->first();
@@ -88,9 +90,7 @@ public function updatecandidate($id)
 }
 public function candidateadminedit( Request $request)
 {
-      
 
-        
                
             //*code generated*/
 
@@ -140,9 +140,11 @@ public function candidateadminedit( Request $request)
                 }
                 if($request['Skills'])
                 {
+
                     foreach ($request['Skills'] as $key => $skill) {
                         # code...
-                        $skills=\App\UserSkill::find($request['id']);
+                        $skills=\App\UserSkill::where('user_id',$request['id'])->where('user_id',$user->id)->first();
+
                         $skills->skill_id =$skill;
                         $skills->user_id =$user->id;
                         $skills->save();

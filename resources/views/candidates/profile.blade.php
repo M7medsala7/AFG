@@ -437,7 +437,7 @@ function Checkpaymentauth($type)
         else if(data==3)
          {
            //append to I Frame
-$('#Frame').append('<iframe width="90%" height="60%"src="/{{$candidate->CanInfo->cv_path}}"></iframe>')
+            $('#Frame').append('<iframe width="90%" height="60%"src="/{{$candidate->CanInfo->cv_path}}"></iframe>')
           $('#myModa3').modal('show');
          }
           else 

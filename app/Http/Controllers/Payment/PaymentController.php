@@ -40,116 +40,105 @@ class PaymentController extends Controller
     try
         {
             if(\Auth::user()==null)
+            {
+                Session::put('payment',1);
+                $View="/candidate/".$id;
+                Session::put('Profile',$View);
+                return false;
+            }
+            else
+            {
+            //Case Exsist
+                $Exsits=DB::table('packagecount')
+                        ->where('attribute_id',$type)
+                        ->where('candidate_id',$id)->first();
+                if( $Exsits != null || $Exsits !=[] )
                 {
-                    
-                    Session::put('payment',1);
-                    $View="/candidate/".$id;
-                    Session::put('Profile',$View);
-                    return false;
+                    if($type==1 || $type==2)
+                    return 1;
+                    else
+                    return 3;
                 }
                 else
                 {
-                 
-    //Case Exsist
-    $Exsits=DB::table('packagecount')
-    ->where('attribute_id',$type)
-    ->where('candidate_id',$id)->first();
-  
-    if( $Exsits != null || $Exsits !=[] )
-    {
-        if($type==1 || $type==2)
-        return 1;
-        else
-        return 3;
-    }
-    else
-    {
-  
-    $DueDate=Carbon::now()->toDateString();
-    //check user if has Valid Date
-    $Packagevalid=PackagesUser::where('users_id',\Auth::user()->id)
-                    ->where('EndDate','!=' ,$DueDate)
-                    ->first();
-                  
-        if( $Packagevalid != null || $Packagevalid !=[])  
-        {
-            $packagecount=DB::table('packagecount')
-            ->where('attribute_id',$type)
-            ->where('candidate_id',$id)
-            ->select(DB::raw('count(packagecount.candidate_id)  as total'))
-            ->first();
-            if($packagecount->total == null)
-            {
+                    $DueDate=Carbon::now()->toDateString();
+                //check user if has Valid Date
+                    $Packagevalid=PackagesUser::where('users_id',\Auth::user()->id)
+                                ->where('EndDate','!=' ,$DueDate)
+                                ->first();
+                    if( $Packagevalid != null || $Packagevalid !=[])  
+                    {
+                        $packagecount=DB::table('packagecount')
+                        ->where('attribute_id',$type)
+                        ->where('candidate_id',$id)
+                        ->select(DB::raw('count(packagecount.candidate_id)  as total'))
+                        ->first();
+                if($packagecount->total == null)
+                    {
                 //save Profile
-                $packagecount= New packagecount;
-                $packagecount->user_id=\Auth::user()->id;
-                $packagecount->attribute_id=$type;
-                $packagecount->candidate_id=$id;
-                $packagecount->save();
-                if($type==1 || $type==2)
-        return 1;
-        else
-        return 3;
-            }
-            else
-            {
-               // اجيب فاضل له قد ايد
-        $Packageattr=packageattribute::where('packages_id',$Packagevalid->packages_id)
-        ->where('attribute_id',$type)
-        ->first();
-        //if monthly
-        if($Packagevalid->PackType==$type)
-        {
-           if($Packageattr->Value >= $packagecount->total)
-           {
-                //save Profile
-                $packagecount= New packagecount;
-                $packagecount->user_id=\Auth::user()->id;
-                $packagecount->attribute_id=$type;
-                $packagecount->candidate_id=$id;
-                $packagecount->save();
+                        $packagecount= New packagecount;
+                        $packagecount->user_id=\Auth::user()->id;
+                        $packagecount->attribute_id=$type;
+                        $packagecount->candidate_id=$id;
+                        $packagecount->save();
+                        if($type==1 || $type==2)
+                        return 1;
+                        else
+                        return 3;
+                    }
+                else
+                    {
+                        // اجيب فاضل له قد ايد
+                        $Packageattr=packageattribute::where('packages_id',$Packagevalid->packages_id)
+                        ->where('attribute_id',$type)
+                        ->first();
+                    //if monthly
+                        if($Packagevalid->PackType==$type)
+                        {
+                            if($Packageattr->Value >= $packagecount->total)
+                            {
+                                //save Profile
+                                $packagecount= New packagecount;
+                                $packagecount->user_id=\Auth::user()->id;
+                                $packagecount->attribute_id=$type;
+                                $packagecount->candidate_id=$id;
+                                $packagecount->save();
+                                if($type==1 || $type==2)
+                                return 1;
+                                else
+                                return 3;
+                            }
+                        else
+                            {
+                            return 2; 
+                            }
+                    }
+                else
+                    {
+                        if($Packageattr->Valueyear >= $packagecount->total)
+                        {
+                        //save Profile
+                        $packagecount= New packagecount;
+                        $packagecount->user_id=\Auth::user()->id;
+                        $packagecount->attribute_id=$type;
+                        $packagecount->candidate_id=$id;
+                        $packagecount->save();
+                        if($type==1 || $type==2)
+                        return 1;
+                        else
+                        return 3;
+                    }
+                    else
+                    {
+                        return 2; 
+                    }
+                    }
 
-                if($type==1 || $type==2)
-        return 1;
-        else
-        return 3;
-           }
-           else
-           {
-            return 2; 
-           }
-        }
-        else
-        {
-            if($Packageattr->Valueyear >= $packagecount->total)
-            {
-                 //save Profile
-                 $packagecount= New packagecount;
-                 $packagecount->user_id=\Auth::user()->id;
-                 $packagecount->attribute_id=$type;
-                 $packagecount->candidate_id=$id;
-                 $packagecount->save();
-                 if($type==1 || $type==2)
-        return 1;
-        else
-        return 3;
-            }
-            else
-            {
-             return 2; 
-            }
-
-        }
-       
-
-            }
-           
-        }
-
-
-    }
                 }
-        }
+            }
+            }
+            }
+    }
     catch(Exception $e) 
         {
          return redirect('/');
