@@ -89,6 +89,8 @@ public function Industry()
         return $similarJobs->take(3);
     }
     
+
+    
     protected $searchableColumns = [
         'country.name' => 20,
         'job.name' => 25,

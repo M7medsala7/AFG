@@ -16,10 +16,10 @@ class AddCandidateAdminFormRequest extends FormRequest
         	  
             'job' => 'required',
             'industry'=>'required',
-            'hf-name'=>'required',
+            'name'=>'required',
             'gender' =>'required',
             'email'=>'required|email|unique:users',
-            'hf-password'=>'required',
+            'password'=>'required',
             'country'=>'required',
         ];
     }

@@ -31,12 +31,12 @@ class IndexController extends Controller
         $TotalCandidate= CandidateInfo::count();
         $TotalVideoCvs= CandidateInfo::where('vedio_path','!=',NULL)->count();
         $TotalAnsweredQuestions= DB::table('candidate_infos')->count()*21;
-    $RecentlyAddedJobsAgg= PostJob::join('users','users.id','=','post_jobs.created_by')
+ $RecentlyAddedJobsAgg= PostJob::join('users','users.id','=','post_jobs.created_by')
         ->join('jobs','jobs.id','=','post_jobs.job_id')
         ->join('countries','countries.id','=','post_jobs.country_id')
 ->whereNotIn('job_for',['family,company,Agency'])
         ->orderBy('post_jobs.created_at', 'DEC')->limit(2)
-        ->select('jobs.name AS JobName','post_jobs.job_for',
+        ->select('jobs.name AS JobName','post_jobs.job_for','post_jobs.job_descripton',
         'users.name AS CompanyName','users.type','post_jobs.max_salary',
         'countries.name AS CountryName','post_jobs.min_salary','post_jobs.currency_id',
         'post_jobs.created_at AS Jobdate','post_jobs.id'
@@ -47,7 +47,7 @@ class IndexController extends Controller
         ->join('countries','countries.id','=','post_jobs.country_id')
 ->where('job_for','company')
         ->orderBy('post_jobs.created_at', 'DEC')->limit(1)
-        ->select('jobs.name AS JobName','post_jobs.job_for',
+        ->select('jobs.name AS JobName','post_jobs.job_for','post_jobs.job_descripton',
         'users.name AS CompanyName','users.type','post_jobs.max_salary',
         'countries.name AS CountryName','post_jobs.min_salary','post_jobs.currency_id',
         'post_jobs.created_at AS Jobdate','post_jobs.id'
@@ -58,7 +58,7 @@ class IndexController extends Controller
         ->join('countries','countries.id','=','post_jobs.country_id')
         ->where('job_for','family')
         ->orderBy('post_jobs.created_at', 'DEC')->limit(1)
-        ->select('jobs.name AS JobName','post_jobs.job_for',
+        ->select('jobs.name AS JobName','post_jobs.job_for','post_jobs.job_descripton',
         'users.name AS CompanyName','users.type','post_jobs.max_salary',
         'countries.name AS CountryName','post_jobs.min_salary','post_jobs.currency_id',
         'post_jobs.created_at AS Jobdate','post_jobs.id'
@@ -148,540 +148,540 @@ $jobfor=PostJob::select('job_for')->orderByRaw('FIELD(job_for, "Family", "Compan
 
  if($type =="I am Candidate" )
         {
-//           $client = new Client();
+          $client = new Client();
 
-//     $crawler = $client->request('GET', 'https://www.indeed.com/jobs?q='.$words.'&l=');
+    $crawler = $client->request('GET', 'https://www.indeed.com/jobs?q='.$words.'&l=');
 
-//     $crawler->filter('h2.jobtitle a')->each(function ($node) {
+    $crawler->filter('h2.jobtitle a')->each(function ($node) {
         
-//  array_push( $GLOBALS['jobsIndeed'],$node->text());
-//  //dd( $GLOBALS['jobsIndeed']);
+ array_push( $GLOBALS['jobsIndeed'],$node->text());
+ //dd( $GLOBALS['jobsIndeed']);
 
  
 
-// array_push( $GLOBALS['job_for'],'Jobs in USA');
+array_push( $GLOBALS['job_for'],'Jobs in USA');
 
-// array_push( $GLOBALS['currency'],NULL);
-// array_push( $GLOBALS['minsalary'],NULL);
-// array_push( $GLOBALS['maxsalary'],NUll);
+array_push( $GLOBALS['currency'],NULL);
+array_push( $GLOBALS['minsalary'],NULL);
+array_push( $GLOBALS['maxsalary'],NUll);
    
   
-// });
+});
 
 
 
-//           for($i=0 ;$i<count($GLOBALS['jobsIndeed']);$i++)
-// {
-//   try
-//   {
-// $pageCrawler=$crawler->filter('h2.jobtitle a')->eq($i)->text();
-// $link = $crawler->selectLink($pageCrawler)->link();
+          for($i=0 ;$i<count($GLOBALS['jobsIndeed']);$i++)
+{
+  try
+  {
+$pageCrawler=$crawler->filter('h2.jobtitle a')->eq($i)->text();
+$link = $crawler->selectLink($pageCrawler)->link();
   
-//     $lin = $client->click($link );
+    $lin = $client->click($link );
 
 
 
-//      $crawlerIndeedusa = $client->request('GET', $lin->baseHref);
-// array_push( $GLOBALS['links'],$lin->baseHref);
-//    $summ=$crawlerIndeedusa->filter('span.summary')->text()  ;
-// array_push( $GLOBALS['summary'],$summ);
+     $crawlerIndeedusa = $client->request('GET', $lin->baseHref);
+array_push( $GLOBALS['links'],$lin->baseHref);
+   $summ=$crawlerIndeedusa->filter('span.summary')->text()  ;
+array_push( $GLOBALS['summary'],$summ);
   
-//   }
+  }
 
-//   catch(\InvalidArgumentException $e) 
-//   {
-//     array_push( $GLOBALS['links'],'Na');
-//      array_push( $GLOBALS['summary'],'NA');
-//   }
+  catch(\InvalidArgumentException $e) 
+  {
+    array_push( $GLOBALS['links'],'Na');
+     array_push( $GLOBALS['summary'],'NA');
+  }
 
-// }
-
-
+}
 
 
 
 
 
-//           for($i=0 ;$i<count($GLOBALS['jobsIndeed']);$i++)
-// {
-//   try
-//   {
-//     // dd($crawler2->filter('span.location')->eq($i)->text());
-//      array_push( $GLOBALS['company'],$crawler->filter('span.company')->eq($i)->text());
-//   }
-
-//   catch(\InvalidArgumentException $e) 
-//   {
-//      array_push( $GLOBALS['company'],'NA');
-//   }
-
-// }
-
-//           for($i=0 ;$i<count($GLOBALS['jobsIndeed']);$i++)
-// {
-//   try
-//   {
-//     // dd($crawler2->filter('span.location')->eq($i)->text());
-//      array_push( $GLOBALS['location'],$crawler->filter('span.location')->eq($i)->text());
-//   }
-
-//   catch(\InvalidArgumentException $e) 
-//   {
-//      array_push( $GLOBALS['location'],'NA');
-//   }
-
-// }
 
 
+          for($i=0 ;$i<count($GLOBALS['jobsIndeed']);$i++)
+{
+  try
+  {
+    // dd($crawler2->filter('span.location')->eq($i)->text());
+     array_push( $GLOBALS['company'],$crawler->filter('span.company')->eq($i)->text());
+  }
+
+  catch(\InvalidArgumentException $e) 
+  {
+     array_push( $GLOBALS['company'],'NA');
+  }
+
+}
+
+          for($i=0 ;$i<count($GLOBALS['jobsIndeed']);$i++)
+{
+  try
+  {
+    // dd($crawler2->filter('span.location')->eq($i)->text());
+     array_push( $GLOBALS['location'],$crawler->filter('span.location')->eq($i)->text());
+  }
+
+  catch(\InvalidArgumentException $e) 
+  {
+     array_push( $GLOBALS['location'],'NA');
+  }
+
+}
 
 
 
-//  $crawler2 = $client->request('GET', 'https://om.indeed.com/jobs?q='.$words.'&l=');
 
-//      $crawler2->filter('h2.jobtitle a')->each(function ($node) {
+
+ $crawler2 = $client->request('GET', 'https://om.indeed.com/jobs?q='.$words.'&l=');
+
+     $crawler2->filter('h2.jobtitle a')->each(function ($node) {
         
-//  array_push( $GLOBALS['jobsIndeed'],$node->text());
+ array_push( $GLOBALS['jobsIndeed'],$node->text());
  
-// array_push( $GLOBALS['CountjobsIndeedOM'],$node->text());
+array_push( $GLOBALS['CountjobsIndeedOM'],$node->text());
 
 
 
 
-// array_push( $GLOBALS['job_for'],'Jobs in Oman');
-// array_push( $GLOBALS['currency'],NULL);
-// array_push( $GLOBALS['minsalary'],NULL);
-// array_push( $GLOBALS['maxsalary'],NUll);
+array_push( $GLOBALS['job_for'],'Jobs in Oman');
+array_push( $GLOBALS['currency'],NULL);
+array_push( $GLOBALS['minsalary'],NULL);
+array_push( $GLOBALS['maxsalary'],NUll);
    
   
-// });
+});
 
 
 
 
 
-//           for($i=0 ;$i<count($GLOBALS['CountjobsIndeedOM']);$i++)
-// {
-//   try
-//   {
-// $pageCrawler=$crawler2->filter('h2.jobtitle a')->eq($i)->text();
-// $link = $crawler2->selectLink($pageCrawler)->link();
+          for($i=0 ;$i<count($GLOBALS['CountjobsIndeedOM']);$i++)
+{
+  try
+  {
+$pageCrawler=$crawler2->filter('h2.jobtitle a')->eq($i)->text();
+$link = $crawler2->selectLink($pageCrawler)->link();
   
-//     $lin = $client->click($link );
+    $lin = $client->click($link );
 
 
 
-//      $crawlerIndeedOm = $client->request('GET', $lin->baseHref);
-// array_push( $GLOBALS['links'],$lin->baseHref);
-//    $summ=$crawlerIndeedOm->filter('span.summary')->text()  ;
-// array_push( $GLOBALS['summary'],$summ);
+     $crawlerIndeedOm = $client->request('GET', $lin->baseHref);
+array_push( $GLOBALS['links'],$lin->baseHref);
+   $summ=$crawlerIndeedOm->filter('span.summary')->text()  ;
+array_push( $GLOBALS['summary'],$summ);
   
-//   }
+  }
 
-//   catch(\InvalidArgumentException $e) 
-//   {
-//     array_push( $GLOBALS['links'],'Na');
-//      array_push( $GLOBALS['summary'],'NA');
-//   }
+  catch(\InvalidArgumentException $e) 
+  {
+    array_push( $GLOBALS['links'],'Na');
+     array_push( $GLOBALS['summary'],'NA');
+  }
 
-// }
-
-
-
-//           for($i=0 ;$i<count($GLOBALS['CountjobsIndeedOM']);$i++)
-// {
-//   try
-//   {
-//     // dd($crawler2->filter('span.location')->eq($i)->text());
-//      array_push( $GLOBALS['location'],$crawler2->filter('span.company')->eq($i)->text());
-//   }
-
-//   catch(\InvalidArgumentException $e) 
-//   {
-//      array_push( $GLOBALS['location'],'NA');
-//   }
-
-// }
+}
 
 
 
-//           for($i=0 ;$i<count($GLOBALS['CountjobsIndeedOM']);$i++)
-// {
-//   try
-//   {
-//     // dd($crawler2->filter('span.company')->eq($i)->text());
-//      array_push( $GLOBALS['company'],$crawler2->filter('span.company')->eq($i)->text());
-//   }
+          for($i=0 ;$i<count($GLOBALS['CountjobsIndeedOM']);$i++)
+{
+  try
+  {
+    // dd($crawler2->filter('span.location')->eq($i)->text());
+     array_push( $GLOBALS['location'],$crawler2->filter('span.company')->eq($i)->text());
+  }
 
-//   catch(\InvalidArgumentException $e) 
-//   {
-//      array_push( $GLOBALS['company'],'NA');
-//   }
+  catch(\InvalidArgumentException $e) 
+  {
+     array_push( $GLOBALS['location'],'NA');
+  }
 
-// }
-
-
-//  $crawler3 = $client->request('GET', 'https://sa.indeed.com/jobs?q='.$words.'&l=');
+}
 
 
 
+          for($i=0 ;$i<count($GLOBALS['CountjobsIndeedOM']);$i++)
+{
+  try
+  {
+    // dd($crawler2->filter('span.company')->eq($i)->text());
+     array_push( $GLOBALS['company'],$crawler2->filter('span.company')->eq($i)->text());
+  }
 
-//      $crawler3->filter('h2.jobtitle a')->each(function ($node) {
+  catch(\InvalidArgumentException $e) 
+  {
+     array_push( $GLOBALS['company'],'NA');
+  }
+
+}
+
+
+ $crawler3 = $client->request('GET', 'https://sa.indeed.com/jobs?q='.$words.'&l=');
+
+
+
+
+     $crawler3->filter('h2.jobtitle a')->each(function ($node) {
      
-//  array_push( $GLOBALS['jobsIndeed'],$node->text());
-//   array_push( $GLOBALS['CountjobsIndeedSa'],$node->text());
+ array_push( $GLOBALS['jobsIndeed'],$node->text());
+  array_push( $GLOBALS['CountjobsIndeedSa'],$node->text());
 
 
-// array_push( $GLOBALS['job_for'],'Jobs in KSA');
+array_push( $GLOBALS['job_for'],'Jobs in KSA');
 
-// array_push( $GLOBALS['currency'],NULL);
-// array_push( $GLOBALS['minsalary'],NULL);
-// array_push( $GLOBALS['maxsalary'],NUll);
+array_push( $GLOBALS['currency'],NULL);
+array_push( $GLOBALS['minsalary'],NULL);
+array_push( $GLOBALS['maxsalary'],NUll);
 
    
   
-// });
+});
 
 
 
 
 
 
-//           for($i=0 ;$i<count($GLOBALS['CountjobsIndeedSa']);$i++)
-// {
-//   try
-//   {
-// $pageCrawler=$crawler3->filter('h2.jobtitle a')->eq($i)->text();
-// $link = $crawler3->selectLink($pageCrawler)->link();
+          for($i=0 ;$i<count($GLOBALS['CountjobsIndeedSa']);$i++)
+{
+  try
+  {
+$pageCrawler=$crawler3->filter('h2.jobtitle a')->eq($i)->text();
+$link = $crawler3->selectLink($pageCrawler)->link();
   
-//     $lin = $client->click($link );
+    $lin = $client->click($link );
 
 
 
-//      $crawlerIndeedSa = $client->request('GET', $lin->baseHref);
-// array_push( $GLOBALS['links'],$lin->baseHref);
-//    $summ=$crawlerIndeedSa->filter('span.summary')->text()  ;
-// array_push( $GLOBALS['summary'],$summ);
+     $crawlerIndeedSa = $client->request('GET', $lin->baseHref);
+array_push( $GLOBALS['links'],$lin->baseHref);
+   $summ=$crawlerIndeedSa->filter('span.summary')->text()  ;
+array_push( $GLOBALS['summary'],$summ);
   
-//   }
+  }
 
-//   catch(\InvalidArgumentException $e) 
-//   {
-//     array_push( $GLOBALS['links'],'Na');
-//      array_push( $GLOBALS['summary'],'NA');
-//   }
+  catch(\InvalidArgumentException $e) 
+  {
+    array_push( $GLOBALS['links'],'Na');
+     array_push( $GLOBALS['summary'],'NA');
+  }
 
-// }
-
-
-
-
-// for($i=0 ;$i<count($GLOBALS['CountjobsIndeedSa']);$i++)
-// {
-//   try
-//   {
-//     // dd($crawler3->filter('span.location')->eq($i)->text());
-//      array_push( $GLOBALS['location'],$crawler3->filter('span.company')->eq($i)->text());
-//   }
-
-//   catch(\InvalidArgumentException $e) 
-//   {
-//      array_push( $GLOBALS['location'],'NA');
-//   }
-
-// }
+}
 
 
 
-// for($i=0 ;$i<count($GLOBALS['CountjobsIndeedSa']);$i++)
-// {
-//   try
-//   {
-//     // dd($crawler3->filter('span.company')->eq($i)->text());
-//      array_push( $GLOBALS['company'],$crawler3->filter('span.company')->eq($i)->text());
-//   }
 
-//   catch(\InvalidArgumentException $e) 
-//   {
-//      array_push( $GLOBALS['company'],'NA');
-//   }
+for($i=0 ;$i<count($GLOBALS['CountjobsIndeedSa']);$i++)
+{
+  try
+  {
+    // dd($crawler3->filter('span.location')->eq($i)->text());
+     array_push( $GLOBALS['location'],$crawler3->filter('span.company')->eq($i)->text());
+  }
 
-// }
+  catch(\InvalidArgumentException $e) 
+  {
+     array_push( $GLOBALS['location'],'NA');
+  }
+
+}
+
+
+
+for($i=0 ;$i<count($GLOBALS['CountjobsIndeedSa']);$i++)
+{
+  try
+  {
+    // dd($crawler3->filter('span.company')->eq($i)->text());
+     array_push( $GLOBALS['company'],$crawler3->filter('span.company')->eq($i)->text());
+  }
+
+  catch(\InvalidArgumentException $e) 
+  {
+     array_push( $GLOBALS['company'],'NA');
+  }
+
+}
               
 
 
-// // dd('l');
+// dd('l');
 
-//  $crawler4 = $client->request('GET', 'https://maidcv.com/ViewJobs');
-
-
+ $crawler4 = $client->request('GET', 'https://maidcv.com/ViewJobs');
 
 
-//      $crawler4->filter('a.joblist_title ')->each(function ($node) {
-//       // dd($node->text());
 
-//  array_push( $GLOBALS['jobsIndeed'],$node->text());
 
-//   array_push( $GLOBALS['links'],'https://maidcv.com/ViewJobs');
-// array_push( $GLOBALS['job_for'],'maidcv.com');
+     $crawler4->filter('a.joblist_title ')->each(function ($node) {
+      // dd($node->text());
+
+ array_push( $GLOBALS['jobsIndeed'],$node->text());
+
+  array_push( $GLOBALS['links'],'https://maidcv.com/ViewJobs');
+array_push( $GLOBALS['job_for'],'maidcv.com');
 
 
 
    
   
-// });
+});
 
 
-//                                 $crawler4->filter('div.joblist_desc p ')->each(function ($node) {
+                                $crawler4->filter('div.joblist_desc p ')->each(function ($node) {
 
-//                   array_push( $GLOBALS['summary'],$node->text());
+                  array_push( $GLOBALS['summary'],$node->text());
                            
 
     
-//  });
+ });
 
 
-//                                 $crawler4->filter('div.joblist_jobinfo  ')->each(function ($node) {
+                                $crawler4->filter('div.joblist_jobinfo  ')->each(function ($node) {
 
 
-// $arr = explode('at', $node->text());
-// $variable =$arr[2];
+$arr = explode('at', $node->text());
+$variable =$arr[2];
 
 
-// $variable = substr($variable, 0, strpos($variable, "\r\n"));
+$variable = substr($variable, 0, strpos($variable, "\r\n"));
 
 
 
 
-//                   array_push( $GLOBALS['location'],$variable);
+                  array_push( $GLOBALS['location'],$variable);
                            
 
     
-//  });
+ });
 
 
-//                                 $crawler4->filter('div.joblist_jobinfo  ')->each(function ($node) {
+                                $crawler4->filter('div.joblist_jobinfo  ')->each(function ($node) {
 
 
-// $arr = explode('by', $node->text());
-// $variable =$arr[1];
+$arr = explode('by', $node->text());
+$variable =$arr[1];
 
 
-// $variable = substr($variable, 0, strpos($variable, "\r\n"));
+$variable = substr($variable, 0, strpos($variable, "\r\n"));
 
 
 
 
 
-//                   array_push( $GLOBALS['company'],$variable);
+                  array_push( $GLOBALS['company'],$variable);
                            
 
     
-//  });
+ });
 
 
 
            
-//                                 $crawler4->filter('span.joblist_sal ')->each(function ($node) {
+                                $crawler4->filter('span.joblist_sal ')->each(function ($node) {
 
-//                                   if (strpos($node->text(), 'over') !== false) {
+                                  if (strpos($node->text(), 'over') !== false) {
                                    
-//                                      $splitSalary = explode(' ', $node->text(), 3);
+                                     $splitSalary = explode(' ', $node->text(), 3);
 
 
-//                                      array_push( $GLOBALS['currency'],$splitSalary[0]);
-// array_push( $GLOBALS['minsalary'],'0');
-// $splitSalary[2]= str_replace(',', '.', $splitSalary[2]);
-// array_push( $GLOBALS['maxsalary'],$splitSalary[2]);
+                                     array_push( $GLOBALS['currency'],$splitSalary[0]);
+array_push( $GLOBALS['minsalary'],'0');
+$splitSalary[2]= str_replace(',', '.', $splitSalary[2]);
+array_push( $GLOBALS['maxsalary'],$splitSalary[2]);
 
    
-// }
-// else
-// {
+}
+else
+{
 
-//                                        $splitSalary = explode('-', $node->text(), 2);
-//                                        $splitSalary2 = explode(' ', $splitSalary[0], 2);
+                                       $splitSalary = explode('-', $node->text(), 2);
+                                       $splitSalary2 = explode(' ', $splitSalary[0], 2);
 
   
-// array_push( $GLOBALS['currency'],$splitSalary2[0]);
-// $splitSalary2[1]= str_replace(',', '.', $splitSalary2[1]);
-// array_push( $GLOBALS['minsalary'],$splitSalary2[1]);
-// $splitSalary[1]= str_replace(',', '.', $splitSalary[1]);
-// array_push( $GLOBALS['maxsalary'],$splitSalary[1]);
+array_push( $GLOBALS['currency'],$splitSalary2[0]);
+$splitSalary2[1]= str_replace(',', '.', $splitSalary2[1]);
+array_push( $GLOBALS['minsalary'],$splitSalary2[1]);
+$splitSalary[1]= str_replace(',', '.', $splitSalary[1]);
+array_push( $GLOBALS['maxsalary'],$splitSalary[1]);
 
-// }
+}
                   
                         
 
     
-//  });
+ });
 
 
                    
                            
-//  $crawler5 = $client->request('GET', 'https://www.indeed.ae/jobs?q='.$words.'&l=');
+ $crawler5 = $client->request('GET', 'https://www.indeed.ae/jobs?q='.$words.'&l=');
 
 
 
 
-//      $crawler5->filter('h2.jobtitle a')->each(function ($node) {
+     $crawler5->filter('h2.jobtitle a')->each(function ($node) {
      
-//  array_push( $GLOBALS['jobsIndeed'],$node->text());
-//   array_push( $GLOBALS['CountjobsIndeedAE'],$node->text());
+ array_push( $GLOBALS['jobsIndeed'],$node->text());
+  array_push( $GLOBALS['CountjobsIndeedAE'],$node->text());
 
 
-// array_push( $GLOBALS['job_for'],'Jobs in UAE');
+array_push( $GLOBALS['job_for'],'Jobs in UAE');
 
-// array_push( $GLOBALS['currency'],NULL);
-// array_push( $GLOBALS['minsalary'],NULL);
-// array_push( $GLOBALS['maxsalary'],NUll);
+array_push( $GLOBALS['currency'],NULL);
+array_push( $GLOBALS['minsalary'],NULL);
+array_push( $GLOBALS['maxsalary'],NUll);
 
    
   
-// });
+});
 
 
 
-//           for($i=0 ;$i<count($GLOBALS['CountjobsIndeedAE']);$i++)
-// {
-//   try
-//   {
-// $pageCrawler=$crawler5->filter('h2.jobtitle a')->eq($i)->text();
-// $link = $crawler5->selectLink($pageCrawler)->link();
+          for($i=0 ;$i<count($GLOBALS['CountjobsIndeedAE']);$i++)
+{
+  try
+  {
+$pageCrawler=$crawler5->filter('h2.jobtitle a')->eq($i)->text();
+$link = $crawler5->selectLink($pageCrawler)->link();
   
-//     $lin = $client->click($link );
+    $lin = $client->click($link );
 
 
 
-//      $crawlerIndeedAE = $client->request('GET', $lin->baseHref);
-// array_push( $GLOBALS['links'],$lin->baseHref);
-//    $summ=$crawlerIndeedAE->filter('span.summary')->text()  ;
-// array_push( $GLOBALS['summary'],$summ);
+     $crawlerIndeedAE = $client->request('GET', $lin->baseHref);
+array_push( $GLOBALS['links'],$lin->baseHref);
+   $summ=$crawlerIndeedAE->filter('span.summary')->text()  ;
+array_push( $GLOBALS['summary'],$summ);
   
-//   }
+  }
 
-//   catch(\InvalidArgumentException $e) 
-//   {
-//     array_push( $GLOBALS['links'],'Na');
-//      array_push( $GLOBALS['summary'],'NA');
-//   }
+  catch(\InvalidArgumentException $e) 
+  {
+    array_push( $GLOBALS['links'],'Na');
+     array_push( $GLOBALS['summary'],'NA');
+  }
 
-// }
-
-
-// for($i=0 ;$i<count($GLOBALS['CountjobsIndeedAE']);$i++)
-// {
-//   try
-//   {
-//     // dd($crawler5->filter('span.location')->eq($i)->text());
-//      array_push( $GLOBALS['location'],$crawler5->filter('span.company')->eq($i)->text());
-//   }
-
-//   catch(\InvalidArgumentException $e) 
-//   {
-//      array_push( $GLOBALS['location'],'NA');
-//   }
-
-// }
+}
 
 
+for($i=0 ;$i<count($GLOBALS['CountjobsIndeedAE']);$i++)
+{
+  try
+  {
+    // dd($crawler5->filter('span.location')->eq($i)->text());
+     array_push( $GLOBALS['location'],$crawler5->filter('span.company')->eq($i)->text());
+  }
 
-// for($i=0 ;$i<count($GLOBALS['CountjobsIndeedAE']);$i++)
-// {
-//   try
-//   {
-//     // dd($crawler5->filter('span.company')->eq($i)->text());
-//      array_push( $GLOBALS['company'],$crawler5->filter('span.company')->eq($i)->text());
-//   }
+  catch(\InvalidArgumentException $e) 
+  {
+     array_push( $GLOBALS['location'],'NA');
+  }
 
-//   catch(\InvalidArgumentException $e) 
-//   {
-//      array_push( $GLOBALS['company'],'NA');
-//   }
+}
 
-// }
+
+
+for($i=0 ;$i<count($GLOBALS['CountjobsIndeedAE']);$i++)
+{
+  try
+  {
+    // dd($crawler5->filter('span.company')->eq($i)->text());
+     array_push( $GLOBALS['company'],$crawler5->filter('span.company')->eq($i)->text());
+  }
+
+  catch(\InvalidArgumentException $e) 
+  {
+     array_push( $GLOBALS['company'],'NA');
+  }
+
+}
     
-//  $crawler6 = $client->request('GET', 'https://qa.indeed.com/jobs?q='.$words.'&l=');
+ $crawler6 = $client->request('GET', 'https://qa.indeed.com/jobs?q='.$words.'&l=');
 
-//      $crawler6->filter('h2.jobtitle a')->each(function ($node) {
+     $crawler6->filter('h2.jobtitle a')->each(function ($node) {
         
-//  array_push( $GLOBALS['jobsIndeed'],$node->text());
+ array_push( $GLOBALS['jobsIndeed'],$node->text());
  
-// array_push( $GLOBALS['CountjobsIndeedQA'],$node->text());
+array_push( $GLOBALS['CountjobsIndeedQA'],$node->text());
 
 
 
-// array_push( $GLOBALS['job_for'],'Jobs in Qatar');
-// array_push( $GLOBALS['currency'],NULL);
-// array_push( $GLOBALS['minsalary'],NULL);
-// array_push( $GLOBALS['maxsalary'],NUll);
+array_push( $GLOBALS['job_for'],'Jobs in Qatar');
+array_push( $GLOBALS['currency'],NULL);
+array_push( $GLOBALS['minsalary'],NULL);
+array_push( $GLOBALS['maxsalary'],NUll);
    
   
-// });
+});
 
 
 
 
 
-//           for($i=0 ;$i<count($GLOBALS['CountjobsIndeedQA']);$i++)
-// {
-//   try
-//   {
-// $pageCrawler=$crawler6->filter('h2.jobtitle a')->eq($i)->text();
-// $link = $crawler6->selectLink($pageCrawler)->link();
+          for($i=0 ;$i<count($GLOBALS['CountjobsIndeedQA']);$i++)
+{
+  try
+  {
+$pageCrawler=$crawler6->filter('h2.jobtitle a')->eq($i)->text();
+$link = $crawler6->selectLink($pageCrawler)->link();
   
-//     $lin = $client->click($link );
+    $lin = $client->click($link );
 
 
 
-//      $crawlerIndeedQa = $client->request('GET', $lin->baseHref);
-// array_push( $GLOBALS['links'],$lin->baseHref);
-//    $summ=$crawlerIndeedQa->filter('span.summary')->text()  ;
-// array_push( $GLOBALS['summary'],$summ);
+     $crawlerIndeedQa = $client->request('GET', $lin->baseHref);
+array_push( $GLOBALS['links'],$lin->baseHref);
+   $summ=$crawlerIndeedQa->filter('span.summary')->text()  ;
+array_push( $GLOBALS['summary'],$summ);
   
-//   }
+  }
 
-//   catch(\InvalidArgumentException $e) 
-//   {
+  catch(\InvalidArgumentException $e) 
+  {
 
-//     array_push( $GLOBALS['links'],'Na');
-//      array_push( $GLOBALS['summary'],'NA');
-//   }
+    array_push( $GLOBALS['links'],'Na');
+     array_push( $GLOBALS['summary'],'NA');
+  }
 
-// }
-
-
-
-//           for($i=0 ;$i<count($GLOBALS['CountjobsIndeedQA']);$i++)
-// {
-//   try
-//   {
-//     // dd($crawler2->filter('span.location')->eq($i)->text());
-//      array_push( $GLOBALS['location'],$crawler6->filter('span.company')->eq($i)->text());
-//   }
-
-//   catch(\InvalidArgumentException $e) 
-//   {
-//      array_push( $GLOBALS['location'],'NA');
-//   }
-
-// }
+}
 
 
 
-//           for($i=0 ;$i<count($GLOBALS['CountjobsIndeedQA']);$i++)
-// {
-//   try
-//   {
-//     // dd($crawler6->filter('span.company')->eq($i)->text());
-//      array_push( $GLOBALS['company'],$crawler6->filter('span.company')->eq($i)->text());
-//   }
+          for($i=0 ;$i<count($GLOBALS['CountjobsIndeedQA']);$i++)
+{
+  try
+  {
+    // dd($crawler2->filter('span.location')->eq($i)->text());
+     array_push( $GLOBALS['location'],$crawler6->filter('span.company')->eq($i)->text());
+  }
 
-//   catch(\InvalidArgumentException $e) 
-//   {
-//      array_push( $GLOBALS['company'],'NA');
-//   }
+  catch(\InvalidArgumentException $e) 
+  {
+     array_push( $GLOBALS['location'],'NA');
+  }
 
-// }
+}
+
+
+
+          for($i=0 ;$i<count($GLOBALS['CountjobsIndeedQA']);$i++)
+{
+  try
+  {
+    // dd($crawler6->filter('span.company')->eq($i)->text());
+     array_push( $GLOBALS['company'],$crawler6->filter('span.company')->eq($i)->text());
+  }
+
+  catch(\InvalidArgumentException $e) 
+  {
+     array_push( $GLOBALS['company'],'NA');
+  }
+
+}
 
 
 
@@ -1109,7 +1109,7 @@ if($experince != [])
  //salary 
   
  if( $words != null) 
- {  // dd($words);
+ {  
   $resultQuery= PostJob::search($words)->orderBy('created_at','DESC')->get(); 
  }  
 if( $words == 'undefined') 
@@ -1118,10 +1118,10 @@ if( $words == 'undefined')
 
    $resultQuery= PostJob::orderBy('created_at','DESC')->get();
  }
-  
+ 
 
 
-//dd($resultQuery);
+
 ////////////jobtitles with all//////////
 
 

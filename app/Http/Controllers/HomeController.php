@@ -441,23 +441,19 @@ class HomeController extends Controller
     //employer dashboard
     public function employerDashboard()
     {
-<<<<<<< Updated upstream
-     
-=======
-      
->>>>>>> Stashed changes
         try
         {
-           // dd("frf");
             $employerJobs = \Auth::user()->postJobs;
             $employerJobsShow = \Auth::user()->postJobs->first();
-<<<<<<< Updated upstream
             $employerJobsfor = EmployerProfile::where('user_id',\Auth()->user()->id)->first();
-      
-=======
-            
-          
->>>>>>> Stashed changes
+            if($employerJobs==[] || $employerJobs==null)
+            {
+            $count=0;
+            }
+            else
+            {
+            $count=1;  
+            }
             $countrynames= EmployerProfile::
             join('countries','countries.id','=','employer_profiles.country_id')
             ->select('countries.name  AS CName' )
@@ -535,7 +531,7 @@ if($PackagesUser != null || $PackagesUser != []){
                      
      }    
 
-            return view('employer.dashboard',compact('ownCan','employerJobsfor','employerJobs','Remain1','Remain2','Remain3','Packageattr1','Packageattr2','Packageattr3','PackagesUser','countrynames','citynames','employerJobsShow','jobStatstics'));
+            return view('employer.dashboard',compact('count','ownCan','employerJobsfor','employerJobs','Remain1','Remain2','Remain3','Packageattr1','Packageattr2','Packageattr3','PackagesUser','countrynames','citynames','employerJobsShow','jobStatstics'));
        
         }
         catch(Exception $e) 

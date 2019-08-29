@@ -30,6 +30,20 @@ use JsValidator;
 
 class AgencyCandidateController extends Controller
 {
+    
+    Public function StoreVideo2(request $request)
+    {
+     
+           $blobInput =$request->file("video-blob");
+           $VideoName =  md5(microtime());
+        //    dd($request->file("video-blob"));
+           $blobInput->move(("upload/video"),$VideoName);
+           Session::put('VideoPath',"upload/video/".$VideoName);
+           return response()->json([
+            'success' => true,
+        ]);
+              
+    }
     public function saveUploadedFile($file, $user){
         $filename = time().$file->getClientOriginalName();
         $type = $file->getMimeType();
@@ -44,12 +58,38 @@ class AgencyCandidateController extends Controller
        // $destPath = str_replace( $destPath);
         return $destPath;
     }
+    
+    public function saveFile($file, $user){
+        try
+        {
+
+
+        $filename = 'video'.time().$file->getClientOriginalName();
+        $type = $file->getMimeType();
+        $extension = $file->getClientOriginalExtension();
+        $path = 'videos/'.$user->id;
+        $destPath ='videos/'.$user->id.'/'.$filename;
+        if(!\File::exists($path)) {
+            // path does not exist
+            \File::makeDirectory($path, $mode = 0777, true, true);
+        }
+        $success =$file->move($path,$filename);
+       // $destPath = str_replace( $destPath);
+        return $destPath;
+          }    
+    catch(Exception $e) 
+        {
+           return redirect('/home');
+        }
+    }
+
+ 
     public function registercandidateagency(Request $request)
     {
 
           try
           {
-          
+           
         $code = 1000;
         $vedio_path='';
         $vedio_path = Session::get('VideoPath');
@@ -119,6 +159,7 @@ foreach ( $countcoins as   $value) {
             }
             $langpoint=5;
         }
+        $cv_path="";
         if($request->hasFile('cv_path'))
         {
             $cv_path = $this->saveUploadedFile($request['cv_path'],$user);

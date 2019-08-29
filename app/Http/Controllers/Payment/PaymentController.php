@@ -39,6 +39,7 @@ class PaymentController extends Controller
     {
     try
         {
+           
             if(\Auth::user()==null)
             {
                 Session::put('payment',1);
@@ -48,6 +49,21 @@ class PaymentController extends Controller
             }
             else
             {
+                if(\Auth::user()->type=="candidate")
+                {
+                    Session::flash('flashcandidate', "you not login");
+                    return redirect('/Payment');  
+                }
+
+                $DueDate=Carbon::now()->toDateString();
+                //check user if has Valid Date
+                    $Packagevalid=PackagesUser::where('users_id',\Auth::user()->id)
+                                ->where('EndDate','!=' ,$DueDate)
+                                ->first();
+                    if( $Packagevalid == null || $Packagevalid ==[])  
+                    {
+                        return 4;  
+                    }
             //Case Exsist
                 $Exsits=DB::table('packagecount')
                         ->where('attribute_id',$type)
@@ -73,8 +89,8 @@ class PaymentController extends Controller
                         ->where('candidate_id',$id)
                         ->select(DB::raw('count(packagecount.candidate_id)  as total'))
                         ->first();
-                if($packagecount->total == null)
-                    {
+                        if($packagecount->total == null)
+                         {
                 //save Profile
                         $packagecount= New packagecount;
                         $packagecount->user_id=\Auth::user()->id;
@@ -85,9 +101,9 @@ class PaymentController extends Controller
                         return 1;
                         else
                         return 3;
-                    }
-                else
-                    {
+                         }
+                         else
+                         {
                         // اجيب فاضل له قد ايد
                         $Packageattr=packageattribute::where('packages_id',$Packagevalid->packages_id)
                         ->where('attribute_id',$type)
@@ -112,9 +128,9 @@ class PaymentController extends Controller
                             {
                             return 2; 
                             }
-                    }
-                else
-                    {
+                      }
+                       else
+                       {
                         if($Packageattr->Valueyear >= $packagecount->total)
                         {
                         //save Profile
@@ -127,17 +143,17 @@ class PaymentController extends Controller
                         return 1;
                         else
                         return 3;
-                    }
-                    else
-                    {
+                       }
+                       else
+                       {
                         return 2; 
-                    }
+                       }
                     }
 
                 }
             }
             }
-            }
+        }
     }
     catch(Exception $e) 
         {
@@ -151,14 +167,21 @@ public function PayMethod($id,$type)
     {
         if(\Auth::user()==null)
         {
-            return redirect('/loginEmployer');
+            Session::flash('flashlogin', "you not login");
+            return redirect('/Payment');  
+            // return redirect('/loginEmployer');
         }
         else
         {
+            if(\Auth::user()->type=="candidate")
+            {
+                Session::flash('flashcandidate', "you not login");
+                return redirect('/Payment');  
+            }
         //Record of Package 
         $DueDate=Carbon::now()->toDateString();
     //check user if has Valid Date
-    $Packagevalid=PackagesUser::where('users_id',\Auth::user()->id)
+       $Packagevalid=PackagesUser::where('users_id',\Auth::user()->id)
                     ->where('EndDate','!=' ,$DueDate)
                     ->first();
                 
@@ -186,8 +209,15 @@ public function PayMethod($id,$type)
                     $PackageData->PackType=$type;
                    
                     $PackageData->save();
-                   
+                   if(Session::get('Profile')==null)
+                   {
+                    return redirect('/home');
+                   }
+                   else
+                   {
                     return redirect(Session::get('Profile'));
+                   }
+                    
                  } 
                  
                 }

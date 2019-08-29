@@ -11,6 +11,7 @@ use App\PostJob;
 use Input;
 use App\CandidateExperience;
 use App\Http\Requests\AddCandidateAdminFormRequest;
+use App\Http\Requests\EditCanAdminFromRequests;
 class CandidateController extends Controller
 {
  
@@ -22,7 +23,7 @@ class CandidateController extends Controller
 
          public function candidateadminstore( AddCandidateAdminFormRequest $request)
     {
-        dd('l');
+      
         
      
  //get the code value;
@@ -35,13 +36,13 @@ class CandidateController extends Controller
         }
     
 
-             $user = User::create(['name'=>$request['hf-name'],
-        'email'=>$request['hf-email'],
-        'password' => bcrypt($request['hf-password']),
+             $user = User::create(['name'=>$request['name'],
+        'email'=>$request['email'],
+        'password' => bcrypt($request['password']),
         'type'=>'candidate','code'=>$code]);
 
           
-
+ //$user=User::where('name','admin')->first();
  
         if($request->hasFile('file-input'))
         {
@@ -61,8 +62,7 @@ class CandidateController extends Controller
 
 
 
-         if($user)
-        {
+        
 
             $CandidateInfos=[
             'job_id'=>$request['job'],
@@ -73,7 +73,7 @@ class CandidateController extends Controller
             'vedio_path'=>$vedio_path, 
              
             'user_id'=>$user->id];
-        }
+       
         $CandidateInfo = new CandidateInfo;
          $CandidateInfo->create($CandidateInfos);
 
@@ -88,10 +88,11 @@ public function updatecandidate($id)
   // dd( $candidateadmin->CanInfo->CanExperince->start_date);
    return view('DashbordAdminPanel.candidate.edit',compact('candidateadmin'));
 }
-public function candidateadminedit( Request $request)
+public function candidateadminedit( EditCanAdminFromRequests $request ,$id)
 {
 
-               
+
+        
             //*code generated*/
 
 
@@ -99,7 +100,7 @@ public function candidateadminedit( Request $request)
             
                 
 
-                $user = user::find($request['id']);
+                $user = user::find($id);
                 $user->name = $request->Name;
                 $user->email = $request->email;
                 $user->password = \Hash::make($request->password);
@@ -131,10 +132,12 @@ public function candidateadminedit( Request $request)
                     foreach ($request['Language'] as $key => $lang) {
                         # code...
                     
-                        $langs=\App\UserLanguage::find($request['id']);
+                        $langs=\App\UserLanguage::where('user_id',$id)->where('language_id',$lang)->first();
+
                         $langs->language_id =$lang;
                         $langs->user_id =$user->id;
                         $langs->save();
+                       
                     }
                     
                 }
@@ -143,7 +146,7 @@ public function candidateadminedit( Request $request)
 
                     foreach ($request['Skills'] as $key => $skill) {
                         # code...
-                        $skills=\App\UserSkill::where('user_id',$request['id'])->where('user_id',$user->id)->first();
+                        $skills=\App\UserSkill::where('user_id',$id)->where('skill_id',$skill)->first();
 
                         $skills->skill_id =$skill;
                         $skills->user_id =$user->id;
@@ -154,7 +157,8 @@ public function candidateadminedit( Request $request)
                 if($request['educational_level'])
                 {
                     
-                    $eduction=Educational::find($request['id']);
+                    
+                    $eduction=Educational::find($id);
                         $eduction->level = $request->educational_level;
                         $eduction->user_id =$user->id;
                         $eduction->save();
@@ -168,7 +172,7 @@ public function candidateadminedit( Request $request)
        
         
 
-           $id=CandidateInfo::where('user_id',$request['id'])->select('id')->first();
+           $id=CandidateInfo::where('user_id',$id)->select('id')->first();
             
                     $candinfo=CandidateInfo::FindOrFail($id->id);
                     $candinfo->last_name = $request->LastName;
@@ -195,7 +199,7 @@ public function candidateadminedit( Request $request)
                 // $eduction->user_id =$user->id;
                 $candinfo->save();
 
-           $idEx=CandidateExperience::where('user_id',$request['id'])->select('id')->first();
+           $idEx=CandidateExperience::where('user_id',$id)->select('id')->first();
 if($idEx != null)
 {
       //updates in can_experinence
@@ -230,7 +234,7 @@ if($idEx != null)
 
                 foreach (array_unique($locations) as $key => $loc) {
                     # code...
-                    $location= \App\PreferedLocation::find($request['id']);
+                    $location= \App\PreferedLocation::find($id);
                     $location->user_id = $user->id;
                     $location->country_id = $loc;
                     $location->save();

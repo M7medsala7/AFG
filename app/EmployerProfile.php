@@ -25,6 +25,16 @@ class EmployerProfile extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+     public function country()
+    {
+        return $this->belongsTo('App\Country','country_id');
+    }
+
+      public function city()
+    {
+        return $this->belongsTo('App\City','city_id');
+    }
     public function SuccessStory()
     {
         return $this->hasOne('App\SuccessStories');

@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','type','code','logo',
+        'name', 'email', 'password','type','code','logo','remember_token'
     ];
 
     /**
@@ -141,9 +141,9 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Skills','user_skills','user_id','skill_id');
     }
 
-    public function preferedLocations()
+  public function preferedLocations()
     {
-        return $this->hasMany('App\PreferedLocation');
+        return $this->belongsToMany('App\PreferedLocation','user_prefered_locations','user_id','country_id');
     }
     public function educational()
     {
@@ -182,27 +182,6 @@ class User extends Authenticatable
        return $packattribute;
    }
 
-       public static function boot() {
-        parent::boot();
-
-        static::deleting(function($user) { // before delete() method call this
-             $user->SuccessStory()->delete();
-             $user->postJobs()->delete();
-             $user->getUserSkill()->delete();
-             $user->CanInfo()->delete();
-             $user->EmpInfo()->delete();
-
-             $user->languages()->delete();
-$user->preferedLocations()->delete();
-  $user->educational()->delete();
-  $user->experience()->delete();
-  $user->employer()->delete();
-   $user->company()->delete();  
-    $user->likes()->delete();
-        $user->likesjob()->delete(); 
-                return parent::delete();
-            // do the rest of the cleanup...
-        });
-    }
+  
 }
 

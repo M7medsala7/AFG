@@ -75,7 +75,7 @@ class RegisterController extends Controller
 
            $blobInput =$request->file("video-blob");
            $VideoName =  md5(microtime());
-         //  dd($request->file("video-blob"));
+        //    dd($request->file("video-blob"));
            $blobInput->move(("upload/video"),$VideoName);
            Session::put('VideoPath',"upload/video/".$VideoName);
            return response()->json([
@@ -87,8 +87,6 @@ class RegisterController extends Controller
            return redirect('/home');
         }        
     }
-
-
     public function redirectToProvider($id){
        
         Session::put('TypeRegestier',$id);
@@ -293,20 +291,20 @@ $totalpoints=$points*5;
         $user->notify(new PostJobs($job));     
         //Sending Mail after adding
         $data=array('Email'=>$request['email']);
-        Mail::send('emails.NewJob', $data, function($message) use ($data) {
-        $message->to('Social@maidandhelper.com');
-        $message->subject('new job is added ');
+        // Mail::send('emails.NewJob', $data, function($message) use ($data) {
+        // $message->to('Social@maidandhelper.com');
+        // $message->subject('new job is added ');
 
-        });
+        // });
 
         //Sending Mail after regestration
       
-       $data=array('Email'=>$request['email']);
-        Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
-        $message->to($data['Email']);
-       $message->subject('registeration completed');
+    //    $data=array('Email'=>$request['email']);
+    //     Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
+    //     $message->to($data['Email']);
+    //    $message->subject('registeration completed');
 
-      });
+    //   });
 
         \Auth::loginUsingId($user->id);
 
@@ -394,22 +392,22 @@ $totalpoints=$points*5+$videopoint;
         $user->notify(new Candidate_notification($CandidateInfo));
         //Sending Mail after adding
         $data=array('Email'=>$request['email']);
-        Mail::send('emails.NewEmployer', $data, function($message) use ($data) {
-        $message->to('Social@maidandhelper.com');
-        $message->subject('new user is added ');
+        // Mail::send('emails.NewEmployer', $data, function($message) use ($data) {
+        // $message->to('Social@maidandhelper.com');
+        // $message->subject('new user is added ');
 
-        });
+        // });
 
 
 
 
          //Sending Mail after regestration
-        $data=array('Email'=>$request['email']);
-        Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
-        $message->to($data['Email']);
-        $message->subject('registeration completed');
+        // $data=array('Email'=>$request['email']);
+        // Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
+        // $message->to($data['Email']);
+        // $message->subject('registeration completed');
 
-        });
+        // });
 
         \Auth::loginUsingId($user->id);
         return redirect('/home');
@@ -792,11 +790,11 @@ $totalpoints=$points*5+$cvgpoint+$logopoint+$edupoint+$skillpoint+$videopoint+$l
         $user->notify(new Candidate_notification($CandidateInfo));
         //Sending Mail after adding
          $data=array('Email'=>$request['email']);
-         Mail::send('emails.NewEmployer', $data, function($message) use ($data) {
-         $message->to('Social@maidandhelper.com');
-         $message->subject('new user is added ');
+        //  Mail::send('emails.NewEmployer', $data, function($message) use ($data) {
+        //  $message->to('Social@maidandhelper.com');
+        //  $message->subject('new user is added ');
  
-         });
+        //  });
 
          //Sending Mail after regestration
         //$data=array('Email'=>$request['email']);
