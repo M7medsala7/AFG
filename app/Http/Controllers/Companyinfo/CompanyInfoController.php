@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Http\Controllers\Companyinfo;
-
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
 use DB;
 use App\User;
 use App\CandidateInfo;
@@ -14,13 +14,10 @@ use App\Requests;
 use Session;
 class CompanyInfoController extends Controller
 {
-  
-    
     public function sendyourrequest(Request $request)
     {
         try
-        {
-            $Requests =new Requests;
+        {   $Requests =new Requests;
             $Requests->name=$request['name'];
             $Requests->email=$request['email'];
             $Requests->phone=$request['phone'];
@@ -39,6 +36,10 @@ class CompanyInfoController extends Controller
             //بعد ما اسيف ارسل الايميل 
 
             
+            
+            //بعد ما اسيف ارسل الايميل 
+
+            
         }
         catch(Exception $e) 
 
@@ -48,7 +49,6 @@ class CompanyInfoController extends Controller
         }
 
     }
-
     public function fn_sendmail()
     {
       try

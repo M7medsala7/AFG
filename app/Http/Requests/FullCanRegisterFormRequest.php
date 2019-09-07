@@ -22,7 +22,7 @@ class FullCanRegisterFormRequest extends FormRequest
            'phone_number'=>'required',
            'visa_type'=>'required',
            'nationality_id'=>'required',
-           
+           'job_id' => 'required',
             'gender' =>'required',
             'visa_type'=>'required',
             'looking_for_job'=>'required',
@@ -37,7 +37,7 @@ class FullCanRegisterFormRequest extends FormRequest
           'looking_for_job.required' => 'This is Required',
           'visa_type.required' => 'The Visa type is Required',
            'nationality_id.required' => 'The Nationality is Required',
-            
+              'job_id.required' => 'This Job is Required',
         ];
     }
 }

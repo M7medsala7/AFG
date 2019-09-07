@@ -9,8 +9,6 @@ use App\SuccessStories;
 use App\EmployerProfile;
 use App\Notifications\PostJobs;
 use App\Notification;
-use Facebook\Exceptions\FacebookSDKException;
-use Facebook\Facebook;
 use Carbon\Carbon;
 use Auth;
 use DB;
@@ -19,120 +17,55 @@ use App\User;
 use Socialite;
 use Mail;
 use App\CandidateInfo;
+use App\Http\Requests\AddPostJobFormRequest;
+
 class JobPostController extends Controller
 {
     
-    private $api;
-    public function __construct(Facebook $fb)
-    {
-        $this->middleware(function ($request, $next) use ($fb) {
-           
-          //  dd($fb);
-        //  $fb->setDefaultAccessToken('256a2ea30f591c082b352a85a0f2de8c');
-            $this->api = $fb;
-          //  dd()
-            return $next($request);
-        });
-    }
+ 
 
 
     public function create()
     {
-    	return view('employer.post_job');
+        return view('employer.post_job');
     }
-
-public function sharefb()
+public function yourfavouritejobs()
 {
-
-
-
-
-			//`id`, `access_token`, `page_id`, `page_url`, `page_name`, `isActive`
-			$page_access_token = 'EAAT8wdZArTS4BAElIKMw9MItv0Rh5ha8oZA3yEIDjAEaLYtZB0pLJPHaoXUUnKaKZC1SxtuXIAsc8JxUYBBTrZAhcZA2LsZBDFI1ov24AHZAdroNRdbQmZBJCUHExQmh7ji72ZAJ7fUpYqmbMxTZCvRhQBKJG9TMnoeLPPdstCChYLN08iiDdhiObBJufuHu1LtzLih3wt7PKbykgZDZD';
-			$page_id = '185519658476147';
-			$url = 'http://stackoverflow.com/questions/7818667/simple-example-to-post-to-a-facebook-fan-page-via-php';
-
-		//	$data['picture'] = "https://scontent-cdg2-1.xx.fbcdn.net/v/t1.0-9/12715358_188921771469269_1065258198462261961_n.jpg?oh=5f5acbc707271bdd7809d7a2de99b04a&oe=58F14EEB";
-
-			$data['message'] = "Test message";
-			$data['caption'] = "Caption";
-			$data['description'] = "Description";
-
-			$data['link'] = $url;
-//            $data['link'] = URL::to($url);
-			$data['access_token'] = $page_access_token;
-           
-			$post_url = 'https://graph.facebook.com/'.$page_id.'/feed';
-
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, $post_url);
-			curl_setopt($ch, CURLOPT_POST, 1);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			$return = curl_exec($ch);
-			curl_close($ch);
-
-        dd($return);
-	
-
-
-   
-   
-      $pageId='185519658476147';
-    // initialize Facebook class using your own Facebook App credentials
-    // see: https://developers.facebook.com/docs/php/gettingstarted/#install
-    $config = array();
-    $config['appId'] = '282393199267611';
-    $config['secret'] = '1d67c563390477c4559c9666936e50b2';
-    $config['accessToken'] = 'EAAT8wdZArTS4BAElIKMw9MItv0Rh5ha8oZA3yEIDjAEaLYtZB0pLJPHaoXUUnKaKZC1SxtuXIAsc8JxUYBBTrZAhcZA2LsZBDFI1ov24AHZAdroNRdbQmZBJCUHExQmh7ji72ZAJ7fUpYqmbMxTZCvRhQBKJG9TMnoeLPPdstCChYLN08iiDdhiObBJufuHu1LtzLih3wt7PKbykgZDZD';
-    $config['fileUpload'] = true; // optional
-
-    
-    $fb = new Facebook($config);
-    $helper = $fb->getRedirectLoginHelper();
-   
-   
-    $helper = $fb->getRedirectLoginHelper('http://www.sportsector.bg/login-callback.php');
-    $accessToken = $helper->getAccessToken();  
-   
-    // define your POST parameters (replace with your own values)
-    $params = array(
-     // "access_token" => "256a2ea30f591c082b352a85a0f2de8c", // see: https://developers.facebook.com/docs/facebook-login/access-tokens/
-      "message" => "Here is a blog post about auto posting on Facebook using PHP #php #facebook",
-      "link" => "http://www.pontikis.net/blog/auto_post_on_facebook_with_php",
-      "picture" => "http://i.imgur.com/lHkOsiH.png",
-      "name" => "How to Auto Post on Facebook with PHP",
-      "caption" => "www.pontikis.net",
-      "description" => "Automatically post on Facebook with PHP using Facebook PHP SDK. How to create a Facebook app. Obtain and extend Facebook access tokens. Cron automation."
-    );
-
-    $page_access_token = 'EAAT8wdZArTS4BAElIKMw9MItv0Rh5ha8oZA3yEIDjAEaLYtZB0pLJPHaoXUUnKaKZC1SxtuXIAsc8JxUYBBTrZAhcZA2LsZBDFI1ov24AHZAdroNRdbQmZBJCUHExQmh7ji72ZAJ7fUpYqmbMxTZCvRhQBKJG9TMnoeLPPdstCChYLN08iiDdhiObBJufuHu1LtzLih3wt7PKbykgZDZD';
- 
-   // see: https://developers.facebook.com/docs/reference/php/facebook-api/
-    try {
-
-      $ret = $fb->post('/185519658476147/feed',$params,  $page_access_token);
-      echo 'Successfully posted to Facebook';
-    } catch(Exception $e) {
-      echo $e->getMessage();
-    }
-
-
-    try {
-        $response = $this->api->post('/185519658476147/feed', [
-            'message' => "DODOd"
-        ])->getGraphNode()->asArray();
-        if($response['id']){
-           // post created
-        }
-    } catch (FacebookSDKException $e) {
-        dd($e); // handle exception
-    }
-
-
-
+$data=PostJob::join('user_like_jobs','user_like_jobs.job_id','=','post_jobs.id')
+->where('user_id',\Auth::user()->id)
+->get();
+return view('Arabic.Candadties.yourFavouriteJobs',compact('data'));
 }
 
+public function applyWithoutRegestration($jobid)
+{
+    if($jobid=="Register")
+    {
+        $label="apply now";
+    }
+    else
+    {
+         $label="Apply Now without registration";
+    }
+return view('Arabic.Jobs.ApplyWithoutReg',compact('jobid','label'));
+}
+
+public function favouritecan()
+{
+    $favouritecan=CandidateInfo:: join('user_like_candidates','user_like_candidates.user_id','=','candidate_infos.user_id')
+         ->where('user_like_candidates.employer_id',\Auth::user()->id)
+                    ->get();
+                    return view('employer.yourFavouriteJobs',compact('favouritecan'));
+                  //  dd($favouritecan);
+}
+
+public function yourappliedjobs()
+{
+$data=PostJob::join('job_applications','job_applications.job_post_id','=','post_jobs.id')
+->where('user_id',\Auth::user()->id)
+->get();
+return view('Arabic.Candadties.yourAppliedJobs',compact('data'));
+}
 
     //job likes
     public function likejob($id)
@@ -225,12 +158,16 @@ public function sharefb()
                         Session::flash('flash_message', 'Applied Sucessfully');
                         if($post_job->link == null) 
                         {
+
                         $link='/ViewJob/'.$id;
+return redirect ($link);
             
                         }
                         else
                         {
                         $link=$post_job->link;
+return redirect ($link);
+
                         }
                         return redirect ($link);
                         }
@@ -262,17 +199,13 @@ public function sharefb()
     
 
 
-    public function store(Request $request)
+    public function store(AddPostJobFormRequest $request)
     {
-         
+    
 
         try
         {
-                $this->validate($request,[
-                    'job_id'=>'required',
-                    'industry_id'=>'required',
-                    'country_id'=>'required',
-                    ]);
+               
                 $input= $request->all();
                 $input['job_for']=\Auth::user()->employer->type;
                 unset($input['skill_ids'],$input['language_ids']);
@@ -435,6 +368,7 @@ public function sharefb()
         
         try
         {
+
             $job = PostJob::where('id',$id)->first(); 
             $Skilljob=DB::table('job_skills')
                 ->join('skills','skills.id','job_skills.skill_id')
@@ -444,13 +378,19 @@ public function sharefb()
                 $jobCan=null;
                 $color='black';
                 // Like or Not 
-
+$Applied=0;
             if(Auth::user() !=null)
             {
             $Like=DB::table('user_like_jobs')
                                 ->where('job_id',$id)
                                 ->where('user_id',\Auth::user()->id)
                                 ->first();
+                                 $Applied=DB::table('job_applications')
+                                ->where('job_post_id',$id)
+                                ->where('user_id',\Auth::user()->id)
+                                ->first();
+                                $Applied=1;
+                                
                         if($Like!=null)
                         {
                         $color='red';
@@ -466,7 +406,7 @@ public function sharefb()
 
 
                 }
-                return view('Arabic.Jobs.ViewJob',compact('job','jobforcompany','jobCan','color','Skilljob'));
+                return view('Arabic.Jobs.ViewJob',compact('job','Applied','jobforcompany','jobCan','color','Skilljob'));
             }
             catch(Exception $e) 
 
@@ -485,22 +425,35 @@ public function sharefb()
 
 
 
-    public function empolyerCount(Request $request)
+public function empolyerCount(Request $request)
     {
        try
        {
+        $CanJob=collect();
 
             $id=$request->selected;
-            $resultQuery=CandidateInfo::join('nationalities','nationalities.id','candidate_infos.nationality_id')
-            ->where('candidate_infos.job_id',$id)
-            ->select( DB::raw('count(candidate_infos.nationality_id) as count ,nationalities.name') )
-            ->groupBy('candidate_infos.nationality_id')->get();
+
+         
+$AppliedJob=PostJob::where('created_by',\Auth::user()->id)->where('job_id',$id)->get();
+
+foreach($AppliedJob as $Applied)
+{
+
+    foreach ($Applied->applicants as $app) {
+
+        $CanJob->push($app->CanInfo);
+    }
+}
+
+
+          
 
             $dataresult=[];
-            foreach ($resultQuery as $resultQu) {
+            foreach ($CanJob as $resultQu) {
+                 
                                                     array_push($dataresult,array(
-                                                    'label' => $resultQu->name,
-                                                    'y' => $resultQu->count
+                                                    'label' => $resultQu->nationality->name,
+                                                    'y' => count($CanJob)
                                                     ));
                                                 
                                                 }
@@ -522,6 +475,7 @@ public function sharefb()
     public function jobStatstics(Request $request)
     {
 
+
          $employerJobs = \Auth::user()->postJobs;
             $employerJobsShow = \Auth::user()->postJobs->first();
             //dd($employerJobs[0]->seen);
@@ -538,12 +492,527 @@ public function sharefb()
        $id=$request->selected;
      $jobStatstics = PostJob::where('job_id',$id)->where('created_by',\Auth::user()->id)->first();
 
-     
-               return view('employer.JobsStatstics',compact('employerJobs','countrynames','citynames','employerJobsShow','jobStatstics'));
+         $employerJobsfor = EmployerProfile::where('user_id',\Auth()->user()->id)->first();
+           $ownCan=CandidateInfo::where('Agency_ID',\Auth::user()->id)->get();
+               return view('employer.JobsStatstics',compact('employerJobs','countrynames','citynames','employerJobsShow','jobStatstics','employerJobsfor','ownCan'));
 
     
     }
    
+public function showalljob($id)
+{
+    $userid=$id;
+    $Jobs=[];
+    $countJob=PostJob::where('created_by',$id)->get();
 
 
+
+    foreach ($countJob as $count) {
+      
+    $CountAppliedOwn= CandidateInfo::where('job_id',$count->job_id)->where('Agency_ID',$userid)->count();
+    $CountAppliedOwnCanidates= CandidateInfo::join('job_applications','job_applications.user_id','candidate_infos.user_id')
+    -> where('job_applications.job_post_id',$count->id)
+    ->where('candidate_infos.job_id',$count->job_id)
+    ->where('candidate_infos.Agency_ID',$userid)->
+    count();
+if($CountAppliedOwnCanidates==0)
+{
+    $CanCount=$count->applicants->count()+$CountAppliedOwn;
+
+}
+else
+{
+    $CanCount=$count->applicants->count();
+}
+       
+
+        array_push($Jobs,array(
+            'id'=> $count->job->id,
+                     'jobname' => $count->job->name,
+                         'cancount' => $CanCount,
+                            'date' => $count->created_at,
+
+                                                    ));
+    
+    }
+
+    return view('employer.employeralljobs',compact('Jobs','userid')); 
+
+}
+public function  showcandidatejob($id,$userid)
+{
+$CanJob=collect();
+$ShortCan=Collect();
+$ReferenceCheckCan=Collect();
+$RejectedCan=Collect();
+$SalaryFinalizationCan=Collect();
+$InterviewCan=Collect();
+$SendtoItegrationCan=Collect();
+$OwnCan= CandidateInfo::where('job_id',$id)->where('Agency_ID',$userid)->get();
+$AppliedJob=PostJob::where('created_by',$userid)->where('job_id',$id)->get();
+
+foreach($AppliedJob as $Applied)
+{
+
+    foreach ($Applied->applicants as $app) {
+
+        $CanJob->push($app->CanInfo);
+    }
+}
+
+$merged = $OwnCan->merge($CanJob);
+$result = $merged->all();
+foreach ($result  as $all) {
+ if(!is_null($all->getCandidateStaus->find($userid))) 
+
+ {
+    
+ 
+ 
+    $status=$all->getCandidateStaus->find($userid)->pivot->AgencyStatus;
+
+if($status=="Shortlisted")
+{
+     $ShortCan->push($all);
+
+       
+    }
+
+    if($status=="Reference Check")
+{
+     $ReferenceCheckCan->push($all);
+
+       
+    }
+
+
+        if($status=="Rejected")
+{
+     $RejectedCan->push($all);
+
+       
+    }
+
+            if($status=="Salary Finalization")
+{
+     $SalaryFinalizationCan->push($all);
+
+       
+    }
+
+                if($status=="Interview")
+{
+     $InterviewCan->push($all);
+
+       
+    }
+                if($status=="Send to Itegration")
+{
+     $SendtoItegrationCan->push($all);
+
+       
+    }
+ 
+
+}
+}
+$sendtoitegration=$SendtoItegrationCan->count();
+$interview=$InterviewCan->count();
+$salaryfinalization=$SalaryFinalizationCan->count();
+$rejected=$RejectedCan->count();
+$referencecheck=$ReferenceCheckCan->count();
+$shortlist=$ShortCan->count();
+$referencecheck=$ReferenceCheckCan->count();
+$allCan=count($result);
+$userclien=User::find($userid);
+$allClients=User::whereHas('EmpInfo', function ($query) use($userid) {
+    $query->where('Agency_ID', $userid);
+    $query->where('DeletedByAgency','!=', 1);
+})
+->where('type','client')->get();
+      return view('employer.showcandidatejob',compact('result','allCan','userid','shortlist','referencecheck','id','rejected','interview','salaryfinalization','sendtoitegration','allClients')); 
+
+}
+
+
+
+public function reloadtable(Request $request)
+{
+  
+      $userid=$request->userid;
+   $id= $request->jobid;
+        $CanJob=collect();
+$ShortCan=Collect();
+$ReferenceCheckCan=Collect();
+$RejectedCan=Collect();
+$SalaryFinalizationCan=Collect();
+$InterviewCan=Collect();
+$SendtoItegrationCan=Collect();
+$OwnCan= CandidateInfo::where('job_id',$request->jobid)->where('Agency_ID',$request->userid)->get();
+$AppliedJob=PostJob::where('created_by',$request->userid)->where('job_id',$request->jobid)->get();
+if($request->status=='All')
+{
+
+
+foreach($AppliedJob as $Applied)
+{
+
+    foreach ($Applied->applicants as $app) {
+
+        $CanJob->push($app->CanInfo);
+    }
+}
+
+$merged = $OwnCan->merge($CanJob);
+$result = $merged->all();
+
+
+return view('employer.patshowcan',compact('result','allCan','userid','shortlist','id','referencecheck'));
+}
+
+if($request->status=='Shortlisted')
+{
+
+
+
+foreach($AppliedJob as $Applied)
+{
+
+    foreach ($Applied->applicants as $app) {
+
+        $CanJob->push($app->CanInfo);
+    }
+}
+
+$merged = $OwnCan->merge($CanJob);
+$resultall = $merged->all();
+
+foreach ($resultall  as $all) {
+  
+ if(!is_null($all->getCandidateStaus->find($userid))) 
+
+ {
+    
+
+    $status=$all->getCandidateStaus->find($userid)->pivot->AgencyStatus;
+
+if($status=="Shortlisted")
+{
+     $ShortCan->push($all);
+
+       
+    }
+  
+
+}
+
+}
+
+
+$result=$ShortCan;
+
+return view('employer.patshowcan',compact('result','allCan','userid','shortlist','id'));
+}
+
+
+if($request->status=='Reference Check')
+{
+
+
+
+foreach($AppliedJob as $Applied)
+{
+
+    foreach ($Applied->applicants as $app) {
+
+        $CanJob->push($app->CanInfo);
+    }
+}
+
+$merged = $OwnCan->merge($CanJob);
+$resultall = $merged->all();
+
+foreach ($resultall  as $all) {
+  
+ if(!is_null($all->getCandidateStaus->find($userid))) 
+
+ {
+    
+
+    $status=$all->getCandidateStaus->find($userid)->pivot->AgencyStatus;
+
+if($status=="Reference Check")
+{
+     $ReferenceCheckCan->push($all);
+
+       
+    }
+  
+
+}
+
+}
+
+
+$result=$ReferenceCheckCan;
+
+
+return view('employer.patshowcan',compact('result','allCan','userid','shortlist','id'));
+}
+ 
+ if($request->status=='Rejected')
+{
+
+
+
+foreach($AppliedJob as $Applied)
+{
+
+    foreach ($Applied->applicants as $app) {
+
+        $CanJob->push($app->CanInfo);
+    }
+}
+
+$merged = $OwnCan->merge($CanJob);
+$resultall = $merged->all();
+
+foreach ($resultall  as $all) {
+  
+ if(!is_null($all->getCandidateStaus->find($userid))) 
+
+ {
+    
+
+    $status=$all->getCandidateStaus->find($userid)->pivot->AgencyStatus;
+
+if($status=="Rejected")
+{
+     $RejectedCan->push($all);
+
+       
+    }
+  
+
+}
+
+}
+
+
+$result=$RejectedCan;
+
+
+return view('employer.patshowcan',compact('result','allCan','userid','shortlist','id'));
+} 
+
+
+ if($request->status=='Salary Finalization')
+{
+
+
+
+foreach($AppliedJob as $Applied)
+{
+
+    foreach ($Applied->applicants as $app) {
+
+        $CanJob->push($app->CanInfo);
+    }
+}
+
+$merged = $OwnCan->merge($CanJob);
+$resultall = $merged->all();
+
+foreach ($resultall  as $all) {
+  
+ if(!is_null($all->getCandidateStaus->find($userid))) 
+
+ {
+    
+
+    $status=$all->getCandidateStaus->find($userid)->pivot->AgencyStatus;
+
+if($status=="Salary Finalization")
+{
+     $SalaryFinalizationCan->push($all);
+
+       
+    }
+  
+
+}
+
+}
+
+
+$result=$SalaryFinalizationCan;
+
+
+return view('employer.patshowcan',compact('result','allCan','userid','shortlist','id'));
+}
+
+ if($request->status=='Interview')
+{
+
+
+
+foreach($AppliedJob as $Applied)
+{
+
+    foreach ($Applied->applicants as $app) {
+
+        $CanJob->push($app->CanInfo);
+    }
+}
+
+$merged = $OwnCan->merge($CanJob);
+$resultall = $merged->all();
+
+foreach ($resultall  as $all) {
+  
+ if(!is_null($all->getCandidateStaus->find($userid))) 
+
+ {
+    
+
+    $status=$all->getCandidateStaus->find($userid)->pivot->AgencyStatus;
+
+if($status=="Interview")
+{
+     $InterviewCan->push($all);
+
+       
+    }
+  
+
+}
+
+}
+
+
+$result=$InterviewCan;
+
+
+return view('employer.patshowcan',compact('result','allCan','userid','shortlist','id'));
+} 
+
+ if($request->status=='Send to Itegration')
+{
+
+
+
+foreach($AppliedJob as $Applied)
+{
+
+    foreach ($Applied->applicants as $app) {
+
+        $CanJob->push($app->CanInfo);
+    }
+}
+
+$merged = $OwnCan->merge($CanJob);
+$resultall = $merged->all();
+
+foreach ($resultall  as $all) {
+  
+ if(!is_null($all->getCandidateStaus->find($userid))) 
+
+ {
+    
+
+    $status=$all->getCandidateStaus->find($userid)->pivot->AgencyStatus;
+
+if($status=="Send to Itegration")
+{
+     $SendtoItegrationCan->push($all);
+
+       
+    }
+  
+
+}
+
+}
+
+
+$result=$SendtoItegrationCan;
+
+
+return view('employer.patshowcan',compact('result','allCan','userid','shortlist','id'));
+}       
+}
+public function  updatestatus(Request $request)
+{
+
+    $Query = \DB::table('client')->where('Emp_id', $request->agenid)->where('Can_id',$request->userid)->first();
+$data[]=[
+    'Emp_id'=>$request->agenid,
+    'Can_id'=>$request->userid,
+    'AgencyStatus'=>$request->status,
+];
+
+
+if(is_null($Query))
+{
+    
+    \DB::table('client')->insert($data);
+    
+}
+
+else
+{
+   $update = \DB::table('client')->where('Emp_id', $request->agenid)->where('Can_id',$request->userid) ->limit(1) ->update( [ 'AgencyStatus' => $request->status ]); 
+
+}
+return redirect()->back()->with('success', 'Status Updated'); 
+}
+
+
+public function  shareclient (Request $request)
+{
+ 
+$clinet=explode(",",$request->clientids);
+$candidate=explode(",",$request->canids);
+$agency=\Auth::user()->id;
+$comment=$request->agencycomment;
+  $CanQuery=CandidateInfo::whereIn('user_id',$candidate)->get();
+
+
+foreach ($CanQuery as $can) {
+   
+\DB::table('SharedClient')->where('Can_id',$can->user_id)->delete();
+
+    $can->getCandidateClientStaus()->attach($clinet ,array('Can_id' => $can->user_id,'Agency_id'=> $agency,'CommentAgency' => $comment));
+     
+}
+
+
+
+          return response()->json(['status'=>true,'message'=>"Candidate Shared successfully."]);
+    
+}
+public function  sharejobtocandidate (Request $request)
+{
+ 
+
+$job=explode(",",$request->jobIds);
+ $candidate=explode(",",$request->canids);
+
+
+  $PostJobQuery=PostJob::whereIn('job_id',$job)->where('created_by',\Auth::user()->id)->get();
+
+foreach ($PostJobQuery as $job) {
+   
+
+
+     $job->applicants()->sync($candidate);
+
+    
+}
+
+
+
+          return response()->json(['status'=>true,'message'=>"Job Shared successfully."]);
+    
+}
 }

@@ -12,6 +12,11 @@
     min-height: 350px;
   }
 </style>
+ @if(Session::get('locale')=="Ar"|| Session::get('locale')=="ar")
+{{App::setLocale('ar')}}
+@else
+{{App::setLocale('en')}}
+@endif
 <section class="dashboard">
   <div class="container">
     <div class="row">
@@ -19,16 +24,16 @@
             <div class="col-sm-3 dashboardleft">
         <div class="inner-aboutus">
 <input type="hidden" name="words" value={{$words}} id="words">
-          <h2 class="textcandidate colormerg">filters</h2>
+          <h2 class="textcandidate colormerg"> {{trans('app.filters')}}</h2>
        <input type="hidden" name="jobcheck" class="jobcheck" value="1" id="jobcheck">
                  <div class="filterbottom">
-            <h4 class="contenttype">Job Title </h4>
+            <h4 class="contenttype"> {{trans('app.Job_Title')}} </h4>
             <ul class="divhidslid" id="myList">
               <li class="always">
                
                 <label>
                   <input type="checkbox" name="Jobtitle" value="all"  class="checkboxalltow" onchange="Doaaasd()">
-                  <span class="label-text">all</span> </label>
+                  <span class="label-text">{{trans('app.all')}} </span> </label>
                   
               </li>
                 @for($i=0;$i< count($jobtitle);$i++ )
@@ -58,19 +63,19 @@
                @endfor
             </ul>
  <div class="show-more">
-  <a href="#">Show more</a>
+  <a href="#"> {{trans('app.Show_more')}}</a>
 </div>
              </div>
           <!--filterbottom-->
           
           <div class="filterbottom">
-            <h4 class="contenttype">employer type </h4>
+            <h4 class="contenttype"> {{trans('app.employer_type')}}</h4>
             <ul class="divhidslid">
               <li class="always">
                 <label>
                   <input type="checkbox" name="employertype" value="all" class="checkboxallthree"
                   onchange="Doaaasd()">
-                  <span class="label-text">all</span> </label>
+                  <span class="label-text"> {{trans('app.all')}}</span> </label>
               </li>
               @foreach($jobfor as $jobfo)
               <li class="always">
@@ -90,9 +95,9 @@
 
           
           <div class="filterbottom">
-            <h4 class="contenttype">Desired Location </h4>
+            <h4 class="contenttype"> {{trans('app.Desired_Location')}}</h4>
           <select class="form-control chosen-select types" name="country_id" id="country_id"  required=""  onchange="Doaaasd()">
-                  <option selected=""  value="0">None</option>
+                  <option selected=""  value="0"> {{trans('app.None')}}</option>
                    @foreach(\App\Country::all() as $country)
                       <option value="{{$country->id}}" name="country" id="country">{{$country->name}}</option>
                     @endforeach
@@ -103,12 +108,12 @@
           <!--filterbottom-->
           
           <div class="filterbottom">
-            <h4 class="contenttype">experince</h4>
+            <h4 class="contenttype"> {{trans('app.experince')}}</h4>
             <ul class="divhidslid">
               <li class="always">
                 <label>
                   <input type="checkbox"  name="experince" value="all" class="checkboxallfive" onchange="Doaaasd()">
-                  <span class="label-text">all</span> </label>
+                  <span class="label-text"> {{trans('app.all')}}</span> </label>
               </li>
               <li class="always">
                 <label>
@@ -141,7 +146,7 @@
           <!--filterbottom-->
           
           <div class="filterbottom">
-            <h4 class="contenttype">salary</h4>
+            <h4 class="contenttype"> {{trans('app.salary')}}</h4>
         
             <!--currencytext-->
             
@@ -149,7 +154,7 @@
               <li class="always">
                 <label>
                   <input type="checkbox"  name="salary" value="all" class="checkboxallsix" onchange="Doaaasd()">
-                  <span class="label-text">all</span> </label>
+                  <span class="label-text"> {{trans('app.all')}}</span> </label>
               </li>
               <li class="always">
                 <label>
@@ -208,16 +213,16 @@
       <div class="col-sm-3 dashboardleft">
         <div class="inner-aboutus">
 
-          <h2 class="textcandidate colormerg">filters</h2>
+          <h2 class="textcandidate colormerg"> {{trans('app.filters')}}</h2>
 
           <div class="filterbottom">
-            <h4 class="contenttype">Job Title </h4>
+            <h4 class="contenttype">  {{trans('app.Job_Title')}}</h4>
             <ul class="divhidslid" id="myList">
               <li class="always">
                
                 <label>
                   <input type="checkbox" name="Jobtitle" value="all" onchange="Doaaasd()"  class="checkboxall">
-                  <span class="label-text">all</span> </label>
+                  <span class="label-text"> {{trans('app.all')}}</span> </label>
                   
               </li>
                 @for($i=0;$i< count($jobtitle);$i++ )
@@ -253,7 +258,7 @@
           <!--filterbottom-->
           
        <div class="filterbottom">
-            <h4 class="contenttype">Nationality </h4>
+            <h4 class="contenttype"> {{trans('app.Nationality')}}</h4>
           <select class="form-control chosen" name="nationality_id" id="nationality_id"  required=""  onchange="Doaaasd()">
                   <option selected=""  value="0">None</option>
                    @foreach(\App\Nationality::all() as $nationality)
@@ -269,7 +274,7 @@
 
           
           <div class="filterbottom">
-            <h4 class="contenttype">Candidate Location </h4>
+            <h4 class="contenttype"> {{trans('app.Candidate_Location')}}</h4>
           <select class="form-control chosen" name="country_id" id="country_id"  required=""  onchange="Doaaasd()">
                   <option selected=""  value="0">None</option>
                    @foreach(\App\Country::all() as $country)
@@ -285,7 +290,7 @@
           <!--filterbottom-->
           
           <div class="filterbottom">
-            <h4 class="contenttype">salary</h4>
+            <h4 class="contenttype"> {{trans('app.salary')}}</h4>
             <div class="currencytext">
         
             <!--currencytext-->
@@ -294,7 +299,7 @@
               <li class="always">
                 <label>
                   <input type="checkbox"  name="salary" value="all"  class="checkboxallfor" onchange="Doaaasd()">
-                  <span class="label-text">all</span> </label>
+                  <span class="label-text"> {{trans('app.all')}}</span> </label>
               </li>
               <li class="always">
                 <label>
@@ -321,7 +326,7 @@
               </li>
             </ul>
 
-                  <h5>currency</h5>
+                  <h5>  {{trans('app.currency')}}</h5>
 
                <select class="form-control chosen" name="currencyID" id="currencyID"  required=""  onchange="Doaaasd()">
               
@@ -341,7 +346,7 @@
 
 
             <div class="filterbottom">
-            <h4 class="contenttype">Skills </h4>
+            <h4 class="contenttype"> {{trans('app.Skills')}}</h4>
           <select class="form-control chosen" name="skills_id" id="skills_id"  required=""  onchange="Doaaasd()">
                   <option selected=""  value="0">None</option>
                    @foreach(\App\Skills::all() as $skills)
@@ -349,6 +354,18 @@
                     @endforeach
                 </select>
             <!--bfh-selectbox--> 
+            
+          </div>
+
+
+               <div class="filterbottom">
+            <h4 class="contenttype"> {{trans('app.Video')}}</h4>
+     
+             <select class="form-control chosen" name="video" id="video"  required=""  onchange="Doaaasd()">
+                <option selected=""  value="all"> {{trans('app.all')}}</option>
+                  <option   value="0">None </option>
+                     <option value="1">With Video</option>
+                </select>
             
           </div>
           
@@ -381,7 +398,7 @@
 <div id="myModal" class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header"> Watch Video
+      <div class="modal-header">  {{trans('app.Watch_Video')}}
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="textbox" id="v1">
@@ -510,6 +527,9 @@ var Jobtitle = [];
    experince.push($(this).val());
 
 });
+
+
+
         var fromsalary= $("#fromsalary").val();
  var tosalary= $('#tosalary').val();
  var fromexperince= $("#fromexperince").val();
@@ -524,17 +544,19 @@ var currency=$('#currencyID').find(":selected").val();
 var nationality=$('#nationality_id').find(":selected").val(); 
 
 var skills=$('#skills_id').find(":selected").val(); 
-// console.log(country);
+
+var video=$('#video').find(":selected").val(); 
+ console.log(country);
 
      Jobtitle=JSON.stringify(Jobtitle);
       candidate=JSON.stringify(candidate);
       employertype=JSON.stringify(employertype); 
       salary=JSON.stringify(salary); 
      experince=JSON.stringify(experince); 
-    console.log(employertype);
+      
 
-var dataString = "Jobtitle="+Jobtitle+"&country="+country+"&jobcheck="+jobcheck+"&words="+words+"&employertype="+employertype+"&salary="+salary+"&fromsalary="+fromsalary+"&tosalary="+tosalary+"&currency="+currency+"&experince="+experince+"&fromsexperince="+fromexperince+"&toexperince="+toexperince+"&nationality="+nationality+"&skills="+skills;
-console.log(dataString);
+var dataString = "Jobtitle="+Jobtitle+"&country="+country+"&jobcheck="+jobcheck+"&words="+words+"&employertype="+employertype+"&salary="+salary+"&fromsalary="+fromsalary+"&tosalary="+tosalary+"&currency="+currency+"&experince="+experince+"&fromsexperince="+fromexperince+"&toexperince="+toexperince+"&nationality="+nationality+"&skills="+skills+"&video="+video;
+
     $.ajax({
       url: '/filtersearch',
         type: 'POST',

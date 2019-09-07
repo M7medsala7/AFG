@@ -47,11 +47,11 @@
       
       <div class="col-sm-8 comprofleft">
         <div class="inner-aboutus mh-company">
-          <div class="com-proftow companychool"> <img src="/images/company.png">
+          <div class="com-proftow companychool"> <img src="{{($company->user->logo)?$company-->last()->photo_path:'images/4.jpg'}}">
             <div class="comitm">
               <h5 class="textcandidate">{{$company->user->name}}</h5>
               <p class="witthtext">{{($company->description)?$company->description:"Not set"}}</p>
-              <div class="cenbottom seejobs"> <a href="#" class="largeredbtn">see jobs</a> <a href="#" class="largeredbtn">weiw profile</a> </div>
+              <div class="cenbottom seejobs"> <a href="#" class="largeredbtn">see jobs</a> <a href="#" class="largeredbtn">veiw profile</a> </div>
             </div>
             <!--comitm--> 
             

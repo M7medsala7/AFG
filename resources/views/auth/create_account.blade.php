@@ -1,7 +1,7 @@
 @extends('Layout.app')
 <style>
   .select2-selection__rendered{
-    background: rgb(0, 1, 1);
+    background: #f4f4f4;
     border: 1px solid rgba(115, 115, 115, 0.48)!important;
     /* color: #fff; */
     float: left;
@@ -13,7 +13,7 @@
     border: 2px solid #d7d7d7;
     margin-top: 10px;
   }
-  .select2-container--default .select2-selection--single{    background-color: 0!important;border: 0!important}
+  .select2-container--default .select2-selection--single{background-color: white!important;border: white!important}
 </style>
 @section('content')
 
@@ -22,7 +22,7 @@
     <div class="loginbok cand-1">
       <h4 class="createtitle"> create account</h4>
     
-      <form  action="/f_reg/employer" method="post" id="f_reg_emp" class="formlogin">
+      <form  action="/f_reg/employer" method="post" id="f_reg_emp" class="formlogin" enctype="multipart/form-data"  >
         {{csrf_field()}}
         <div class="divwits">
            <input type="text" name="first_name" class="form-control requirments" placeholder="  {{$type}} name" onblur="processForm(this.form)">
@@ -53,8 +53,9 @@
         </div>
         <!--divwits-->
         
-        <div class="divwits">
-           <select class="form-control " id="city_id" name="city_id"  onblur="processForm(this.form)">
+        <div class="divwits iconfont">
+           <select class="form-control" id="city_id" name="city_id"  onblur="processForm(this.form)">
+             <option selected="" disabled="disabled">Select City</option>
            
           </select>
         </div>
@@ -65,15 +66,21 @@
         </div>
         <!--divwits-->
         
-        <div class="divwits">
-           <input type="email" name="email_confirmation" class="form-control" placeholder="confirm email" required="required" onblur="processForm(this.form)">
-        </div>
+       
         <!--divwits-->
         
         <div class="divwits iconfont">
            <input type="password" name="password" class="form-control" placeholder="password" onblur="processForm(this.form)">
         </div>
-        <<div class="col-sm-8  stepotw">
+
+         <div  class="divwits ">
+                  <div class="input-group input-file" name="logo">
+                    <input type="text" class="form-control requirments"  placeholder='image...'  />
+                    <span class="input-group-btn">
+                    <button class="btn btn-default btn-choose largeredbtn brows" type="button" onblur="processForm(this.form)">brows</button>
+                    </span> </div>
+                </div>
+        <div class="col-sm-8  stepotw">
                 <div class="linksing textcand-1">
                   <p id="Points">0</p>
                   <span>earn points <i class="fas fa-trophy"></i><br>
@@ -108,7 +115,38 @@
   <!--container--> 
   
 </section>
-<div id="congrats"></div>
+<div class="modal fade" id="overlay">
+  <div class="modal-dialog">
+      <div class="modal-content dal-conte"> <i class="fas fa-check-circle"></i>
+
+
+      <h2 class="textcandidate">congratulations</h2>
+ 
+  
+      <div class="sk-circle">
+        <div class="sk-circle1 sk-child"></div>
+        <div class="sk-circle2 sk-child"></div>
+        <div class="sk-circle3 sk-child"></div>
+        <div class="sk-circle4 sk-child"></div>
+        <div class="sk-circle5 sk-child"></div>
+        <div class="sk-circle6 sk-child"></div>
+        <div class="sk-circle7 sk-child"></div>
+        <div class="sk-circle8 sk-child"></div>
+        <div class="sk-circle9 sk-child"></div>
+        <div class="sk-circle10 sk-child"></div>
+        <div class="sk-circle11 sk-child"></div>
+        <div class="sk-circle12 sk-child"></div>
+      </div>
+      <div class="linksing"> rediricling you to the profile page in <span class="nambers">7</span> seconds</div>
+  
+<!--section-->
+
+
+      
+    </div>
+  </div>
+</div>
+
 <!--section-->
 @endsection
 @section('scripts')
@@ -141,39 +179,23 @@ $(document).ready(function(){
     // submit the form
         ev.preventDefault();
 
-    $('#main_section').css('diplay','none');
-    console.log($('#f_reg_emp').attr('action'));
-    
-    
+    $('#overlay').modal('show');
+
+setTimeout(function() {
+ 
+     $('#overlay').modal('hide');
+
+          document.getElementById('f_reg_emp').submit();
+
+}, 7000);
+
+var timeleft = 10;
+var downloadTimer = setInterval(function(){
   
-    $.ajax({
-            type: $('#f_reg_emp').attr('method'),
-            url: $('#f_reg_emp').attr('action'),
-            data: $('#f_reg_emp').serialize(),
-       
-        }).done(function(data){
+  if(timeleft <= 0)
+    clearInterval(downloadTimer);
+},1000);
 
-
-              console.log(data);
-              if(data == 'true')
-              {
-                 $.get("/congrats", function(data, status){
-      $('#congrats').append(data);
-     });
-     
-        window.setTimeout(function(){
-window.location = "/home";
-        // Move to a new location or you can do something else
-     
-
-    }, 7000);
-                
-
-              }
-
-  
-});
-        // return false to
      });
 </script>
 <script >

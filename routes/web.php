@@ -1,4 +1,9 @@
-C<?php
+<?php
+header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");   
+ // header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
+ header('Access-Control-Allow-Credentials: true');  
+/*
 
 /*
 |--------------------------------------------------------------------------
@@ -16,50 +21,50 @@ C<?php
 Route::get('/full_register/candidate/{id}/edit','Candidate\EditCanProfileController@edit');
 Route::post('/update_register/candidate/{id}','Candidate\EditCanProfileController@updateFullReg');
 Route::any('/StoreVideo', '\App\Http\Controllers\Auth\RegisterController@StoreVideo');
+Route::any('/StoreVideo2', '\App\Http\Controllers\Auth\AgencyCandidateController@StoreVideo2');
+
 Route::get('/getNextTopCandidates/{id?}','HomeController@getNextTopCandidates');
 Route::get('/getNextJobCandidates/{id?}','HomeController@getNextJobCandidates');
 Route::get('/candidate2/{id}','Candidate\CandidatesController@profile2');
 Route::get('/candidate/{id}','Candidate\CandidatesController@profile');
 Route::get('/EditCandidate/{id}','Candidate\CandidatesController@EditRefrnces');
 Route::post('/EditStoreVideo','Candidate\EditCanProfileController@EditStoreVideo');
-
 Route::get('/register/candidates', function () {
-	
 	return view('auth.candidate_register');
 });
 Route::get('/RegisterWithAgency', function () {
 	
 	return view('auth.RegisterWithAgency');
 });
-
-
-Route::get('/congrats', function () {
-	return view('auth.congratulation');
-});
-
+///*********************Congrats************************ */
+Route::post('/congrats','Home\IndexController@congrats');
+Route::post('/congratscan','Home\IndexController@congratscan');
 ///*********************Employer**************************** */
- 
 Route::get('/register/employer', function () {
-
-	
-         
-
+auth()->logout();
 	return view('auth.employer_register');
 });
 Route::get('/register/employeer', function () {
 	return view('auth.employer_type');
 });
-Route::get('/company_profile/edit/{id}', 'Employer\companiesController@create');
-Route::get('/company_profile/{id}', 'Employer\companiesController@show');
+Route::get('/loginEmployer', function () {
+    return view('auth.loginemp');
+});
+Route::get('/company_profile/edit/{id}', 'Employer\CompaniesController@create');
+Route::get('/company_profile/{id}', 'Employer\CompaniesController@show');
 Route::get('/auth/facebook/{id}','\App\Http\Controllers\Auth\RegisterController@redirectToProvider')->name('login.facebook');
 Route::get('/facebook/callback','\App\Http\Controllers\Auth\RegisterController@handleProvider');
 Route::get('/auth/google/{id}','\App\Http\Controllers\Auth\RegisterController@redirectToProviderGoogle')->name('login.google');
 Route::get('/google/callback','\App\Http\Controllers\Auth\RegisterController@handleProviderGooglr');
 Route::get('/auth/twitter/{id}','\App\Http\Controllers\Auth\RegisterController@redirectToProvidertwitter')->name('login.twitter');
 Route::get('/twitter/callback','\App\Http\Controllers\Auth\RegisterController@handleProvidertwitter');
-Route::get('/loginEmployer', function () {
-    return view('auth.loginemp');
-});
+Route::any('/ShowAllJob/{id}', '\App\Http\Controllers\Jobs\JobPostController@showalljob');
+
+Route::any('/showcandidatejob/{id}/{userid}', '\App\Http\Controllers\Jobs\JobPostController@showcandidatejob');
+Route::any('/updatestatus', '\App\Http\Controllers\Jobs\JobPostController@updatestatus');
+Route::any('/reloadtable', '\App\Http\Controllers\Jobs\JobPostController@reloadtable');
+Route::any('/shareclient', '\App\Http\Controllers\Jobs\JobPostController@shareclient');
+Route::any('/sharejobtocandidate', '\App\Http\Controllers\Jobs\JobPostController@sharejobtocandidate');
 //**********************Jobs********************************* */
 Route::get('/ViewJob/{id}','Jobs\JobPostController@ViewJob');
 Route::get('/ApplyJob/{id}','Jobs\JobPostController@ApplyJob');
@@ -69,7 +74,6 @@ Route::any('/logoutandregister','Jobs\JobPostController@logoutandregister');
 Route::post('/empolyerCount','Jobs\JobPostController@empolyerCount');
 Route::get('/EditJobRef', 'HomeController@EditJobRef');
 Route::post('/jobStatstics', 'Jobs\JobPostController@jobStatstics');
-Route::any('/sharefb','Jobs\JobPostController@sharefb');
 //*********************CompanyInfo*************************** */
 Route::get('/contact', function () {
     return view('CompanyInfo.contact');
@@ -81,33 +85,10 @@ Route::post('/sendemail', 'Companyinfo\CompanyInfoController@fn_sendmail')->name
 Route::get('/Requests', function () {
     return view('CompanyInfo.Requests');
 });
-Route::post('/sendyourrequest', 'Companyinfo\CompanyInfoController@sendyourrequest')->name('sendyourrequest');
-//*************************newadminpanl************************ */
-Route::get('/adminmaster', function () {
-    return view('DashbordAdminPanel.login.login');
-});
-Route::get('/loginadmin', function () {
-    return view('DashbordAdminPanel.login.login');
-});
-Route::any('/loginadmin', '\App\Http\Controllers\DashboardAdmin\loginController@login');
-Route::resource('/Candidateadmin', '\App\Http\Controllers\DashboardAdmin\Candidate\CandidateController');
-Route::post('/candidateadminstore', '\App\Http\Controllers\DashboardAdmin\Candidate\CandidateController@candidateadminstore');
-
-Route::post('/candidateadminedit', '\App\Http\Controllers\DashboardAdmin\Candidate\CandidateController@candidateadminedit');
-Route::get('/Candidate/{id}/edit', '\App\Http\Controllers\DashboardAdmin\Candidate\CandidateController@updatecandidate');
-
-
-// Route::delete('candidate/{id}', ['as'=>'candidate.destroy','uses'=>'\App\Http\Controllers\DashboardAdmin\Candidate\CandidateController@destroy']);
-Route::any('/deletemultiplecandidate','\App\Http\Controllers\DashboardAdmin\Candidate\CandidateController@deleteMultiple');
-
+Route::post('/sendyourrequest', 'Companyinfo\CompanyInfoController@sendyourrequest');
 //*************************Payment************************ */
 Route::resource('/Payment', 'Payment\PaymentController');
 
-
-
-Route::any('/payment', 'Payment\PaymentController@checkPayvalid');
-
-Route::any('/checkPayvalid', 'Payment\PaymentController@checkPayvalid');
 Route::get('/Checkpaymentauth/{id}/{type}', 'Payment\PaymentController@Checkpaymentauth');
 Route::any('/PayMethod/{id}/{type}', 'Payment\PaymentController@PayMethod');
 Route::any('/CheckCountattribute/{id}/{attribute}', 'Payment\PaymentController@CheckCountattribute');
@@ -135,17 +116,22 @@ Route::any('/jobs_candidates', 'HomeController@Candidate_Job');
 Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/MatchingJobs', 'HomeController@MatchingJobs');
+Route::any('/updateimage', 'Candidate\EditCanProfileController@updateimage');
+Route::post('/share','Home\IndexController@share');
+Route::post('/sharejob','Home\IndexController@sharejob');
+Route::post('/sendemailcan','Home\IndexController@sendemail');
+Route::post('/sendemailjob','Home\IndexController@sendemailjob');
+
 //********************************************************* */
 //********************Video chat******************************* */
 Route::get('/videochat', function () {
 	return view('Video.videochat');
 });
 //*************************************************************** */
-Route::post('/registercandidateagency', '\App\Http\Controllers\Auth\AgencyCandidateController@registercandidateagency');
+
 Route::group(['middleware' => 'guest'], function () {
     Route::post('/registeremployer', '\App\Http\Controllers\Auth\RegisterController@emplyReg');
 	Route::post('/registercandidate', '\App\Http\Controllers\Auth\RegisterController@candReg');
-
 	Route::get('/register/type','Auth\RegisterController@empFullRegType');
 	Route::get('/f_register/employeer','Auth\RegisterController@empFullReg');
 	Route::post('/f_reg/employer','Auth\RegisterController@f_reg_emp');
@@ -157,6 +143,108 @@ Route::group(['middleware' => 'guest'], function () {
 	Route::get('/getCities/{id}','CountryController@getCities');
 });
 Auth::routes();
+
+
+/*************************language************************ */
+Route::post('/language-chooser','LanguageController@changelanguage');
+
+Route::post('/language/', array (
+    'before'=>'csrf',
+    'as'=>'/language-chooser',
+    'uses'=>'LanguageController@changelanguage',));
+    
+    
+    
+
+/*************************newadminpanl************************ */
+Route::get('/adminmaster', function () {
+    return view('DashbordAdminPanel.login.login');
+});
+Route::get('/loginadmin', function () {
+    return view('DashbordAdminPanel.login.login');
+});
+
+
+Route::get('/Blogsadmin', '\App\Http\Controllers\DashboardAdmin\Requests\requestcontroller@showBlogsadmin');
+Route::post('/addblog', '\App\Http\Controllers\DashboardAdmin\Requests\requestcontroller@addblog');
+Route::post('/delmulblog', '\App\Http\Controllers\DashboardAdmin\Requests\requestcontroller@delmulblog');
+Route::get('/showBlogsuser', '\App\Http\Controllers\DashboardAdmin\Requests\requestcontroller@showBlogsuser');
+Route::get('/EditBlog/{id}', '\App\Http\Controllers\DashboardAdmin\Requests\requestcontroller@EditBlog');
+Route::post('/updateblog', '\App\Http\Controllers\DashboardAdmin\Requests\requestcontroller@updateblog');
+
+//Skils admin//
+
+Route::get('/skillsadmin', '\App\Http\Controllers\DashboardAdmin\Skills\skillcontroller@index');
+Route::post('/addskill', '\App\Http\Controllers\DashboardAdmin\Skills\skillcontroller@addskill');
+Route::post('/deleteMultipleSkill', '\App\Http\Controllers\DashboardAdmin\Skills\skillcontroller@deleteMultipleSkill');
+Route::get('/ShowEditSkill/{id}', '\App\Http\Controllers\DashboardAdmin\Skills\skillcontroller@ShowEditSkill');
+Route::post('/editskills', '\App\Http\Controllers\DashboardAdmin\Skills\skillcontroller@editskills');
+
+//job admin//
+Route::get('/jobsadmin', '\App\Http\Controllers\DashboardAdmin\Jobslookup\jobcontroller@index');
+Route::post('/addjob', '\App\Http\Controllers\DashboardAdmin\Jobslookup\jobcontroller@addjob');
+Route::post('/deleteMultiplejob', '\App\Http\Controllers\DashboardAdmin\Jobslookup\jobcontroller@deleteMultiplejob');
+Route::get('/ShowEditjob/{id}', '\App\Http\Controllers\DashboardAdmin\Jobslookup\jobcontroller@ShowEditjob');
+Route::post('/editjob', '\App\Http\Controllers\DashboardAdmin\Jobslookup\jobcontroller@editjob');
+
+
+Route::any('/loginadmin', '\App\Http\Controllers\DashboardAdmin\loginController@login');
+//////////******************candidateadmin**************//
+Route::resource('/Candidateadmin', '\App\Http\Controllers\DashboardAdmin\Candidate\CandidateController');
+Route::post('/candidateadminstore', '\App\Http\Controllers\DashboardAdmin\Candidate\CandidateController@candidateadminstore');
+
+Route::any('/candidate/{candidate}/update',  ['as' => 'candidateadminedit', 'uses' => '\App\Http\Controllers\DashboardAdmin\Candidate\CandidateController@candidateadminedit']);
+
+Route::get('/Candidate/{id}/edit', '\App\Http\Controllers\DashboardAdmin\Candidate\CandidateController@updatecandidate');
+Route::any('/deletemultiplecandidate','\App\Http\Controllers\DashboardAdmin\Candidate\CandidateController@deleteMultiple');
+//////////******************Jobadmin**************//
+
+Route::resource('/Jobadmin', '\App\Http\Controllers\DashboardAdmin\Job\JobController');
+
+Route::any('/deletemultiplejobs','\App\Http\Controllers\DashboardAdmin\Job\JobController@deleteMultiplebJobs');
+
+Route::post('/jobadminstore', '\App\Http\Controllers\DashboardAdmin\Job\JobController@jobadminstore');
+
+Route::get('/Job/{id}/edit', '\App\Http\Controllers\DashboardAdmin\Job\JobController@updatejob');
+Route::any('/job/{job}/update',  ['as' => 'jobadminedit', 'uses' => '\App\Http\Controllers\DashboardAdmin\Job\JobController@jobadminedit']);
+
+Route::get('/Job/{id}/show', '\App\Http\Controllers\DashboardAdmin\Job\JobController@showjob');
+
+//////////******************employeradmin**************//
+Route::resource('/Employeradmin', '\App\Http\Controllers\DashboardAdmin\Employer\EmployerController');
+
+Route::any('/deletemultipleemployer','\App\Http\Controllers\DashboardAdmin\Employer\EmployerController@deletemultipleemployer');
+
+Route::post('/employeradminstore', '\App\Http\Controllers\DashboardAdmin\Employer\EmployerController@employeradminstore');
+
+Route::get('/Employer/{id}/edit', '\App\Http\Controllers\DashboardAdmin\Employer\EmployerController@updateemployer');
+Route::any('/Employer/{Employer}/update',  ['as' => 'employeradminedit', 'uses' => '\App\Http\Controllers\DashboardAdmin\Employer\EmployerController@employeradminedit']);
+
+Route::get('/Employer/{id}/show', '\App\Http\Controllers\DashboardAdmin\Employer\EmployerController@showemployer');
+
+
+Route::resource('/PackagesAdmin', '\App\Http\Controllers\DashboardAdmin\Packages\PackagesController');
+Route::get('/Packages/{id}/edit', '\App\Http\Controllers\DashboardAdmin\Packages\PackagesController@updatePackages');
+Route::post('/packagesedit', '\App\Http\Controllers\DashboardAdmin\Packages\PackagesController@packagesedit');
+Route::get('/Delattribute/{attrid}/{packid}', '\App\Http\Controllers\DashboardAdmin\Packages\PackagesController@Delattribute');
+Route::post('/addNewattribute', '\App\Http\Controllers\DashboardAdmin\Packages\PackagesController@addNewattribute');
+Route::post('/updateattrval', '\App\Http\Controllers\DashboardAdmin\Packages\PackagesController@updateattrval');
+Route::post('/updateattrvalyear', '\App\Http\Controllers\DashboardAdmin\Packages\PackagesController@updateattrvalyear');
+Route::get('/updatestatus/{id}', '\App\Http\Controllers\DashboardAdmin\Requests\requestcontroller@updatestatus');
+
+Route::resource('/Storyadmin', '\App\Http\Controllers\DashboardAdmin\SucessStory\SucessStoryController');
+Route::get('/approvalStories', '\App\Http\Controllers\DashboardAdmin\SucessStory\SucessStoryController@updateStory');
+Route::post('/delmulstory', '\App\Http\Controllers\DashboardAdmin\SucessStory\SucessStoryController@deleteMultiple');
+Route::resource('/Requestsadmin', '\App\Http\Controllers\DashboardAdmin\Requests\requestcontroller');
+Route::get('/showedit/{id}', '\App\Http\Controllers\DashboardAdmin\SucessStory\SucessStoryController@edit');
+Route::post('/editsucessstory', '\App\Http\Controllers\DashboardAdmin\SucessStory\SucessStoryController@update');
+
+Route::post('/addEmpStory', '\App\Http\Controllers\DashboardAdmin\SucessStory\SucessStoryController@addEmpStory');
+Route::post('/addCanStory', '\App\Http\Controllers\DashboardAdmin\SucessStory\SucessStoryController@addCanStory');
+
+Route::resource('/Dashboard', '\App\Http\Controllers\DashboardAdmin\Dashboard\DasboardController');
+
+
 /***********************************Admin routes**************************************/
 Route::get('/adminpanel', '\App\Http\Controllers\Dashboard\CandidatesController@showpanel');
 /***employer */
@@ -204,8 +292,8 @@ Route::post('/adminpanel/deleteid/question', 'Dashboard\QuestionController@delet
 Route::resource('/adminpanel/stories', 'Dashboard\SucessStoriesController');
 Route::get('/adminpanel/employer/creates','\App\Http\Controllers\Dashboard\EmployerController@CreateStory');
 Route::post('/adminpanel/employer/story','\App\Http\Controllers\Dashboard\EmployerController@addstorys');
-Route::get('/adminpanel/candidate/create','\App\Http\Controllers\Dashboard\CandidatesController@CreateStory');
-Route::post('/adminpanel/candidate/story','\App\Http\Controllers\Dashboard\CandidatesController@addstorys');
+Route::get('/adminpanel/candidate/create','\App\Http\Controllers\Dashboard\Candidate\CandidatesController@CreateStory');
+Route::post('/adminpanel/candidate/story','\App\Http\Controllers\Dashboard\Candidate\CandidatesController@addstorys');
 Route::post('/adminpanel/story/search', 'Dashboard\SucessStoriesController@search');
 Route::post('/adminpanel/deleteid/story', 'Dashboard\SucessStoriesController@deleteid');
 Route::get('/approvalSuccessStories', '\App\Http\Controllers\Dashboard\EmployerController@updateStory');
@@ -232,8 +320,10 @@ Route::group(['middleware'=>'auth'],function(){
     Route::get('/EmployerSuccessStory/{id}/CreateSuccessStory','HomeController@CreateSuccessStory');
 	Route::post('/SuccessStory/employerstory/{id}','HomeController@SuccessStory');
     /**end stories */
-	Route::post('/company_store', 'Employer\companiesController@store');
+	Route::post('/company_store', 'companiesController@store');
 });
+
+/*************************************************************************/
 /************************************charts of dashboar*************************************/
 Route::get('/showEmpolyerChart','\App\Http\Controllers\Dashboard\Charts\ChartsController@showEmpolyerChart');
 
@@ -241,9 +331,48 @@ Route::get('/showCandidateChart','\App\Http\Controllers\Dashboard\Charts\ChartsC
 
 	Route::any('/CandidateChart','\App\Http\Controllers\Dashboard\Charts\ChartsController@CandidateChart');
 
-	Route::get('/EmpolyerChart','\App\Http\Controllers\Dashboard\Charts\ChartsController@showEmpolyerChart');
+	Route::any('/EmpolyerChart','\App\Http\Controllers\Dashboard\Charts\ChartsController@EmpolyerChart');
 
 /*************************************************************************/
+Route::any('/registercandidateagency', '\App\Http\Controllers\Auth\AgencyCandidateController@registercandidateagency');
+Route::any('/registerwithout', '\App\Http\Controllers\Auth\AgencyCandidateController@registerwithout');
+
+Route::any('/owncandidate', '\App\Http\Controllers\Auth\AgencyCandidateController@owncandidate');
+
+//client
+Route::any('/sharedClient', '\App\Http\Controllers\Client\ClientController@SharedClient');
+Route::any('/clients', '\App\Http\Controllers\Client\ClientController@clientShow');
+Route::any('/addNewclient', '\App\Http\Controllers\Client\ClientController@clientStore');
+Route::any('/updatestatusclient', '\App\Http\Controllers\Client\ClientController@updatestatusclient');
+Route::any('/clientcontroll/{clientid}', '\App\Http\Controllers\Client\ClientController@clientcontroll');
+Route::any('/updatestatusagency', '\App\Http\Controllers\Client\ClientController@updatestatusagency');
+Route::any('/Candiateclient', '\App\Http\Controllers\Client\ClientController@Candiateclient');
+Route::any('/deletemultipleclient', '\App\Http\Controllers\Client\ClientController@deletemultipleclient');
+Route::any('/updatemultipleclientstatus', '\App\Http\Controllers\Client\ClientController@updatemultipleclientstatus');
+Route::any('/Candiateclientshsred', '\App\Http\Controllers\Client\ClientController@Candiateclientshsred');
+Route::any('/deletemultiplesharedclient', '\App\Http\Controllers\Client\ClientController@deletemultiplesharedclient');
+Route::any('/updatemultipleclientstatusshared', '\App\Http\Controllers\Client\ClientController@updatemultipleclientstatusshared');
+Route::any('/deletemultipleCandidatebyagency', '\App\Http\Controllers\Client\ClientController@deletemultipleCandidatebyagency');
+
+Route::any('/yourfavouritejobs', '\App\Http\Controllers\Jobs\JobPostController@yourfavouritejobs');
+Route::any('/yourappliedjobs', '\App\Http\Controllers\Jobs\JobPostController@yourappliedjobs');
+Route::any('/applyWithoutRegestration/{id}', '\App\Http\Controllers\Jobs\JobPostController@applyWithoutRegestration');
+
+Route::any('/favouritecan', '\App\Http\Controllers\Jobs\JobPostController@favouritecan');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

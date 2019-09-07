@@ -1,9 +1,11 @@
 @extends('Layout.app')
+
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-<script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>  
+<script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script> 
+
 <script type="text/javascript" src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAm3O5N1fP52tnpdSqPt71joqjd9xOkcek"></script>
+ <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAm3O5N1fP52tnpdSqPt71joqjd9xOkcek"></script> 
 
 <script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
     <script src="https://cdn.webrtc-experiment.com/gif-recorder.js"></script>
@@ -161,7 +163,7 @@
   <label for="file-upload" class="custom-file-upload">
     <a  class="fas fa-pencil-alt" ></a> 
 </label>
-<input  name="imageProfile"  id="file-upload" type="file"/> <input name='userId' type='hidden' id ="canid" value="{{$CandidateInfo->id}}" />
+<input  name="imageProfile"  id="file-upload" type="file"/> <input name='userId' type='hidden' id ="canid" value="{{\Auth::user()->id}}" />
 
 
 
@@ -192,6 +194,15 @@
               <div class="pointsnamber"> <i class="fas fa-trophy"></i>
                 <p>you have <span>{{$CandidateInfo->coins}}</span> points</p>
               </div>
+              
+              
+              
+                   <div class="pointsnamber"> 
+                <p>your keyword<br> <span>{{$CandidateInfo->keyword}}</span></p>
+              </div>
+              
+              
+              
               <!--pointsnamber--> 
             </div>
             <!--col-sm-12-->
@@ -254,15 +265,31 @@
         <div class="inner-aboutus">
           <div class="currencytext resultstext">
             <h2>recommended jobs</h2>
-            <a href="/EditCandidate/{{(\Auth::user()->id)}}" class="prefrnces">edit job prefrnces <i class="fas fa-pencil-alt"></i></a> </div>
+<a href="/yourfavouritejobs"  class="largeredbtn" style="margin-right: 20px;float:right">Favourite Jobs <i class="fas fa-heart"></i></a>
+
+<a href="/yourappliedjobs"  class="largeredbtn" style="margin-right: 20px;float:right">Applied Jobs <i class="fas fa-thumbs-up"></i></a> 
+
+<a href="/EditCandidate/{{(\Auth::user()->id)}}"  class="largeredbtn" style="margin-right: 20px;float:right">Edit Profile<i class="fas fa-pencil-alt"></i></a> 
+
+
+           
+
+
+<div class="col-md-4">
+</div>
+
+ 
+
+
           <!--resultstext-->
           
           <div class="row">
             <div class="col-sm-8 leftdshbord">
               <div class="row">
-                 @for($i=0;$i < 6;$i++) 
+                 @for($i=0;$i < $count;$i++) 
                 <div class="col-sm-6 company com-dashboard">
                   <div class="ineercompany" style=" height:40%;"> 
+
                     <div class="tidiv"> <img src="images/car1.jpg"> <span> {{$RecommandJobs[$i]->job_for}}</span></div>
                     <!--tidiv-->
                     
@@ -584,7 +611,49 @@
     </div>
   </div>
 </div>
+<div id="myModal7" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header"> Update your Profile
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="col-md-12" style="margin-top:10px;text-align:center">
+      <span> What you did is perfect so far!</span>
+      </div>
+      <div class="col-md-12" style="margin-top:10px;text-align:center">
+      <span>Please let your employer know you your skills to hire you NOW! 
+       </span>
+      </div>
+      <div class="col-md-12" style="margin-top:10px;text-align:center">
+      <span>No of jobs  matched 
+       </span>
+       <br>
+       <strong style="font-size: xx-large;color: red;">{{$popo}}</strong>
+      </div>
+      <div class="textbox" id="v1">
+      <div class="text-only">profile strength: <span>
+      {{$CandidateInfo->coins/2*100/100}}%</span></div>
+              <!--text-only-->
+              <div class="progress">
+                <div class="progress-bar" style="width: {{$CandidateInfo->coins/2*100/100}}%;"></div>
+              </div>
+              
+              <div class="col-md-12" style="margin-top:10px;text-align:center">
+             <center>
+              <a href="/EditCandidate/{{(\Auth::user()->id)}}"  class="largeredbtn" style="margin-top: 20px;
+    margin-right: 20px;
+    float: inherit;">Complete your Profile</a> 
+<center>
 
+      </div>
+
+              
+      </div>
+      <!--textbox--> 
+      
+    </div>
+  </div>
+</div>
 
 
 <div id="record_video" class="modal fade record_video stream" role="dialog">
@@ -655,11 +724,26 @@
 
 
 @endsection
-@section('scripts')
 <script type="text/javascript" src="/js/slick.min.js"></script>
+
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+<script type="text/javascript" >
+$(window).load(function()
+{
+    console.log("FFF",{{$CandidateInfo->coins/2*100/100}});
+  if({{$CandidateInfo->coins/2*100/100}}<100)
+  {
+    $('#myModal7').modal('show');
+  }
+
+     
+   
+});
+</script>
+@section('scripts')
+
     <script>
-    
+
 'use strict';
     $(window).on('hashchange', function() {
         if (window.location.hash) {
@@ -672,6 +756,10 @@
         }
     });
     $(document).ready(function() {
+
+
+
+
         $(document).on('click', '.pagination a', function (e) {
           getJobs($(this).attr('href').split('page=')[1]);
             e.preventDefault();
@@ -990,25 +1078,7 @@ var recorder = new window.MediaRecorder(stream);
 <script>
 
 
-$('.your-stud').slick({
-dots: true,
-infinite: true,
-speed: 2000,
-slidesToShow:1,
-slidesToScroll: 1,
-autoplay: true,
-autoplaySpeed: 3000,
-responsive: [
-{
-breakpoint: 550,
-settings: {
-slidesToShow: 1,
-slidesToScroll: 1
-}
-},
 
-]
-});
 
   var searchtype = $('#search_type').val();
   if(searchtype == "")
@@ -1033,33 +1103,59 @@ $('.select_type').on('click',function(){
 
 
 var map;
+
  $(document).ready(function(){
 
+
+    
+   
 
      $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+    $("#file-upload").change(function () {
 
+      
+      readURL(this);
+var id=  $("#canid").val();
+var images= this.files[0]; 
+
+     var fd = new FormData();
+  fd.append('id', id);
+  fd.append('images',images);
+var dataString = "id="+id+"&images="+images;
+          $.ajax({
+          url: '/updateimage',
+           type: "POST",
+                  contentType: false, // Not to set any content header
+                  processData: false, // Not to process data
+                  data: fd,
+   
+          
+     
+  });
+
+  });
+    var lat = {!!json_encode($CandidateInfo->country->Lat)!!};
+   
+   var lang = {!!json_encode($CandidateInfo->country->Lnag)!!};
+      console.log(lat,lang);
+     
+          map = new google.maps.Map(document.getElementById('map'), {
+          
+            center:new google.maps.LatLng(lat,lang),
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            zoom: 3
+          });
+     ajaxCall();
 document.getElementById('get_file').onclick = function() {
     document.getElementById('my_file').click();
 };
 document.getElementById('get_file2').onclick = function() {
     document.getElementById('my_file2').click();
 };
-
-
-
-
-
-
-
-
-
-
-
-
 
 $('#my_file').change(function (e) {
     var myFile = $('#my_file').prop('files');
@@ -1119,55 +1215,8 @@ var video=myFile[0];
         }
     }
 
-    $("#file-upload").change(function () {
-      
-        readURL(this);
- var id=  $("#canid").val();
- var images= this.files[0]; 
-  
-       var fd = new FormData();
-    fd.append('id', id);
-    fd.append('images',images);
-var dataString = "id="+id+"&images="+images;
-            $.ajax({
-            url: '/updateimage',
-             type: "POST",
-                    contentType: false, // Not to set any content header
-                    processData: false, // Not to process data
-                    data: fd,
-     
-            
-       
-    });
 
-    });
    
-
-      var lat = {!!json_encode($CandidateInfo->country->Lat)!!};
-   
-       var lang = {!!json_encode($CandidateInfo->country->Lnag)!!};
-          console.log(lat,lang);
-         
-              map = new google.maps.Map(document.getElementById('map'), {
-              
-                center:new google.maps.LatLng(lat,lang),
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                zoom: 6
-              });
-         
-      
-       
-
-
-      
-
-         ajaxCall();
-
-
-
-
-
-
 
 
   });
@@ -1177,8 +1226,7 @@ var dataString = "id="+id+"&images="+images;
 
 <script>
 
- 
-        var markerArr = new Array();
+var markerArr = new Array();
 function clearOverlays() {
     if (markerArr) {
       for (i in markerArr) {
@@ -1313,6 +1361,7 @@ function ajaxCall() {
 </script>
 
 <Script>
+
 function ShowVideo($id,$type)
 {
   
@@ -1327,8 +1376,6 @@ $("#v1").html('<video style="text-align: center;style="margin: 5% 5% 5% 5%;width
 
 function Gotopagation()
 {
-  console.log("g g ");
-
 
   $.ajax({
     type: "POST", 

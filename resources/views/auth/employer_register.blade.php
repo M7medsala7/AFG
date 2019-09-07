@@ -1,7 +1,7 @@
 @extends('Layout.app')
 <style>
   .select2-selection__rendered{
-    background: rgb(0, 1, 1);
+   
     border: 1px solid rgba(115, 115, 115, 0.48)!important;
     /* color: #fff; */
     float: left;
@@ -19,7 +19,8 @@
   {
     height: 0px!important;
   }
-  .select2-container--default .select2-selection--single{    background-color: 0!important;border: 0!important}
+  .select2-container--default .select2-selection--single{  
+  background-color: white!important;border: white!important}
   #step-2{
     display:none;
   }
@@ -39,7 +40,7 @@
       </ul>
       <!--tabssteps-->
       
-      <form  method="POST" action="/registeremployer" class="formlogin" >
+      <form  method="POST" action="/registeremployer" class="formlogin" enctype="multipart/form-data" id="emplyReg" >
             {{csrf_field()}}
         <div class="tab-content">
           <div id="step-1">
@@ -71,7 +72,7 @@
               <div class="divwits">
                 <div class="row">
                   <div class="col-sm-4 binputs">
-                    <input type="number" name="min_salary" class="form-control requirments" placeholder="from " onblur="processForm(this.form)">
+                    <input type="number" name="min_salary"   class="form-control requirments" placeholder="from" step="any" onblur="processForm(this.form)">
                   </div>
                   <div class="col-sm-4 binputs">
                     <input type="number" name="max_salary" class="form-control requirments" placeholder="to" onblur="processForm(this.form)">
@@ -157,7 +158,7 @@
                   <span class="label-text">company</span> </label>
                 <label class="col-sm-3 airports">
                   <input type="radio" value="Agency" name="job_for" onchange="changeName(3)" onblur="processForm(this.form)">
-                  <span class="label-text">agency</span> </label>
+                  <span class="label-text">Agency</span> </label>
               </div>
             </div>
             <!--divwits-->
@@ -184,6 +185,14 @@
               <!--<label class="desired">password</label>-->
               <input type="password" name="password" class="form-control requirments" placeholder="password" onblur="processForm(this.form)">
             </div>
+
+               <div  class="divwits ">
+                  <div class="input-group input-file" name="logo">
+                    <input type="text" class="form-control requirments"  placeholder='image...'  />
+                    <span class="input-group-btn">
+                    <button class="btn btn-default btn-choose largeredbtn brows" type="button" onblur="processForm(this.form)">brows</button>
+                    </span> </div>
+                </div>
             <!--divwits-->
             
             <div class="divwits">
@@ -233,7 +242,13 @@
  
 </section>
 <!--section-->
-  
+  <div class="modal fade" id="overlay">
+  <div class="modal-dialog">
+      <div class="modal-content dal-conte"> <i class="fas fa-check-circle"></i>
+      
+    </div>
+  </div>
+</div>
 @endsection
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
@@ -241,6 +256,55 @@
 <script type="text/javascript" src="/vendor/jsvalidation/js/jsvalidation.js"></script>
 <script src="/dist/jquery.validate.js"></script>
 
+
+   <script >
+
+  $.ajaxSetup({
+        headers:{
+             'X-CSRF-Token': $('input[name="_token"]').val()
+        }
+    });
+   $(document).on('submit','#emplyReg',function(ev) {
+    // submit the form
+        ev.preventDefault();
+var job=$('#job_id').find(":selected").val(); 
+
+
+console.log(job);
+    $.ajax({
+      url: '/congrats',
+        type: 'POST',
+          data:{'job':job},
+
+  
+           success:function(response)
+            {
+                            
+      $('#overlay').find('.modal-content').append(response);
+          
+         
+             
+        }
+   });
+    $('#overlay').modal('show');
+
+setTimeout(function() {
+ 
+     $('#overlay').modal('hide');
+
+          document.getElementById('emplyReg').submit();
+
+}, 7000);
+
+var timeleft = 10;
+var downloadTimer = setInterval(function(){
+  
+  if(timeleft <= 0)
+    clearInterval(downloadTimer);
+},1000);
+
+     });
+</script>
 <script>
 
 
@@ -302,18 +366,11 @@ $.validator.setDefaults({
 </script>
 
 
-<script>
 
-   $(document).on('submit','#emplyReg',function(ev) {
-    // submit the form
-        ev.preventDefault();
 
-    $('#main_section').css('diplay','none');
-     $.get("/congrats", function(data, status){
-      $('#congrats').append(data);
-     });
-   });
-   </script>
+
+
+   
     
     <script>
     // }

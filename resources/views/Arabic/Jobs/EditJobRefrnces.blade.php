@@ -12,7 +12,7 @@
 
 <section class="dashboard candidate-pro">
 <section style="text-align:center;height:60px;width:84%;background-color:#F5F5F5;margin-left:8%;margin-top:20px;">
-  <h1 ><span style="color:#6495ED;">Note:</span>if you forget anything or want to change some information you can <a href="#" style="color:#6495ED;">edite </a>your profile so easy  </h1>
+  <h1 ><span style="color:#6495ED;">Note:</span>if you forget anything or want to change some information you can <a href="{{url('/full_register/candidate/'.$candidate->id.'/edit')}}" style="color:#6495ED;">edite </a>your profile so easy  </h1>
 </section>
   <div class="container">
     <div class="row">
@@ -148,25 +148,14 @@
           
           <div class="row botboxs" >
             <h2  style="float:left;">{{($candidate->CanInfo->descripe_yourself)?$candidate->CanInfo->descripe_yourself:"No Description"}}</h2>
-       <button type="button"  style="float:left;border-radius: 20px;margin-left:80%;width:85px;margin-top:-20px;background-color:#1E90FF;color:white;border-color:white;"  > <a href="{{url('/full_register/candidate/'.$candidate->id.'/edit')}}">  Edite </a>  </button>
+  
           </div>
           <!--resultstext--> 
           
         </div>
         <!--inner-aboutus--> 
         
-        <!--    <div class="inner-aboutus topmergline successwork">
-       
-          
-          <h4 class="textcandidate information">personal information</h4>
-          <ul class="informationname">
-            <li> <strong>age :</strong> 30 y.o</li>
-            <li> <strong>nationality :</strong> egyptian</li>
-            <li> <strong>gender :</strong> male</li>
-            <li> <strong>visa status :</strong> avaliable</li>
-          </ul>
-           
-        </div>--> 
+
         
         <!--inner-aboutus-->
         
@@ -174,7 +163,7 @@
         <div class="inner-aboutus topmergline">
           <div class="currencytext resultstext">
             <h2>skills</h2>
-            <button type="button"  style="border-radius: 20px;margin-top:-13%;margin-left:75%;width:85px;background-color:white;border-color:#1E90FF;"  >  <a href="{{url('/full_register/candidate/'.$candidate->id.'/edit')}}">  Edite </a>  </button>
+        
            
           </div>
           <!--resultstext-->
@@ -195,7 +184,7 @@
           <div class="language">
           <div>
             <h4 class="textcandidate information" > language</h4>
-            <button type="button"  style="border-radius: 20px;margin-top:-60%;margin-left:82%;width:85px;background-color:white;border-color:#1E90FF;"  > <a href="{{url('/full_register/candidate/'.$candidate->id.'/edit')}}">  Edite </a>  </button>
+          
            </div>
             <div class="languagelink">
               @if($candidate->languages)
@@ -225,7 +214,7 @@
               <div class="col-sm-2 education">
               <div >
               <h4 class="textcandidate information" >education :</h4>
-              <button type="button"  style="border-radius: 20px;float:left;margin-top:-20%;margin-left:590px;width:85px;background-color:white;border-color:#1E90FF;"  > <a href="{{url('/full_register/candidate/'.$candidate->id.'/edit')}}">  Edite </a> </button>
+            
              
 
                 </div>
@@ -243,7 +232,7 @@
             <div class="row">
               <div class="col-sm-3 education">
                 <h4 class="textcandidate information">work experience : </h4>
-                <button type="button"  style="border-radius: 20px;margin-top:-20%;float:left;margin-left:590px;width:85px;background-color:white;border-color:#1E90FF;"  > <a href="{{url('/full_register/candidate/'.$candidate->id.'/edit')}}">  Edite </a> </button>
+               
              
 
               </div>

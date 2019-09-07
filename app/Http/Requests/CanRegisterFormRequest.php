@@ -14,7 +14,7 @@ class CanRegisterFormRequest extends FormRequest
     {
         return [
         	  
-            'job_id' => 'required',
+         'job_id' => 'required',
             'industry_id'=>'required',
             'name'=>'required',
             'gender' =>'required',

@@ -8,7 +8,8 @@
 
 <style>
   .select2-selection__rendered{
-    background: rgb(0, 1, 1);
+background: #f4f4f4;
+    
     border: 1px solid rgba(115, 115, 115, 0.48)!important;
     /* color: #fff; */
     float: left;
@@ -19,7 +20,7 @@
     box-shadow: none;
     border: 2px solid #d7d7d7;
     margin-top: 10px;
-        color: white!important;
+            color: rgba(12,12,12,0.8)!important;
   }
   .select2-container--default .select2-selection--single .select2-selection__arrow {
     height: 57px!important;}
@@ -176,15 +177,15 @@
       </ul>
       <!--tabssteps-->
       
-      <form  action="/registercandidate" method="POST" class="formlogin" enctype="multipart/form-data">
+      <form  action="/registercandidate" method="POST" class="formlogin" enctype="multipart/form-data" id="registercandidate">
         {{csrf_field()}}
         <div class="tab-content">
           <div id="step-1">
           <div role="tabpanel" class="tab-pane tabs-inner active" >
             <div class="divwits"> 
               <!--          <label class="desired">desired job</label>-->
-              <select class="form-control requirments" name="job_id" id="job_id" required="" onblur="processForm(this.form)" >
-                   <option selected="" disabled="disabled" >desired job</option>
+              <select class="form-control requirments" name="job_id" id="job_id" required=""  >
+                   <option selected="" disabled="disabled" onblur="processForm(this.form)">desired job</option>
                     @foreach(\App\Job::all() as $job)
                       <option value="{{$job->id}}">{{$job->name}}</option>
                     @endforeach
@@ -335,7 +336,7 @@
                 </div>
                 <div class="col-sm-3  stepotw"> <a href="#" id="step-2-back" class="largeredbtn back"> <i class="fas fa-long-arrow-alt-left"></i> back</a> </div>
                 <div class="col-sm-3  stepotw">
-                  <button type="submit" data-toggle="modal" data-target="#myModa3" class="largeredbtn"> finish <i class="fas fa-check"></i></button>
+                  <button   class="largeredbtn finish" > finish <i class="fas fa-check"></i></button>
                 </div>
               </div>
               <!--row--> 
@@ -555,6 +556,14 @@
 
 
 @endsection
+
+<div class="modal fade" id="overlay">
+  <div class="modal-dialog">
+      <div class="modal-content dal-conte"> <i class="fas fa-check-circle"></i>
+      
+    </div>
+  </div>
+</div>
 @section('scripts')
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
@@ -564,6 +573,54 @@
   $('.file_input').on('click',function(){
     $('#video_file').click();
   });
+</script>
+<script >
+
+  $.ajaxSetup({
+        headers:{
+             'X-CSRF-Token': $('input[name="_token"]').val()
+        }
+    });
+   $(document).on('submit','#registercandidate',function(ev) {
+ 
+        ev.preventDefault();
+var job=$('#job_id').find(":selected").val(); 
+
+
+console.log(job);
+    $.ajax({
+      url: '/congratscan',
+        type: 'POST',
+          data:{'job':job},
+
+  
+           success:function(response)
+            {
+             console.log(response);             
+      $('#overlay').find('.modal-content').append(response);
+          
+         
+             
+        }
+   });
+    $('#overlay').modal('show');
+
+setTimeout(function() {
+ 
+     $('#overlay').modal('hide');
+
+          document.getElementById('registercandidate').submit();
+
+}, 7000);
+
+var timeleft = 10;
+var downloadTimer = setInterval(function(){
+  
+  if(timeleft <= 0)
+    clearInterval(downloadTimer);
+},1000);
+
+     });
 </script>
 <script type="text/javascript">
     $(document).ready(function(){

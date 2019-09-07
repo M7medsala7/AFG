@@ -1,9 +1,37 @@
 @extends('Layout.app')
+
+<script src="//cdn.ckeditor.com/4.11.4/standard/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/12.1.0/classic/ckeditor.js"></script>
+
+<script>
+    tinymce.init({
+        selector: "textarea",
+        theme: "modern",
+        width: 400,
+        height: 250,
+        plugins: [
+             "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
+             "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
+             "save table contextmenu directionality emoticons template paste textcolor"
+       ],
+       content_css: "css/content.css",
+       toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage | forecolor backcolor emoticons", 
+       style_formats: [
+            {title: 'Bold text', inline: 'b'},
+            {title: 'Red text', inline: 'span', styles: {color: '#ff0000'}},
+            {title: 'Red header', block: 'h1', styles: {color: '#ff0000'}},
+            {title: 'Example 1', inline: 'span', classes: 'example1'},
+            {title: 'Example 2', inline: 'span', classes: 'example2'},
+            {title: 'Table styles'},
+            {title: 'Table row 1', selector: 'tr', classes: 'tablerow1'}
+        ]
+    }); 
+</script>
 <style>
   .select2-selection__rendered{
-    background: rgb(0, 1, 1);
+    background: #f4f4f4;;
     border: 1px solid rgba(115, 115, 115, 0.48)!important;
-    /* color: #fff; */
+    color: #000;
     float: left;
     width: 350px;
     height: 40px;
@@ -12,7 +40,7 @@
     box-shadow: none;
     border: 2px solid #d7d7d7;
     margin-top: 10px;
-        color: white!important;
+        color: black!important;
   }
   .select2 select2-container select2-container 
   {
@@ -44,6 +72,10 @@ width:400px;
     width:100%;
 
   }
+
+   #step-2{
+    display:none;
+  }
 </style>
 @section('content')
 <section class="sliderphoto innerphoto" style="background:url(/images/slide5.jpg) fixed center center no-repeat; background-size:cover;">
@@ -55,13 +87,14 @@ width:400px;
   </ul>
   <!--tabssteps-->
   
-  <form  action="/postJob/store" method="post" class="formlogin mergform">
+  <form  action="/postJob/store" method="post"  novalidate class="formlogin mergform" id="formjob">
    {{csrf_field()}}
     <div class="tab-content">
-      <div role="tabpanel" class="tab-pane  nonebac active" id="step-1">
+      <div id="step-1">
+      <div role="tabpanel" class="tab-pane  nonebac active" >
         <div class="headtop nonbord borderbox">
           <div class="stapson active"><span>1</span>
-            <h4 class="personalinfo">post job slide 1</h4>
+            <h4 class="personalinfo">post job step 1</h4>
           </div>
           <div class="rightcealr"> <span class="active"></span> <span></span> <a href="#">clear all</a> </div>
         </div>
@@ -69,23 +102,23 @@ width:400px;
         
         <div class="divwits"> 
           <!--<label class="desired">job title </label>-->
-          	<select class="form-control requirments" name="job_id" id="job_id" required="required" style="width: 90%;">
-          		<option selected="" disabled="disabled">job tilte</option>
-            	@foreach(\App\Job::all() as $job)
-              	<option value="{{$job->id}}">{{$job->name}}</option>
-            	@endforeach
-       	   	</select>
+            <select class="form-control requirments" name="job_id" id="job_id" required="required" style="width: 90%;">
+              <option selected="" disabled="disabled">job tilte</option>
+              @foreach(\App\Job::all() as $job)
+                <option value="{{$job->id}}">{{$job->name}}</option>
+              @endforeach
+            </select>
         </div>
         <!--divwits-->
         
         <div class="divwits"> 
           <!--<label class="desired">industry</label>-->
-          	<select class="form-control requirments" name="industry_id" id="industry_id" required="" style="width: 90%;">
-	          <option selected="" disabled="disabled">desired industry</option>
-	            @foreach(\App\Industry::all() as $ind)
-	              <option value="{{$ind->id}}">{{$ind->name}}</option>
-	            @endforeach
-	        </select>
+            <select class="form-control requirments" name="industry_id" id="industry_id" required="" style="width: 90%;">
+            <option selected="" disabled="disabled">desired industry</option>
+              @foreach(\App\Industry::all() as $ind)
+                <option value="{{$ind->id}}">{{$ind->name}}</option>
+              @endforeach
+          </select>
         </div>
         <!--divwits-->
         
@@ -97,7 +130,7 @@ width:400px;
         
         <div class="divwits"> 
           <!--<label class="desired">loacthon</label>-->
-          	<select class="form-control requirments" id="country_id" name="country_id" required="" style="width: 90%;">
+            <select class="form-control requirments" id="country_id" name="country_id" required="" style="width: 90%;">
               <option selected="" disabled="disabled">job location</option>
                 @foreach(\App\Country::all() as $country)
                   <option value="{{$country->id}}">{{$country->name}}</option>
@@ -108,14 +141,15 @@ width:400px;
         
         <div class="divwits">
           <label class="desired looking merlab">preferd jender</label>
-          <div class="row">
-            <label class="col-sm-4 airports cololabox">
-              <input type="radio" value="male" name="prefered_gender">
-              <span class="label-text">male</span> </label>
-            <label class="col-sm-4 airports cololabox">
-              <input type="radio" name="gender" value="female">
-              <span class="label-text">female</span> </label>
-          </div>
+         <div class="row">
+                  <div class="col-sm-4 airports availability"> gender</div>
+                      <label class="col-sm-4 airports">
+                      <input type="radio" name="prefered_gender" value="0" checked="">
+                      <span class="label-text" >male</span> </label>
+                      <label class="col-sm-4 airports">
+                      <input type="radio" name="prefered_gender" value="1">
+                      <span class="label-text" >female</span> </label>
+                  </div>
           <!--row--> 
         </div>
         
@@ -123,12 +157,12 @@ width:400px;
         
         <div class="divwits">
           <div class="row">
-            <div class="col-sm-6 botrg">
+          <!--   <div class="col-sm-6 botrg">
               <div class="linksing textcand-1">
                 <p>10</p>
                 <span>earn points <i class="fas fa-trophy"></i><br/>
                 with each step</span> </div>
-            </div>
+            </div> -->
             <div class="col-sm-3 cand-2 floting"> <a href="#" id="step-1-next" class="largeredbtn">continue</a> </div>
           </div>
           <!--row--> 
@@ -138,19 +172,26 @@ width:400px;
         
       </div>
       <!--tab-pane-->
-      
-      <div role="tabpanel" class="tab-pane nonebac" id="step-2">
+      </div>
+      <div id="step-2">
+      <div role="tabpanel" class="tab-pane nonebac" >
         <div class="headtop nonbord borderbox">
           <div class="stapson active"><span>2</span>
-            <h4 class="personalinfo">post job slide 2</h4>
+            <h4 class="personalinfo">post job step 2</h4>
           </div>
           <div class="rightcealr"> <span class="active"></span> <span class="active"></span> <a href="#">clear all</a> </div>
         </div>
         <!--borderbox-->
-        
+<!--        <div id="editor">-->
+<!--    <p>This is the editor content.</p>-->
+<!--</div>-->
         <div class="divwits equirment"> 
           <!--  <label class="desired"> job description</label>-->
-          <textarea class="form-control requirments" name="job_descripton" placeholder="job description... " style="margin:0;"></textarea>
+      
+          
+          
+          <textarea name="job_descripton" class="ckeditor" id="test"  required>job description... </textarea>
+          
         </div>
         <!--divwits-->
         
@@ -173,12 +214,11 @@ width:400px;
         <div class="divwits">
           <div class="row">
             <div class="col-md-12 col-sm-12 ">
-              	<select class="form-control chosen-select types" name="language_ids[]" id="language_id" multiple="multiple" required="" style="width: 90%;">
-                	<option selected=""> languages</option>
-                	@foreach(\App\Language::all() as $lang)
-                  		<option value="{{$lang->id}}">{{$lang->name}}</option>
-                	@endforeach
-             	</select>
+        <select class="form-control chosen-select types" data-placeholder=" Language..." name="language_ids[]" id="language_id" multiple="multiple" required="" style="width: 100%;" >
+               @foreach(\App\Language::all() as $lang)
+                 <option value="{{$lang->id}}">{{$lang->name}}</option>
+               @endforeach
+             </select>
             </div>
           <!--   <div class="col-sm-6 airports icon-star"> <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i class="fas fa-star"></i></div> -->
           </div>
@@ -203,26 +243,24 @@ width:400px;
         
 
     <div class="divwits" style="margin-bottom: 15px;margin-top: 20px;">
-            <select class="form-control chosen-select types" name="skill_ids[]" multiple="multiple" required="" style="width: 90%;">
-              <option selected=""> skills</option>
-                        @foreach(\App\Skills::all() as $skill)
-                      <option value="{{$skill->id}}">{{$skill->name}}</option>
+            <select class="form-control requirments chosen-select types" data-placeholder="a Skill.." name="skill_ids[]" id="skill_ids" multiple="multiple" required="" style="width: 90%;" >
+                    @foreach(\App\Skills::all() as $skill)
+                    <option value="{{$skill->id}}">{{$skill->name}}</option>
                     @endforeach
-                  </select>
-            </select>
+                </select>
           </div>
 
 
       
-        <div class="linksing"> <a href="#" class="skiplink">if you wwant to coutenue please click here to answer the questions if not click submit </a> </div>
+        <div class="linksing"> <a href="#" class="skiplink">if you want to coutenue please click here to answer the questions if not click submit </a> </div>
         <div class="divwits">
           <div class="row">
-            <div class="col-sm-6 botrg">
+          <!--   <div class="col-sm-6 botrg">
               <div class="linksing textcand-1">
                 <p>20</p>
                 <span>earn points <i class="fas fa-trophy"></i><br>
                 with each step</span> </div>
-            </div>
+            </div> -->
             <div class="col-sm-3 cand-2">
               <button type="button" id="step-1-back"  class="largeredbtn back"> back</button>
             </div>
@@ -234,7 +272,7 @@ width:400px;
           
         </div>
         <!--divwits--> 
-        
+        </div>
       </div>
       <!--tab-pane--> 
       
@@ -242,29 +280,61 @@ width:400px;
     
     <!--tab-pane-->
     
-    </div>
-    <!--tab-content-->
     
+
+    <!--tab-content-->
+     {!! JsValidator::formRequest('App\Http\Requests\AddPostJobFormRequest', '.formlogin'); !!}
   </form>
   </div>
   <!--container--> 
-  
+ 
 </section>
 <!--section-->
 
 @endsection
+
 @section('scripts')
-<script>
-  $('.clear_all').on('click',function(){
-    document.getElementById('full_cand_reg').reset();
-  });
-</script>
+<script>CKEDITOR.replace('#test');
+
+CKEDITOR.stylesSet.add('my_styles',
+    [
+// Block-level styles
+        {name: 'Blue Title', element: 'h2', styles: { 'color': 'Blue'} },
+        { name: 'Red Title', element: 'h3', styles: { 'color': 'Red'} },
+
+// Inline styles
+        {name: 'CSS Style', element: 'span', attributes: { 'class': 'my_style'} },
+        { name: 'Marker: Yellow', element: 'span', styles: { 'background-color': 'Yellow'} }
+    ]);
+
+CKEDITOR.editorConfig = function (config) 
+{
+    config.toolbar = 'MyToolbar';
+
+    config.toolbar_MyToolbar =
+   [
+      { name: 'document', items: ['NewPage', 'Preview'] },
+      { name: 'clipboard', items: ['Cut', 'Copy', 'PasteText', '-', 'Undo', 'Redo'] },
+      { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll'] },
+      { name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar']
+      },
+                '/',
+      { name: 'styles', items: ['Styles', 'Format'] },
+      { name: 'basicstyles', items: ['Bold', 'Italic', '-', 'RemoveFormat'] },
+      { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+      { name: 'links', items: ['Link', 'Unlink', 'Anchor'] }
+   ];
+
+  
+    config.stylesSet = 'my_styles';
+}; 
+
+</script> 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-<script>
-  $('.file_input').on('click',function(){
-    $('#video_file').click();
-  });
-</script>
+<script type="text/javascript" src="/vendor/jsvalidation/js/jsvalidation.js"></script>
+<script type="text/javascript" src="/dist/jquery.validate.js"></script>
+
+
 
     <script>
 
@@ -292,5 +362,36 @@ $(document).ready(function () {
  });
 
 
+</script>
+
+
+<script type="text/javascript">
+    $(document).ready(function(){
+
+ $("#step-1-next").click(function(){
+
+
+ var form = $("#formjob");
+ console.log(form.valid());
+    if (form.valid() == true){
+      
+      current_fs = $('#step-1');
+      next_fs = $('#step-2');
+      next_fs.show(); 
+      current_fs.hide();
+    }
+  });
+
+
+ 
+        $('#step-1-back').click(function(){
+            current_fs = $('#step-2');
+            next_fs = $('#step-1');
+            next_fs.show(); 
+            current_fs.hide();
+        });
+
+       
+    });
 </script>
 @endsection

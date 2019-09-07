@@ -20,7 +20,7 @@ class RegisterFormRequest extends FormRequest
             'job_descripton'=>'required',
             'name'=>'required',
             'phone'=>'required|numeric',
-            
+            'num_of_candidates'=>'required',
             'email'=>'required|email|unique:users',
             'password'=>'required',
         ];

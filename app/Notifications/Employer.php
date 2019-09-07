@@ -26,27 +26,17 @@ class Employer extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'job' => $this->emp,
+            'emp' => $this->emp,
             'user'=>$notifiable,
             'transaction_time' => Carbon::now(),
         ];
          
         
     }
+
+  
     
-    public function toMail($notifiable)
  
-    {
-  
-        return (new MailMessage)
-  
-                    ->line('new employer is added.')
-  
-                    ->action('Notification Action', url('/'))
-  
-                    ->line('Thank you for using our application!');
-  
-    }
 
     /**
      * Get the array representation of the notification.

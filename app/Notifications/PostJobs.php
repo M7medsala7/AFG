@@ -21,7 +21,7 @@ class PostJobs extends Notification
    
     public function via($notifiable)
     {
-        return ['database','mail'];
+        return ['database'];
     }
 
  
@@ -36,19 +36,7 @@ class PostJobs extends Notification
         
     }
     
-   public function toMail($notifiable)
  
-   {
- 
-       return (new MailMessage)
- 
-                   ->line('new job is added.')
- 
-                   ->action('Notification Action', url('/'))
- 
-                   ->line('Thank you for using our application!');
- 
-   }
 
     /**
      * Get the array representation of the notification.

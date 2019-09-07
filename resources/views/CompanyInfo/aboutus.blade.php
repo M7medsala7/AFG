@@ -1,7 +1,11 @@
 @extends('Layout.app')
 @section('content')
 <!--header-->
-
+@if(Session::get('locale')=="Ar"|| Session::get('locale')=="ar")
+{{App::setLocale('ar')}}
+@else
+{{App::setLocale('en')}}
+@endif
 <section class="aboutus">
   <div class="container">
     <div class="inner-aboutus">
@@ -25,7 +29,7 @@ Maid  & Helper  is a digital world where you search and have free access not onl
           <!--textabut-->
           
           <div class="textabut">
-            <h2 class="textcandidate">looking for a job</h2>
+            <h2 class="textcandidate"> {{trans('app.looking_for_a_job')}}</h2>
             <p>If you are searching for a new career opportunity, 
             you can <a href="#" style="text-decoration:none">search open vacancies and jobs.</a> 
             you can also <a href="#" style="text-decoration:none"> signup here</a> to be alerted of new jobs by email.
@@ -36,14 +40,14 @@ Maid  & Helper  is a digital world where you search and have free access not onl
           <div class="textabut">
             <h2 class="textcandidate">are you a recruiter or employer?</h2>
             <p>If you are currently hiring, and  would like to advertise 
-            your jobs on Wuzzuf.net, please <a href="#" style="text-decoration:none">signup</a> for an employer account 
+            your jobs on Wuzzuf.net, please <a href="#" style="text-decoration:none"> {{trans('app.signup')}}</a> for an employer account 
             and post your jobs right away. </p>
           </div>
           <!--textabut-->
           
           <div class="textabut">
             <h2 class="textcandidate">other inquiries?</h2>
-            <p>if you have any other inquiries please contacts us <a href="/contact">here</a> </p>
+            <p>if you have any other inquiries please contacts us <a href="/contact">  {{trans('app.here')}}</a> </p>
           </div>
           <!--textabut--> 
           

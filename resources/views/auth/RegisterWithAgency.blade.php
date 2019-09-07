@@ -546,7 +546,7 @@ var mediaSource = new MediaSource();
             document.body.appendChild(a);
             // a.click();
 
-            var surl = '/StoreVideo';
+            var surl = '/StoreVideo2';
 
             var xhr = new XMLHttpRequest();
 

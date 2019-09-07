@@ -21,10 +21,17 @@ class requestcontroller extends Controller
        $allrequests= Requests::orderBy('created_at','DESC')->get();
     return view('DashbordAdminPanel.Requests.index',compact('allrequests'));
     }
-    public function showBlogsadmin()
+    public function updatestatus($id)
+    {
+    $updateval=DB::table('allrequests')
+    ->where('id',$id)
+    ->update(['status'=>'Closed']);
+    return redirect('/Requestsadmin');
+    }
+     public function showBlogsadmin()
     {
         $blog=Blog::all();
-        return view('DashbordAdminPanel.Requests.Blog',compact('blog'));
+        return view('DashbordAdminPanel.Requests.blog',compact('blog'));
     }
     public function showBlogsuser()
     {
@@ -101,11 +108,4 @@ class requestcontroller extends Controller
 
 
 
-    public function updatestatus($id)
-    {
-    $updateval=DB::table('allrequests')
-    ->where('id',$id)
-    ->update(['status'=>'Closed']);
-    return redirect('/Requestsadmin');
-    }
 }

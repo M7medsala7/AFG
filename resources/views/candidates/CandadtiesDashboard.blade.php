@@ -12,7 +12,7 @@
 @section('content')
 <style type="text/css">
   
-  input[type="file"] {
+input[type="file"] {
     display: none;
 }
 .custom-file-upload {
@@ -37,12 +37,10 @@
 
          
 
-
-
   <label for="file-upload" class="custom-file-upload">
     <a  class="fas fa-pencil-alt" ></a> 
 </label>
-<input  name="imageProfile"  id="file-upload" type="file"/> <input name='userId' type='hidden' id ="canid" value="{{$CandidateInfo->id}}" />
+<input  name="imageProfile"  id="file-upload" type="file"/> <input name='userId' type='hidden' id ="canid" value="{{\Auth::user()->id}}" />
 
 
 
@@ -77,7 +75,10 @@
             </div>
             <!--col-sm-12-->
             
-        
+       
+              <!--pointsnamber--> 
+            </div>
+            
             <div class="videoprofy"> <a href="#" data-toggle="modal" data-target="#myModal" class="watchvideo"> 
    @if($CandidateInfo->vedio_path != null)
               <video src="{{($CandidateInfo->vedio_path)}}" type="video/{{File::extension($CandidateInfo->vedio_path)}}">< <i class="fas fa-play"></i> </a> 
@@ -128,7 +129,7 @@
         <div class="inner-aboutus">
           <div class="currencytext resultstext">
             <h2>recommended jobs</h2>
-            <a href="/EditCandidate/{{(\Auth::user()->id)}}" class="prefrnces">edit job prefrnces <i class="fas fa-pencil-alt"></i></a> </div>
+          <a href="/EditCandidate/{{(\Auth::user()->id)}}" class="prefrnces">edit job prefrnces <i class="fas fa-pencil-alt"></i></a> </div>
           <!--resultstext-->
           
           <div class="row">

@@ -285,26 +285,33 @@ $totalpoints=$points*5;
       
         }
        
-        \App\Company::create(['name'=>$request['name'],'size'=>'5','country_id'=>$request['country_id'],'lat'=>'0','lang'=>'0','created_by'=>$user->id,'industry_id'=>0]);
+        \App\Company::create(['name'=>$request['name'],'size'=>'5','Country_id'=>$request['country_id'],'lat'=>'0','lang'=>'0','Created_by'=>$user->id,'industry_id'=>0]);
+   if($request->hasFile('logo'))
+        {
+            $logo = $this->saveUploadedFile($request['logo'],$user);
+            $user->logo=$logo;
+            $user->save();
 
+            $logopoint=10;
+        }
 
         $user->notify(new PostJobs($job));     
         //Sending Mail after adding
         $data=array('Email'=>$request['email']);
-        // Mail::send('emails.NewJob', $data, function($message) use ($data) {
-        // $message->to('Social@maidandhelper.com');
-        // $message->subject('new job is added ');
+        Mail::send('emails.NewJob', $data, function($message) use ($data) {
+        $message->to('Social@maidandhelper.com');
+        $message->subject('new job is added ');
 
-        // });
+        });
 
         //Sending Mail after regestration
       
-    //    $data=array('Email'=>$request['email']);
-    //     Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
-    //     $message->to($data['Email']);
-    //    $message->subject('registeration completed');
+       $data=array('Email'=>$request['email']);
+        Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
+        $message->to($data['Email']);
+       $message->subject('registeration completed');
 
-    //   });
+      });
 
         \Auth::loginUsingId($user->id);
 
@@ -392,22 +399,22 @@ $totalpoints=$points*5+$videopoint;
         $user->notify(new Candidate_notification($CandidateInfo));
         //Sending Mail after adding
         $data=array('Email'=>$request['email']);
-        // Mail::send('emails.NewEmployer', $data, function($message) use ($data) {
-        // $message->to('Social@maidandhelper.com');
-        // $message->subject('new user is added ');
+        Mail::send('emails.NewEmployer', $data, function($message) use ($data) {
+        $message->to('Social@maidandhelper.com');
+        $message->subject('new user is added ');
 
-        // });
+        });
 
 
 
 
          //Sending Mail after regestration
-        // $data=array('Email'=>$request['email']);
-        // Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
-        // $message->to($data['Email']);
-        // $message->subject('registeration completed');
+        $data=array('Email'=>$request['email']);
+        Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
+        $message->to($data['Email']);
+        $message->subject('registeration completed');
 
-        // });
+        });
 
         \Auth::loginUsingId($user->id);
         return redirect('/home');
@@ -564,31 +571,40 @@ $citynam->save();
          
         }
        
-          
+         
 
-        \App\Company::create(['name'=>$request['first_name'],'size'=>'5','country_id'=>$countryQueryCityID->id,'lat'=>'0','lang'=>'0','created_by'=>$user->id,'industry_id'=>0]);
+        if($request->hasFile('logo'))
+        {
+            $logo = $this->saveUploadedFile($request['logo'],$user);
+            $user->logo=$logo;
+            $user->save();
+
+            $logopoint=10;
+        }
+
+     \App\Company::create(['name'=>$request['first_name'],'size'=>'5','Country_id'=>$countryQueryCityID->id,'lat'=>'0','lang'=>'0','Created_by'=>$user->id,'industry_id'=>'0']);
+
         // $user->notify(new AddEmployer($emptype));
         //Sending Mail after adding
          $data=array('Email'=>$request['email']);
-         // Mail::send('emails.NewJob', $data, function($message) use ($data) {
-         // $message->to('Social@maidandhelper.com');
-         // $message->subject('new job is added ');
+         Mail::send('emails.NewJob', $data, function($message) use ($data) {
+         $message->to('Social@maidandhelper.com');
+         $message->subject('new job is added ');
  
-       //  });
+        });
  
  
         //Sending Mail after regestration
         $data=array('Email'=>$request['email']);
-        // Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
-        // $message->to($data['Email']);
-        // $message->subject('registeration completed');
+        Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
+        $message->to($data['Email']);
+        $message->subject('registeration completed');
 
-        // });
+        });
 
 
         \Auth::loginUsingId($user->id);
-        return "true";
-        
+         return redirect('/home');     
           }    
     catch(Exception $e) 
         {
@@ -677,7 +693,7 @@ $citynam->save();
             }
             $langpoint=5;
         }
-        if(count($request['skill_ids']))
+        if($request['skill_ids'])
         {
             foreach ($request['skill_ids'] as $key => $skill) {
                 # code...
@@ -708,6 +724,7 @@ $citynam->save();
         'country_id'=>$request['country_id'],
         'gender'=>$request['gender'],
         'martial_status'=>$request['martial_status'],
+        'keyword'=>$request['keyword'],
         'descripe_yourself'=>$request['descripe_yourself'],
         'looking_for_job'=>$request['looking_for_job'],
         'nationality_id'=>$request['nationality_id'],
@@ -750,6 +767,7 @@ $totalpoints=$points*5+$cvgpoint+$logopoint+$edupoint+$skillpoint+$videopoint+$l
             'country_id'=>$request['country_id'],
             'gender'=>$request['gender'],
             'martial_status'=>$request['martial_status'],
+              'keyword'=>$request['keyword'],
             'descripe_yourself'=>$request['descripe_yourself'],
             'looking_for_job'=>$request['looking_for_job'],
             'nationality_id'=>$request['nationality_id'],
@@ -790,19 +808,19 @@ $totalpoints=$points*5+$cvgpoint+$logopoint+$edupoint+$skillpoint+$videopoint+$l
         $user->notify(new Candidate_notification($CandidateInfo));
         //Sending Mail after adding
          $data=array('Email'=>$request['email']);
-        //  Mail::send('emails.NewEmployer', $data, function($message) use ($data) {
-        //  $message->to('Social@maidandhelper.com');
-        //  $message->subject('new user is added ');
+         Mail::send('emails.NewEmployer', $data, function($message) use ($data) {
+         $message->to('Social@maidandhelper.com');
+         $message->subject('new user is added ');
  
-        //  });
+         });
 
          //Sending Mail after regestration
-        //$data=array('Email'=>$request['email']);
-     //Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
-        //$message->to($data['Email']);
-        //$message->subject('registeration completed');
+        $data=array('Email'=>$request['email']);
+     Mail::send('emails.RegestrationSucess', $data, function($message) use ($data) {
+        $message->to($data['Email']);
+        $message->subject('registeration completed');
 
-        //});
+        });
 
         \Auth::loginUsingId($user->id);
         return redirect('/home');

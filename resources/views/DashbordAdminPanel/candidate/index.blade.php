@@ -2,7 +2,9 @@
 
 @section('content')
 
-  	
+  <style type="text/css">
+    
+  </style>	
     
 
    
@@ -50,8 +52,8 @@
                       
                      
 								<div class="form-group">
-								<select data-placeholder="Choose a job..." class="standardSelect" tabindex="1" name="job">
-								<option value=""></option>
+								<select   tabindex="1" name="job" class="job" style="width: 100%">
+							<option selected="" disabled="disabled"  > Choose a Job...</option>
 
 								@foreach(\App\Job::all() as $job)
 								<option value="{{$job->id}}">{{$job->name}}</option>
@@ -61,21 +63,23 @@
 
 
 								<div class="form-group">
-								<select data-placeholder="Choose a Industry..." class="standardSelect" name="industry" >
+								<select  name="industry" class="industry"  style="width: 100%">
 							
-
+<option selected="" disabled="disabled"  > Choose a Industry...</option>
 								@foreach(\App\Industry::all() as $ind)
-								<option value=""></option>
+								
 							<option value="{{$ind->id}}">{{$ind->name}}</option>
 								@endforeach
 								</select>
 								</div>
 
 							<div class="form-group">
-							<select data-placeholder="Choose a Country..." class="standardSelect" tabindex="1" name="country">
-							<option value=""></option>
+							<select  tabindex="1" name="country" class="country" style="width: 100%">
+
+						 <option selected="" disabled="disabled" >Choose A Country ... </option>
 
 							@foreach(\App\Country::all() as $country)
+              
 							<option value="{{$country->id}}" >{{$country->name}}</option>
 							@endforeach
 							</select>
@@ -83,7 +87,15 @@
 							</div>
                     
                        
-                     
+                    <div class="form-group">
+                <select   tabindex="1" name="nationality" class="nationality" style="width: 100%">
+              <option selected="" disabled="disabled"  > Choose a Nationality...</option>
+
+                @foreach(\App\Nationality::all() as $Nationality)
+                <option value="{{$Nationality->id}}">{{$Nationality->name}}</option>
+                @endforeach
+                </select>
+                </div>     
                     
                   </div>
 </fieldset>  <!-- end Desired Job -->
@@ -98,26 +110,20 @@
                       
                      
 					 <div class="row form-group">
-                            <div class="col col-md-3"><label class=" form-control-label">Gender</label></div>
-                            <div class="col col-md-9">
-                              <div class="form-check-inline form-check">
-                                <label for="inline-radio1" class="form-check-label ">
-                                  <input type="radio" id="inline-radio1" name="gender" value="0" class="form-check-input">Male
-                                </label>
+                            <div class="col-sm-4 airports availability"> Gender</div>
+                <label class="col-sm-4 airports">
+                  <input type="radio" name="gender" value="0" checked="">
+                  <span class="label-text" >Male</span> </label>
+                <label class="col-sm-4 airports">
+                  <input type="radio" name="gender" value="1">
+                  <span class="label-text" >Female</span> </label>
+                </div>
+                            
 
+                          <div class="row form-group">
 
-                                <label for="inline-radio2" class="form-check-label " >
-                                  <input type="radio" id="inline-radio2" name="inline-radios" value="1" class="form-check-input " >Female
-                                </label>
-                               
-                              </div>
-                            </div>
-                            </div>
-
-                               <div class="row form-group">
-
-                             <div class="col col-md-3"><label for="hf-name" class=" form-control-label">Name</label></div>
-                            <div class="col-12 col-md-9"><input type="text" id="hf-name" name="hf-name" placeholder="Enter Name..." class="form-control"></div>
+                             <div class="col col-md-3"><label for="name" class=" form-control-label">Name</label></div>
+                            <div class="col-12 col-md-9"><input type="text" id="hf-name" name="name" placeholder="Enter Name..." class="form-control"></div>
                         </div>
                      <div class="row form-group">
 
@@ -126,8 +132,8 @@
                         </div>
 
                        <div class="row form-group">
-                            <div class="col col-md-3"><label for="hf-password" class=" form-control-label">Password</label></div>
-                            <div class="col-12 col-md-9"><input type="password" id="hf-password" name="hf-password" placeholder="Enter Password..." class="form-control"></div>
+                            <div class="col col-md-3"><label for="password" class=" form-control-label">Password</label></div>
+                            <div class="col-12 col-md-9"><input type="password" id="password" name="password" placeholder="Enter Password..." class="form-control"></div>
                           </div>
 
 
@@ -139,7 +145,7 @@
                         
 
 
-								
+								</div>
 
 						
                     
@@ -170,12 +176,23 @@
 </div><!-- end modal-dialog -->
 </div><!-- end myModal1 -->
 
- @if ($message = Session::get('success'))
-    <div class="alert alert-success">
-        <p>{{ $message }}</p>
-    </div>
-    @endif
+
+    <div class="form-group">
+
+ <div class="col-md-6 mb-3">
+              <label >From Date:</label>
+              <input name="min" id="min" type="text">
+              </div>
+
+              <div class="col-md-6 mb-3">
+              <label >To Date:</label>
+              <input name="max" id="max" type="text">
+              </div>
+              </div>
     <button style="margin: 5px;" class="btn btn-danger btn-xs delete-all" data-url="">Delete All</button>
+
+     
+<br></br>
 
                   <table id="bootstrap-data-table" class="table table-striped table-bordered Canidate">
                     <thead>
@@ -187,6 +204,7 @@
                         <th>Gender</th>
                         <th>Country</th>
                         <th>Industry</th>
+                        <th>Created At</th>
                         <th>Process</th>
 
                       </tr>
@@ -196,7 +214,7 @@
                       <tr id="tr_{{$all->id}}">
                     <td><input type="checkbox" class="checkbox" data-id="{{$all->id}}"></td>
 					<td>{{ $all->name}}</td>
-					<td>{{ $all->email}}</td>
+					<td >{{ $all->email}}</td>
 					@if(is_null($all->CanInfo)) 
 					<td>NoData</td>
 					@else
@@ -239,6 +257,8 @@
 					<td>{{ $all->CanInfo->industry->name}}</td>
 					@endif
 					@endif
+
+        <td>{{date('Y/m/d', strtotime($all->created_at))}}</td>
 			<td>
 	 
 <a  href="/Candidate/{{$all->id}}/edit" class="btn btn-default btn-sm" ><span class="fa fa-edit"></span>  </a>
@@ -286,6 +306,10 @@
     $(document).ready(function () {
 
   
+$(".country ,.industry ,.job,.nationality").select2({
+    tags: true,
+    dropdownParent: $("#myModal1")
+});
 
         $('#check_all').on('click', function(e) {
          if($(this).is(':checked',true))  
@@ -357,9 +381,62 @@
 
                 element.closest('form').submit();
             }
-        });   
+        }); 
+
+
+
+         $(document).ready(function(){
+
+       $('.Canidate thead tr').clone(true).appendTo( '.Canidate thead' );
+    $('.Canidate thead tr:eq(1) th').each( function (i) {
+        var title = $(this).text();
+         if($(this).index()>=1 && $(this).index()<=7)
+        {
+        $(this).html( '<input type="text" style="width:80%;" placeholder="'+title+'" />' );
+ }
+        $( 'input', this ).on( 'keyup change', function () {
+
+            if ( table.column(i).search() !== this.value ) {
+              
+                table
+                    .column(i)
+                    .search( this.value )
+                    .draw();
+            }
+        } );
+    } );
+        $.fn.dataTable.ext.search.push(
+        function (settings, data, dataIndex) {
+            var min = $('#min').datepicker("getDate");
+            var max = $('#max').datepicker("getDate");
+
+
+            var startDate = new Date(data[7]);
+            console.log(startDate);
+            if (min == null && max == null) { return true; }
+            if (min == null && startDate < max) { return true;}
+            if(max == null && startDate >= min) {return true;}
+            if (startDate <= max && startDate >= min) { return true; }
+            return false;
+        }
+        );
+
+       
+            $("#min").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+            $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+            var table = $('.Canidate').DataTable();
+
+            // Event listener to the two range filtering inputs to redraw on input
+            $('#min, #max').change(function () {
+                table.draw();
+            });
+        });
+  
     
     });
 </script>
+<script type="text/javascript" src="/vendor/jsvalidation/js/jsvalidation.js"></script>
+<script src="/dist/jquery.validate.js"></script>
 
+ {!! JsValidator::formRequest('App\Http\Requests\AddCandidateAdminFormRequest', '.formlogin'); !!} 
 @endsection

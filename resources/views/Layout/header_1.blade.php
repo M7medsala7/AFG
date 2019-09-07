@@ -4,8 +4,8 @@
      <form action="/search" method="get"  class="input-search searchinner">
        <select name="type" class="selectpicker" id="search_type">
      
-        <option>I am Candidate</option>
-        <option>I Am Employer</option>
+        <option> {{trans('app.IamCandidate')}}</option>
+        <option>{{trans('app.IAmEmployer')}}</option>
         
       </select>
       <input type="text" class="form-control" name ="words"  id="myInput" placeholder="search for jobs, candidates keywords...">
@@ -26,7 +26,7 @@
          <img src="{{(\Auth::user()->logo)?(\Auth::user()->logo):'images/callto-action.png'}}">  <i class="fa fa-angle-down" aria-hidden="true"></i>
         </button>
         <ul class="dropdown-menu">
-          <li><a href="/home"><i class="far fa-user"></i> Account </a></li>
+          <li><a href="/home"><i class="far fa-user"></i>{{trans('app.Account')}}  </a></li>
           <li><a href="{{ url('/logout') }}"><i class="fas fa-sign-out-alt"></i> Log out </a></li>
         </ul>
       </div>
@@ -59,7 +59,7 @@
             
           @endforeach
         
-          <li><a href="/MatchingJobs" > view more  </a></li>
+          <li><a href="/MatchingJobs" > {{trans('app.more')}} </a></li>
          
         </ul>
 
@@ -91,7 +91,7 @@
             <a href="/candidate/{{$j['user']['id']}}" id="demo" onmouseover="myFunction(this, 'white')">{{$j['user']['name']}}  added new candidate </a></li>
            @endforeach
 
-          <li><a href="/MatchingCandidates" > view more  </a></li>
+          <li><a href="/MatchingCandidates" > {{trans('app.more')}}  </a></li>
          
         </ul>
        
@@ -108,8 +108,10 @@
       <div id="head-mobile"></div>
       <div class="button"></div>
       <ul>
-        <li><a href="/" class="active">Home </a></li>
-        <li><a href="/search?type=I+am+Candidate&words=">All jobs </a> </li>
+             
+
+        <li><a href="/" class="active"> {{trans('app.Home')}}</a></li>
+        <li><a href="/search?type=I+am+Candidate&words=">{{trans('app.jobs')}}  </a> </li>
        
         <!-- <li> <a href="#"> Candidates </a>
           <ul>
@@ -118,6 +120,7 @@
             <li> <a href="#"> Candidates </a></li>
             <li> <a href="#">Employers </a></li>
             <li> <a href="#"> Pricing</a> </li>
+<li> <a href="/showBlogsuser">Blogs </a>
           </ul>
         </li>-->
          @if(Auth::user()->type=='candidate')
@@ -125,10 +128,10 @@
         <li> <a href="{{url('/SuccessStory/'.\Auth::user()->CanInfo()->first()->id.'/CreateSuccessStory')}}">Success stories </a> </li>
         @else
         
-        <li> <a href="{{url('/EmployerSuccessStory/'.\Auth::user()->EmpInfo()->first()->id.'/CreateSuccessStory')}}">Success stories </a> </li>
+        <li> <a href="{{url('/EmployerSuccessStory/'.\Auth::user()->EmpInfo()->first()->id.'/CreateSuccessStory')}}"> {{trans('app.Successstories')}} </a> </li>
        @endif
-        <li> <a href="#">messages </a> </li>
-        <li> <a href="#"> interviews</a> </li>
+        <li> <a href="#"> {{trans('app.messages')}} </a> </li>
+        <li> <a href="#">  {{trans('app.interviews')}} </a> </li>
      
       </ul>
 
@@ -138,33 +141,46 @@
     
     @else
       <div class="dropdownlink"> 
-        <nav class="linktop"> <a href="/login"> login</a> <a href="/signup"> Register</a> </nav>
+        <nav class="linktop"> 
+        
+        <a href="/login">{{trans('app.login')}} </a> <a href="/signup">{{trans('app.Register')}} </a> </nav>
       </div>
       <nav id='cssmenu'>
         <div id="head-mobile"></div>
         <div class="button"></div>
       <ul>
-        <li><a href="/" class="active">Home </a></li>
-        <li><a href="/search?type=I+am+Candidate&words=">All jobs </a> </li>
-        <li> <a href="/search?type=I+Am+Employer&words=">All Candidates </a>
+        <li><a href="/" class="active">{{trans('app.Home')}} </a></li>
+        <li><a href="/search?type=I+am+Candidate&words="> {{trans('app.jobs')}}  </a> </li>
+        <li> <a href="/search?type=I+Am+Employer&words=">{{trans('app.allcan')}}  </a>
         <!--   <ul>
             <li><a href="#" class="active">Home </a></li>
             <li><a href="#">jobs </a> </li>
             <li> <a href="#"> Candidates </a></li>
             <li> <a href="#">Employers </a></li>
            <li> <a href="/Payment"> Pricing</a> </li>
+<li> <a href="/showBlogsuser">Blogs </a>
           </ul> -->
         </li>
-        <li> <a href="/Requests">your Request </a>
+        <li> <a href="/Requests">{{trans('app.Request')}}  </a>
+
         <!--   <ul>
             <li><a href="#" class="active">Home </a></li>
             <li><a href="#">jobs </a> </li>
             <li> <a href="#"> Candidates </a></li>
             <li> <a href="#">Employers </a></li>
-            <li> <a href="#"> Pricing</a> </li>
+            <li> <a href="/Payment"> Pricing</a> </li>
+<li> <a href="/showBlogsuser">Blogs </a>
           </ul> -->
         </li>
-       <li> <a href="/Payment"> Pricing</a> </li>
+       <!--<li> <a href="/Payment"> Pricing</a> </li>-->
+<li> <a href="/showBlogsuser">{{trans('app.Blogs')}}  </a></li>
+  @if(Session::get('locale')=="Ar" || Session::get('locale')=="ar" )
+  {{App::setLocale('ar')}}
+<li> <a href="#" id="trans2" class="trans2" >English</a></li>
+@else
+{{App::setLocale('en')}}
+<li> <a href="#" id="trans1"  class="trans1" >عربي</a></li>
+@endif
       </ul>
       </nav>
       

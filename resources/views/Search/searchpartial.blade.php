@@ -1,8 +1,9 @@
+
 <div id ="myPartialDiv" class="rowemp">
  <div class="col-sm-9 dashboardleft" >
         <div class="inner-aboutus">
           <div class="currencytext resultstext">
-            <h2>{{$count}} results {{$words}}</h2>
+            <h2>{{$count}} {{trans('app.results')}}  {{$words}}</h2>
             <div class="rightselect">
               <p>sort by : </p>
               <select class="select-currency" name="birth_date" required="">
@@ -43,16 +44,7 @@
                @endif
                 </ul>
              
-                <a href="https://www.facebook.com/dialog/share?
-app_id=1112718265559949
-&display=popup
-&title='maid and helper'
-&description='Mohamed salah'
-&quote={{$job->job_descripton}}
-&caption='Dody'
-&href=https://www.maidandhelper.com/ViewJob/{{$job->id}}
-
-&redirect_uri=https://www.facebook.com/"><i class="fas fa-share-alt"></i></a>
+       <a  onclick="asd('{{$job->job->name}}','{{$job->job_descripton}}','iadcwidv','{{$job->id}}')" ><i class="fas fa-share-alt"></i></a>
                 <div class="tidivbotom"> <a href= '/ViewJob/{{$job->id}}"' >View job</a> <span>{{$job->created_at}}</span></div>
                 <!--tidiv--> 
                 
@@ -85,7 +77,7 @@ app_id=1112718265559949
                 
         
           
-  <div  style="min-height:300px"> 
+  <div  style="min-height:450px"> 
 
  @if($candidate->vedio_path !=null)
  <a   class="imgbox" onclick="ShowVideo('/{{$candidate->vedio_path}}','{{File::extension($candidate->vedio_path)}}')"> 
@@ -115,6 +107,7 @@ app_id=1112718265559949
 &description='Mohamed salah'
 &quote={{$candidate->user->name}}:{{$candidate->descripe_yourself}}
 &caption='Dody'
+
 &href=https://www.maidandhelper.com/candidate/{{$candidate->user->id}}
 
 &redirect_uri=https://www.facebook.com/"><i class="fas fa-share-alt"></i></a>
@@ -163,6 +156,54 @@ app_id=1112718265559949
         });
     }
 });
+
+
+
+// this loads the Facebook API
+    (function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) { return; }
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    window.fbAsyncInit = function () {
+        var appId = '1112718265559949';
+        FB.init({
+            appId: appId,
+            xfbml: true,
+            version: 'v2.9'
+        });
+    };
+
+    // FB Share with custom OG data.
+         function asd ($title,$description,$image,$link) {
+                // Dynamically gather and set the FB share data. 
+                var FBDesc      = $description;
+                var FBTitle     = $title;
+                var FBLink      = 'https://www.maidandhelper.com/ViewJob/'+$link;
+                var FBPic       = 'https://www.maidandhelper.com/images/car1.jpg';
+
+                // Open FB share popup
+                FB.ui({
+                    method: 'share_open_graph',
+                    action_type: 'og.shares',
+                    action_properties: JSON.stringify({
+                        object: {
+
+                            'og:url': FBLink,
+                            'og:title': FBTitle,
+                            'og:description': FBDesc,
+                          'og:image':FBPic 
+                        }
+                    })
+                },
+                function (response) {
+                // Action after response
+                })
+     
+    };
     </script>
 
 

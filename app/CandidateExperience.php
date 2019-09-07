@@ -30,4 +30,12 @@ class CandidateExperience extends Model
     {
         return $this->belongsTo('App\Nationality','employer_nationality_id');
     }
+       public function job()
+    {
+        return $this->belongsTo('App\Job','job_id');
+    }
+        public function currency()
+    {
+        return $this->belongsTo('App\Currency','currency_id');
+    }
 }

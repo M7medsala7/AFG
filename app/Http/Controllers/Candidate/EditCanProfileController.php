@@ -16,7 +16,7 @@ use App\CandidateExperience;
 use Socialite;
 use Session;
 use Hash;
-
+use  App\Http\Requests\EditFullCanRegisterFormRequest;
 class EditCanProfileController extends Controller
 {
     
@@ -25,15 +25,16 @@ class EditCanProfileController extends Controller
     {
         
         $data=CandidateInfo::where('user_id',$id)->first();
-     
-        return view('auth.Edit_Candidate_reg', compact('data'));
+
+          return view('auth.Edit_Candidate_reg', compact('data'));
     
     }
     
     
     //update candidate informations
-    public function updateFullReg($id,Request $request)
+    public function updateFullReg(EditFullCanRegisterFormRequest $request,$id)
     {
+
         try
         {
           $videopoint=0;
@@ -92,42 +93,38 @@ class EditCanProfileController extends Controller
        
                    $cvgpoint=10;
                }
-           
+              $user->languages()->sync( $request['language_ids'] );
+           $langpoint=5;
+               
+              $user->skills()->sync( $request['skill_ids'] );
                if($request['language_ids'])
                {
-                   foreach ($request['language_ids'] as $key => $lang) {
-                       # code...
-                     
-                      $langs=\App\UserLanguage::find($id);
-                      $langs->language_id =$lang;
-                      $langs->user_id =$user->id;
-                      $langs->save();
-                   }
+                
                    $langpoint=5;
                }
                if($request['skill_ids'])
                {
-                   foreach ($request['skill_ids'] as $key => $skill) {
-                       # code...
-                       $skills=\App\UserSkill::find($id);
-                       $skills->skill_id =$skill;
-                       $skills->user_id =$user->id;
-                       $skills->save();
-                   }
+                   
                    $skillpoint=5;
                }
-               if($request['educational_level'])
+               if($request['Eductionlevel'])
                {
-                  
-                   $eduction=Educational::find($id);
-                       $eduction->level = $request->educational_level;
-                       $eduction->user_id =$user->id;
-                       $eduction->save();
-                   $edupoint=5;
-      
-               }
+                    $eduction= \App\Educational::find($request['Eductionlevel']);
+                  if($eduction ==null)
+                    {
+                         $educt= New  \App\Educational;
+                      $educt->level = $request->Eductionlevel;
+                        $educt->user_id =$user->id;
+                        $educt->save();  
+                    }
+                    else
+                    {
+                       $eduction->level = $request->Eductionlevel;
+                        $eduction->user_id =$user->id;
+                        $eduction->save();  
+                    }
        
-       
+       }
        
                $countcoins=['name'=>$request['first_name'],
                'email'=>$request['email'],
@@ -143,6 +140,7 @@ class EditCanProfileController extends Controller
                'country_id'=>$request['country_id'],
                'gender'=>$request['gender'],
                'martial_status'=>$request['martial_status'],
+                      'keyword'=>$request['keyword'],
                'descripe_yourself'=>$request['descripe_yourself'],
                'looking_for_job'=>$request['looking_for_job'],
                'nationality_id'=>$request['nationality_id'],
@@ -187,6 +185,7 @@ class EditCanProfileController extends Controller
                   $candinfo->CurrencyId = $request->CurrencyId;
                   $candinfo->Eductionlevel = $request->Eductionlevel;
                   $candinfo->martial_status = $request->martial_status;
+                  $candinfo->keyword=$request['keyword'];
                   $candinfo->descripe_yourself = $request->descripe_yourself;
                   $candinfo->looking_for_job = $request->looking_for_job;
                   $candinfo->nationality_id = $request->nationality_id;
@@ -195,6 +194,83 @@ class EditCanProfileController extends Controller
                   $candinfo->coins = $totalpoints;
                 
                  $candinfo->save();
+    $idEx=CandidateExperience::where('user_id',$user->id)->select('id')->first();
+
+if($idEx != null)
+{
+      //updates in can_experinence
+                $canexperience=CandidateExperience::FindOrFail($idEx->id);
+
+                $canexperience->working_in = $request->working_in;
+                $canexperience->start_date = $request->start_date;
+                $canexperience->end_date = $request->end_date;
+                $canexperience->employer_nationality_id = $request->employer_nationality_id;
+                $canexperience->company_name = $request->company_name;
+                $canexperience->country_id = $request->work_country_id;
+                $canexperience->salary = $request->salarymaybe;
+                $canexperience->role = $request->role;
+                $canexperience->user_id = $user->id;
+                  
+                $canexperience->save();
+              
+            //update in location
+            $prefered_location = $request['prefered_location_id'];
+            if($prefered_location)
+            {
+                $locations = [];
+                array_push($locations,$prefered_location);
+                //dd($prefered_location);
+                if($request['prefered_location_ids'])
+                {
+                    foreach ($request['prefered_location_ids'] as $key => $prefered) {
+                        # code...
+                        array_push($locations,$prefered);
+                    }
+                }
+
+                foreach (array_unique($locations) as $key => $loc) {
+                    # code...
+                    $location= \App\PreferedLocation::find($id);
+                    $location->user_id = $user->id;
+                    $location->country_id = $loc;
+                    $location->save();
+              
+                }
+                
+            }
+}
+
+else
+{
+
+                  $canexperience= New CandidateExperience;
+                $canexperience->working_in = $request->working_in;
+                $canexperience->start_date = $request->start_date;
+                $canexperience->end_date = $request->end_date;
+                $canexperience->employer_nationality_id = $request->employer_nationality_id;
+                $canexperience->company_name = $request->company_name;
+                $canexperience->country_id = $request->work_country_id;
+                $canexperience->salary = $request->exsalary;
+                $canexperience->role = $request->role;
+                $canexperience->user_id = $user->id;
+                   
+                $canexperience->save();
+                
+            //update in location
+            $prefered_location = $request['prefered_location_id'];
+            if($prefered_location)
+            {
+                
+     
+           $user->preferedLocations()->attach($prefered_location);
+ 
+                
+            }
+
+}
+              
+                
+
             
                  return redirect('/home');
             
@@ -285,13 +361,13 @@ class EditCanProfileController extends Controller
                             if (!file_exists($path)) {
                             $images->move(("upload/imgageslogo"),$imageName);
                             
-                            $q =User::join('candidate_infos','candidate_infos.user_id','users.id')->where('candidate_infos.id', $id)
-                            ->select('users.id AS UID','users.logo')->first();
+                            $q =User::where('id', $id)
+                            ->first();
                         
             
             if ($q)
             {
-                $user = User::find($q->UID);
+                $user = User::find($q->id);
             
             
                 $user->logo = "upload/imgageslogo/".$imageName;
@@ -305,11 +381,11 @@ class EditCanProfileController extends Controller
                             $random_string = md5(microtime());
                             $images->move(public_path("upload/imgageslogo"),$random_string.".jpg");
                             
-                                $q =User::join('candidate_infos','candidate_infos.user_id','users.id')->where('candidate_infos.id', $id) ->select('users.id AS UID','users.logo')->first();
+                                $q =User::where('id',$id)->first();
                                                 
                             if ($q)
                             {
-                                $user = User::find($q->UID);
+                                $user = User::find($q->id);
                             
                             
                                 $user->logo = "/upload/imgageslogo/".$random_string.".jpg";

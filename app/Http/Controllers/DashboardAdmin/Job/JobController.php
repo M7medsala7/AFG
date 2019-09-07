@@ -82,7 +82,7 @@ public function jobadminstore (AddJobAdminFormRequest $request){
 public function updatejob($id)
 {
   $postjobadmin= PostJob::FindOrFail($id);
-  // dd($postjobadmin->user->company);
+   
    return view('DashbordAdminPanel.job.edit',compact('postjobadmin'));
 }
 
@@ -217,7 +217,7 @@ if( $skilln == null)
     public function showjob($id)
 {
   $postjobadmin= PostJob::FindOrFail($id);
-  // dd($postjobadmin->job->getJobLanguage);
+
    return view('DashbordAdminPanel.job.showjob',compact('postjobadmin'));
 }
 

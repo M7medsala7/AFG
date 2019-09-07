@@ -11,7 +11,7 @@
 @section('content')
 <style>
   .select2-selection__rendered{
-    background: rgb(0, 1, 1);
+   
     border: 1px solid rgba(115, 115, 115, 0.48)!important;
     /* color: #fff; */
     float: left;
@@ -22,7 +22,7 @@
     box-shadow: none;
     border: 2px solid #d7d7d7;
     margin-top: 10px;
-        color: white!important;
+        color: black!important;
   }
   
 #loader {
@@ -597,10 +597,11 @@ padding: 0!important;
           <!--divwits-->
           
           <div class="divwits">
-            <select class="form-control requirments" name="keywords[]" required="" onblur="processForm(this.form)">
-              <option selected="" style="width: 90%;" > keywords</option>
-              <option value="4" > type of position</option>
-            </select>
+              
+              
+                <input type="text" class="form-control requirments" name="keyword"  placeholder="keyword" autocomplete="off"  onblur="processForm(this.form)">
+              
+          
           </div>
           <!--divwits-->
           
@@ -963,12 +964,21 @@ padding: 0!important;
   </div>
   </div>
 </div>
+
+
 <!--myModa2-->
 {!! JsValidator::formRequest('App\Http\Requests\FullCanRegisterFormRequest', '.formlogin'); !!}
 
 <!--myModa3-->
 
 @endsection
+<div class="modal fade" id="overlay">
+  <div class="modal-dialog">
+      <div class="modal-content dal-conte"> <i class="fas fa-check-circle"></i>
+      
+    </div>
+  </div>
+</div>
 @section('scripts')
 <script type="text/javascript" src="/vendor/jsvalidation/js/jsvalidation.js"></script>
 <script src="/dist/jquery.validate.js"></script>
@@ -983,7 +993,54 @@ padding: 0!important;
     $('#video_file').click();
   });
 </script>
+<script >
 
+  $.ajaxSetup({
+        headers:{
+             'X-CSRF-Token': $('input[name="_token"]').val()
+        }
+    });
+   $(document).on('submit','#full_cand_reg',function(ev) {
+    // submit the form
+        ev.preventDefault();
+var job=$('#job_id').find(":selected").val(); 
+
+
+console.log(job);
+    $.ajax({
+      url: '/congratscan',
+        type: 'POST',
+          data:{'job':job},
+
+  
+           success:function(response)
+            {
+             console.log(response);             
+      $('#overlay').find('.modal-content').append(response);
+          
+         
+             
+        }
+   });
+    $('#overlay').modal('show');
+
+setTimeout(function() {
+ 
+     $('#overlay').modal('hide');
+
+          document.getElementById('full_cand_reg').submit();
+
+}, 7000);
+
+var timeleft = 10;
+var downloadTimer = setInterval(function(){
+  
+  if(timeleft <= 0)
+    clearInterval(downloadTimer);
+},1000);
+
+     });
+</script>
 <script type="text/javascript">
     $(document).ready(function(){
 
@@ -1090,7 +1147,7 @@ padding: 0!important;
             current_fs.hide();
         });
 
-                            $("#step-6-next").click(function(){
+  $("#step-6-next").click(function(){
 
  var form = $("#full_cand_reg");
  console.log(form.valid());

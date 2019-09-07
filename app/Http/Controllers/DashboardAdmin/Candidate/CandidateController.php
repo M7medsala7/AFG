@@ -17,7 +17,9 @@ class CandidateController extends Controller
  
     public function index()
     {
-       $allCandidate= User::with('CanInfo')->where('type','=','candidate')->orderBy('created_at','DESC')->get();
+       $allCandidate= User::with('CanInfo')->join('candidate_infos','candidate_infos.user_id','users.id')->where('type','=','candidate')->select('users.name','candidate_infos.job_id','candidate_infos.industry_id','users.id','candidate_infos.gender','candidate_infos.created_at','users.email'
+   )->orderBy('candidate_infos.created_at','DESC')->get();
+      
     return view('DashbordAdminPanel.candidate.index',compact('allCandidate'));
     }
 
@@ -34,14 +36,16 @@ class CandidateController extends Controller
             $code = ($lastUser->code)+1;
              
         }
-    
+ 
+$user= New User;
+$user->name=$request['name'];
+$user->email=$request['email'];
+$user->password=\Hash::make($request->password);
+$user->type='candidate';
+$user->code=$code;
+          $user->save();
 
-             $user = User::create(['name'=>$request['name'],
-        'email'=>$request['email'],
-        'password' => bcrypt($request['password']),
-        'type'=>'candidate','code'=>$code]);
-
-          
+        
  //$user=User::where('name','admin')->first();
  
         if($request->hasFile('file-input'))
@@ -64,19 +68,19 @@ class CandidateController extends Controller
 
         
 
-            $CandidateInfos=[
-            'job_id'=>$request['job'],
-            'industry_id'=>$request['industry'],
-            'country_id'=>$request['country'],
-            'gender'=>$request['gender'],
-            
-            'vedio_path'=>$vedio_path, 
-             
-            'user_id'=>$user->id];
+           
        
         $CandidateInfo = new CandidateInfo;
-         $CandidateInfo->create($CandidateInfos);
+        $CandidateInfo->job_id=$request['job'];
+         $CandidateInfo->industry_id=$request['industry'];
+         $CandidateInfo->country_id=$request['country'];
+         $CandidateInfo->gender=$request['gender'];
+         $CandidateInfo->nationality_id=$request['nationality'];
+         $CandidateInfo->vedio_path=$vedio_path;
+         $CandidateInfo->user_id=$user->id;
+         
 
+$CandidateInfo->save();
 
        return redirect('/Candidateadmin');
 
@@ -85,7 +89,7 @@ class CandidateController extends Controller
 public function updatecandidate($id)
 {
   $candidateadmin= User::FindOrFail($id);
-  // dd( $candidateadmin->CanInfo->CanExperince->start_date);
+
    return view('DashbordAdminPanel.candidate.edit',compact('candidateadmin'));
 }
 public function candidateadminedit( EditCanAdminFromRequests $request ,$id)
@@ -126,42 +130,30 @@ public function candidateadminedit( EditCanAdminFromRequests $request ,$id)
         
                     
                 }
-            
-                if($request['Language'])
-                {
-                    foreach ($request['Language'] as $key => $lang) {
-                        # code...
-                    
-                        $langs=\App\UserLanguage::where('user_id',$id)->where('language_id',$lang)->first();
-
-                        $langs->language_id =$lang;
-                        $langs->user_id =$user->id;
-                        $langs->save();
-                       
-                    }
-                    
-                }
-                if($request['Skills'])
-                {
-
-                    foreach ($request['Skills'] as $key => $skill) {
-                        # code...
-                        $skills=\App\UserSkill::where('user_id',$id)->where('skill_id',$skill)->first();
-
-                        $skills->skill_id =$skill;
-                        $skills->user_id =$user->id;
-                        $skills->save();
-                    }
-                  
-                }
+             $user->languages()->sync( $request['Language'] );
+          
+               
+              $user->skills()->sync( $request['Skills'] );
+          
                 if($request['educational_level'])
                 {
                     
                     
-                    $eduction=Educational::find($id);
-                        $eduction->level = $request->educational_level;
+                    $eduction= \App\Educational::find($request['educational_level']);
+                    if($eduction ==null)
+                    {
+                         $educt= New  \App\Educational;
+                      $educt->level = $request->educational_level;
+                        $educt->user_id =$user->id;
+                        $educt->save();  
+                    }
+                    else
+                    {
+                       $eduction->level = $request->educational_level;
                         $eduction->user_id =$user->id;
-                        $eduction->save();
+                        $eduction->save();  
+                    }
+                       
                     
 
                 }
@@ -183,7 +175,7 @@ public function candidateadminedit( EditCanAdminFromRequests $request ,$id)
                     $candinfo->visa_expire_date = $request->visa_expire_date;
                     $candinfo->job_id = $request->job_id;
                     $candinfo->industry_id = $request->industry_id;
-                    $candinfo->country_id = $request->country_id;
+                    $candinfo->country_id = $request->country;
                     $candinfo->gender = $request->gender;
                     $candinfo->salary = $request->salary;
                     $candinfo->CurrencyId = $request->CurrencyId;
@@ -195,11 +187,12 @@ public function candidateadminedit( EditCanAdminFromRequests $request ,$id)
                     $candinfo->vedio_path = $video_path;
                     $candinfo->cv_path = $cv_path;
                     $candinfo->user_id =$user->id;
-                   
+                     
                 // $eduction->user_id =$user->id;
                 $candinfo->save();
 
            $idEx=CandidateExperience::where('user_id',$id)->select('id')->first();
+
 if($idEx != null)
 {
       //updates in can_experinence
@@ -210,7 +203,7 @@ if($idEx != null)
                 $canexperience->end_date = $request->end_date;
                 $canexperience->employer_nationality_id = $request->employer_nationality_id;
                 $canexperience->company_name = $request->company_name;
-                $canexperience->country_id = $request->country_id;
+                $canexperience->country_id = $request->work_country_id;
                 $canexperience->salary = $request->exsalary;
                 $canexperience->role = $request->role;
                 $canexperience->user_id = $user->id;
@@ -243,6 +236,35 @@ if($idEx != null)
                 
             }
 }
+
+else
+{
+
+                  $canexperience= New CandidateExperience;
+                $canexperience->working_in = $request->working_in;
+                $canexperience->start_date = $request->start_date;
+                $canexperience->end_date = $request->end_date;
+                $canexperience->employer_nationality_id = $request->employer_nationality_id;
+                $canexperience->company_name = $request->company_name;
+                $canexperience->country_id = $request->work_country_id;
+                $canexperience->salary = $request->exsalary;
+                $canexperience->role = $request->role;
+                $canexperience->user_id = $user->id;
+                   
+                $canexperience->save();
+                
+            //update in location
+            $prefered_location = $request['prefered_location_id'];
+            if($prefered_location)
+            {
+                
+     
+           $user->preferedLocations()->attach($prefered_location);
+ 
+                
+            }
+
+}
               
                 
 
@@ -260,7 +282,10 @@ if($idEx != null)
   public function deleteMultiple(Request $request){
 
         $ids = $request->ids;
-        User::whereIn('id',explode(",",$ids))->delete();
+       User::whereIn('id',explode(",",$ids))->delete();
+
+CandidateInfo::whereIn('user_id',explode(",",$ids))->delete();
+CandidateExperience::whereIn('user_id',explode(",",$ids))->delete();
         return response()->json(['status'=>true,'message'=>"Canidate deleted successfully."]);
         
     }

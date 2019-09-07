@@ -203,7 +203,7 @@ body {
 
         <!-- page content -->
         <div class="right_col" role="main" style="border: 2px solid white; min-height: 950px;" >
-        @yield('content')
+  @yield('content')
         </div>
         <!-- /page content -->
 

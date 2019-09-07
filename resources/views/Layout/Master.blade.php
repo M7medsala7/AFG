@@ -1,31 +1,87 @@
 <!doctype html>
-<html>
-<head>
-	  
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-124778189-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+<html prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# video: http://ogp.me/ns/video#">
+<meta property="og:type" content="website" />
 
-  gtag('config', 'UA-124778189-1');
-</script>
+     <title>Maid and helper</title>
 
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta http-equiv="cache-control" content="max-age=0" />
-<meta http-equiv="cache-control" content="no-cache" />
-<meta http-equiv="cache-control" content="no-store" />
-<meta http-equiv="cache-control" content="must-revalidate" />
-<meta http-equiv="expires"       content="0" />
-<meta http-equiv="expires"       content="Tue, 01 Jan 1980 1:00:00 GMT" />
-<meta http-equiv="pragma"        content="no-cache" />
+     <meta name="keywords" content="app, name" />
 
- <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+
+     <meta name="description" content="Page Description" />
+
+
+     <!-- FACEBOOK -->
+
+
+     <meta property="fb:app_id"   content="482712415572430"/>
+
+
+     <meta property="og:site_name" content="Maid & Helper">
+
+
+     <meta property="og:url" content="https://www.maidandhelper.com" />
+
+
+     <meta property="og:title" content="Maid & Helper" />
+
+
+     <meta property="og:image" content="https://www.maidandhelper.com/images/slide5.jpg" />
+
+
+   
+     <meta property="og:description" content="CANDIDATES & EMPLOYERS WELL CONNECTED HERE" />
+
+
+
+     
+
+
+    <meta property="og:video" content="https://dih1l34ei3029.cloudfront.net/56275703/audiogram.mp4">
+
+<meta property="og:video:secure_url" content="https://dih1l34ei3029.cloudfront.net/56275703/audiogram.mp4">
+
+
+   
+<meta property="og:video:type" content="video">
+<meta property="og:video:width" content="300">
+<meta property="og:video:height" content="300">
+
+
+    <!-- FACEBOOK -->
+
+
+ @if(Session::get('locale')=="Ar"|| Session::get('locale')=="ar")
+{{App::setLocale('ar')}}
+<link rel="stylesheet" href="/ar/css/bootstrap.min.css" />
+<link rel="stylesheet" href="/ar/css/bootstrap-rtl.css" />
+<link rel="stylesheet" href="/ar/css/style.css" />
+<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" media="all" href="ar/css/daterangepicker.css" />
+<link href="/ar/css/bootstrap-formhelpers-countries.flags.css" rel="stylesheet">
+<link rel="stylesheet" href="/ar/css/bootstrap-select.min.css">
+@else
+{{App::setLocale('en')}}
 <link rel="stylesheet" href="/css/bootstrap.min.css" />
 <link rel="stylesheet" href="/css/style.css" />
+<link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
+<link rel="icon" href="/images/favicon.png" type="image/png">
+<link href="/node_modules/video.js/dist/video-js.min.css" rel="stylesheet">
+  <link href="/node_modules/videojs-record/dist/css/videojs.record.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.min.css" rel="stylesheet"/>
+ 
+ <link rel="stylesheet" href="/css/bootstrap-select.min.css">
+
+  <link rel="stylesheet" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+ @endif
+
+
+
+
+
+
+
 <link rel="stylesheet" type="text/css" href="/css/font-awesome.min.css">
 
 
@@ -46,7 +102,9 @@
 <script type="text/javascript" src="/js/bootstrap-select.min.js"></script>
 <script src="/js/bootstrap-formhelpers-countries.en_US.js"></script>
 <script src="/js/chosen.jquery.min.js"></script>
+<script type="text/javascript" src="/js/main.js"></script>
 <script type="text/javascript" src="/js/script.js"></script>
+
 
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
@@ -54,23 +112,17 @@
 <script src="http://code.jquery.com/ui/1.9.1/jquery-ui.min.js" type="text/javascript"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.jquery.min.js"></script>
 
-
-
 <title>Maid & Helper</title>
 
 
 
 
 </head>
-<body>
+<body >
 
 @include('Layout.header')
-
 @yield('content')
-
-
 @include('Layout.footer')
-
 </body>
 @yield('scripts')
 </html>

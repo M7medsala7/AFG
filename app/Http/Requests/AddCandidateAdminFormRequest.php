@@ -18,6 +18,7 @@ class AddCandidateAdminFormRequest extends FormRequest
             'industry'=>'required',
             'name'=>'required',
             'gender' =>'required',
+            'nationality'=>'required',
             'email'=>'required|email|unique:users',
             'password'=>'required',
             'country'=>'required',

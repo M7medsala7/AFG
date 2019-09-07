@@ -22,20 +22,30 @@ class DasboardController extends Controller
         {
           //No of Can 
         $TotalJob= PostJob::count();
-        $TotalCandidate= CandidateInfo::count();
-        $Employer= EmployerProfile::count();
+        $TotalCandidate= User::with('CanInfo')->join('candidate_infos','candidate_infos.user_id','users.id')->where('type','=','candidate')->count();
+        $Employer=User::whereHas('EmpInfo', function ($query)  {
+    $query->orderBy('employer_profiles.created_at','DESC');
+})->count();
         $Requests= Requests::count();
  
        // DateNow
        $Start=Carbon::now();
         $Date=$Start->toDateString();
-        $End=$Start->addDays(7);
-        $range=array( $Date,$End->toDateString());
+        $End=$Start->addDays(-7);
+        $range=array( $End->toDateString(),$Date);
         // Count this week
-      
+   
         $TotalJobweek=PostJob::wherebetween('created_at',$range)->count();
-        $TotalCandidateweek=CandidateInfo::wherebetween('created_at',$range)->count();
-        $Employerweek=EmployerProfile::wherebetween('created_at',$range)->count();
+        $TotalCandidateweek=User::with('CanInfo')->join('candidate_infos','candidate_infos.user_id','users.id')->where('type','=','candidate')->wherebetween('candidate_infos.created_at',$range)->count();
+
+$Employerweek=User::whereHas('EmpInfo', function ($query)  {
+    $query->orderBy('employer_profiles.created_at','DESC');
+})->wherebetween('created_at',$range)->count();
+
+
+
+        
+
         $Requestsweek=Requests::wherebetween('created_at',$range)->count();
 
         return view('DashbordAdminPanel.Dashboard.index',compact('TotalJobweek','TotalCandidateweek','Employerweek','Requestsweek','Requests','Employer','TotalJob','TotalCandidate'));

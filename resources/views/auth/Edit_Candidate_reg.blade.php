@@ -1,8 +1,15 @@
 @extends('Layout.app')
 @section('content')
+<script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
+    <script src="https://cdn.webrtc-experiment.com/gif-recorder.js"></script>
+    <script src="https://cdn.webrtc-experiment.com/getScreenId.js"></script>
+
+    <!-- for Edige/FF/Chrome/Opera/etc. getUserMedia support -->
+    <script src="https://cdn.webrtc-experiment.com/gumadapter.js"></script>
+
 <style>
   .select2-selection__rendered{
-    background: rgb(0, 1, 1);
+    background: white;
     border: 1px solid rgba(115, 115, 115, 0.48)!important;
     /* color: #fff; */
     float: left;
@@ -42,6 +49,22 @@ width:300px;
   {
     width:300px;
   }
+  
+   #step-3{
+    display:none;
+  }
+    #step-4{
+    display:none;
+  }
+    #step-5{
+    display:none;
+  }
+     #step-6{
+    display:none;
+  }
+     #step-7{
+    display:none;
+  }
 </style>
 
 <section class="sliderphoto innerphoto" style="background:url(/images/slide5.jpg) fixed center center no-repeat; background-size:cover;">
@@ -57,46 +80,12 @@ width:300px;
     </ul>
     <!--tabssteps-->
     
-    <form  action="{{ url('/update_register/candidate/').'/'.$data->id }}" method="post" id="full_cand_reg" class="formlogin mergform"  novalidate enctype="multipart/form-data">
+    <form  action="{{ url('/update_register/candidate/').'/'.$data->id }}" method="post" id="full_cand_reg" class="formloginRe mergform"  novalidate enctype="multipart/form-data">
             {{csrf_field()}}
       <div class="tab-content">
-        <div role="tabpanel" class="tab-pane  nonebac active" id="step-1">
-        
-          <!--nonmegtext-->
-          
-          <div class="innertabs">
-            <div class="row">
-              <div class="col-sm-6 instructionsleft">
-             
-                <div class="witboots"> <a href="#" data-toggle="modal" data-target="#myModal" class="largeredbtn "> Here you can Edit your profile .</a> </div>
-                <!--botrg-->
-                
-           
-                <a href="#" id="step-1-next" class="largeredbtn"> go <i class="fas fa-long-arrow-alt-right"></i></a> </div>
-              <!--instructionsleft-->
-              
-            
-              <!--instructionsleft--> 
-            </div>
-            <!--row--> 
-             <div class="col-sm-4">
-               @if ($errors->any())
-                <div class="alert alert-danger">
-                  <ul>
-                    @foreach ($errors->all() as $error)
-                          <li>{{ $error }}</li>
-                      @endforeach
-                    </ul>
-                 </div>
-                @endif
-            </div>
-          </div>
-          <!--innertabs--> 
-          
-        </div>
-        <!--tab-pane-->
-        
-        <div role="tabpanel" class="tab-pane nonebac witsteptow" id="step-2">
+           <!--tab-pane-->
+        <div id="step-2">
+        <div role="tabpanel" class="tab-pane nonebac active witsteptow" >
           <div class="headtop nonbord borderbox">
             <div class="stapson active"><span>1</span>
               <h4 class="personalinfo">personal info</h4>
@@ -120,19 +109,21 @@ width:300px;
                 
                 <div class="col-sm-12 airports witpostslid">
                 <select class="form-control requirments" name="nationality_id" id="nation_id" required="" style="width: 90%;"  onblur="processForm(this.form)">
-                  <option selected="" >Nationality</option>
+                  
                   @foreach(\App\Nationality::all() as $nation)
-                    <option value="{{$nation->id}}" >{{$nation->name}}</option>
+                      <option value="{{ $nation->id }}" {{ $nation->id == $data->nationality->id ? 'selected' : '' }}>{{ $nation->name }}</option>
                   @endforeach
+
+
                 </select>
                 </div>
                 <!--witpostslid-->
                 
                 <div class="col-sm-12 airports witpostslid">
                   <select class="form-control requirments" name="country_id" id="country_id" required="" style="width: 90%;" onblur="processForm(this.form)" >
-                    <option selected="" > Current Location</option>
+                    
                     @foreach(\App\Country::all() as $country)
-                      <option value="{{$country->id}}" >{{$country->name}}</option>
+                      <option value="{{  $country->id }}" {{  $country->id == $data->country->id ? 'selected' : '' }}>{{  $country->name }}</option>
                     @endforeach
                   </select>
                 </div>
@@ -156,9 +147,19 @@ width:300px;
                 <div class="col-sm-12 airports witpostslid" style"width:100%">
                 
                   <select value="{{$data->gender}}" class="form-control requirments" name="gender" id="gender" required="" style="width: 90%;" onblur="processForm(this.form)">
-                    <option selected="" style="width: 90%;"> gender</option>
-                    <option value="0">Male</option>
-                    <option value="1" >female</option>
+                                <option selected="" disabled="disabled"  > Choose a Gender...</option>
+
+              @if(is_null($data->gender))
+
+               <option value="0"> Male</option>
+
+  <option value="1"> Female</option>
+  @else
+                           
+ <option value="0" {{ $data->gender ==0  ? 'selected' : '' }}> Male</option>
+
+  <option value="1" {{ $data->gender ==1  ? 'selected' : '' }}> Female</option>
+  @endif
                   </select>
                 </div>
                 <!--witpostslid--> 
@@ -173,12 +174,22 @@ width:300px;
               <div class="row">
                 <div class="col-sm-12 airports witpostslid">
                   <select class="form-control requirments" id ="martial_status" name="martial_status" required="" style="width: 90%;" >
-                    <option selected="" > marital status</option>
+             <option selected="" disabled="disabled"  > Choose a martial status...</option> 
+  @if(is_null($data->martial_status))
+              
+    
+    <option value="single" > Single</option>
 
-                    
-                    <option value="single" >single</option>
-                    <option value="married" >married</option>
-                    <option value="devorced" >devorced</option>
+  <option value="married"> Married</option>
+
+    <option value="devorced"> Devorced</option>
+    @else                      
+ <option value="single" {{ $data->martial_status =='single'  ? 'selected' : '' }}> Single</option>
+
+  <option value="married" {{ $data->martial_status =='married' ? 'selected' : '' }}> Married</option>
+  <option value="devorced" {{ $data->martial_status =='devorced'  ? 'selected' : '' }}> Divorced</option>
+
+  @endif
                   </select>
                 </div>
                 <!--witpostslid-->
@@ -186,9 +197,16 @@ width:300px;
                 <div class="col-sm-12 airports witpostslid">
                 <select class="form-control requirments" id="religion_id" name="religion_id" required="" style="width: 90%;" onblur="processForm(this.form)" >
                   <option selected=""  > Religion</option>
-                    @foreach(\App\Religion::all() as $religion)
-                      <option value="{{$religion->id}}" >{{$religion->name}}</option>
-                    @endforeach
+                 @if( !is_null($data->religion ))
+              @foreach(\App\Religion::all() as $Religion)
+                             <option value="{{ $Religion->id }}" {{ $Religion->id == $data->religion->id ? 'selected' : '' }}>{{ $Religion->name }}</option>
+
+              @endforeach
+              @else
+              @foreach(\App\Religion::all() as $Religion)
+               <option value="{{ $Religion->id }}"> {{ $Religion->name }}</option>
+@endforeach
+@endif
                 </select>
                 </div>
                 <!--witpostslid-->
@@ -223,11 +241,30 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
                 
                 <div class="col-sm-12 airports witpostslid">
                   <select class="form-control requirments" id="visa_type"  name="visa_type" required="" style="width: 90%;" onblur="processForm(this.form)">
-                     <option selected=""> Emploer-type of visa</option>
-                    <option  value="None" >None</option>
-                    <option  value="Employed" >Employed</option>
-                    <option value="Visit">Visit</option>
-                    <option value="Cancelled" >Cancelled</option>
+             <option selected="" disabled="disabled" >Choose a Visa Type... </option>
+
+                    @if(is_null($data->visa_type))
+             <option value="None" > None</option>
+
+  <option value="Employed" > Employed</option>
+
+    <option value="Visit"> Visit</option>
+
+     <option value="Cancelled" > Cancelled</option>
+               @else
+
+
+               <option value="None" {{ $data->visa_type =='None' ? 'None' : '' }}> None</option>
+
+
+
+    <option value="Employed" {{ $data->visa_type =='Employed'  ? 'selected' : '' }}> Employed</option>
+
+    <option value="Visit" {{ $data->visa_type =='Visit'  ? 'selected' : '' }}> Visit</option>
+
+     <option value="Cancelled" {{ $data->visa_type =='Cancelled'  ? 'selected' : '' }}> Cancelled</option>
+
+     @endif
                   </select>
                 </div>
                 <!--witpostslid-->
@@ -270,8 +307,9 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
           
         </div>
         <!--tab-pane-->
-        
-        <div role="tabpanel" class="tab-pane nonebac" id="step-3">
+        </div>
+        <div id="step-3">
+        <div role="tabpanel" class="tab-pane nonebac" >
           <div class="headtop nonbord borderbox">
             <div class="stapson active"><span>2</span>
               <h4 class="personalinfo">your profile</h4>
@@ -282,22 +320,43 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
           
           <div class="row">
             <div class="col-sm-12 airports witpostslid">
-              <select class="form-control chosen-select types" name="language_ids[]" id="language_id" multiple="multiple" required="" style="width: 90%;" onblur="processForm(this.form)">
-                <option value="" disabled selected>Choose your languages</option>
-                @foreach(\App\Language::all() as $lang)
-                  <option value="{{$lang->id}}">{{$lang->name}}</option>
-                @endforeach
+       <select class="form-control chosen-select types" data-placeholder="Choose a Language..." name="language_ids[]" id="language_id" multiple="multiple" required="" style="width: 100%;" onblur="processForm(this.form)">
+        <option value=""></option>
+               
+               @foreach (\App\Language::all() as $lang)
+
+    
+
+
+    <option value="{{ $lang->id }}"
+            {{ isset($data->getCandidateLang) && in_array( $lang->id, $data->getCandidateLang->pluck('id')->toArray()) ? 'selected' : '' }}>
+        {{ $lang->name }}</option>
+@endforeach
               </select>
             </div>
             <!--witpostslid-->
            
             <div class="col-sm-12 airports witpostslid" style="padding-bottom: 13px;padding-top: 13px:width:100%">
-              <select class="form-control requirments" id="eductional_level" name="eductional_level" required="" style="width: 90%;" onblur="processForm(this.form)">
-               <option selected="">Eduction</option>
-                <option >High school</option>
-                <option >Undergraduate </option>
-                <option >University Graduate </option>
-                <option >Masters</option>
+              <select class="form-control requirments" id="eductional_level" name="Eductionlevel" required="" style="width: 90%;" onblur="processForm(this.form)">
+
+                   @if(is_null($data->Eductionlevel ))
+                 <option selected="" disabled="disabled" >Choose a Eduction level... </option>
+             <option value="High school">High school</option>
+                <option value="Undergraduate">Undergraduate </option>
+                <option  value="University Graduate">University Graduate </option>
+                <option value="Masters">Masters</option>>
+               @else
+
+
+              <option value="High school" {{ $data->Eductionlevel =='High school'  ? 'selected' : '' }}> High school</option>
+
+  <option value="High school" {{ $data->Eductionlevel =='High school' ? 'High school<' : '' }}> High school</option>
+
+    <option value="University Graduate" {{ $data->Eductionlevel =='University Graduate'  ? 'selected' : '' }}> University Graduate</option>
+
+     <option value="Masters" {{ $data->Eductionlevel =='Masters'  ? 'selected' : '' }}> Masters</option>
+
+     @endif
               </select>
             </div>
            
@@ -307,24 +366,30 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
             <!--witpostslid-->
             
             <div class="col-sm-12 airports witpostslid">
-              <select class="form-control chosen-select types" name="skill_ids[]" id="skill_ids" multiple="multiple" required="" style="width: 90%;" onblur="processForm(this.form)">
-              <option value="" disabled selected>Choose your Skills</option>
-                @foreach(\App\Skills::all() as $skill)
-                  <option value="{{$skill->id}}">{{$skill->name}}</option>
-                @endforeach
+             <select class="form-control chosen-select types" data-placeholder="Choose a Skill.." name="skill_ids[]" id="skill_ids" multiple="multiple" required="" style="width: 90%;" onblur="processForm(this.form)">
+              
+                @foreach (\App\Skills::all() as $Skills)
+
+      <option value=""></option>
+
+
+    <option value="{{ $Skills->id }}"
+            {{ isset($data->getCandidateSkill) && in_array( $Skills->id, $data->getCandidateSkill->pluck('id')->toArray()) ? 'selected' : '' }}>
+        {{ $Skills->name }}</option>
+@endforeach 
               </select>
             </div>
 
-            <div class="col-sm-12 airports witpostslid">
+            <div class="col-sm-12 airports witpostslid" style="margin-top:10px">
               <input type="text" class="form-control requirments" placeholder="other skills">
             </div>
 
             <!--witpostslid-->
             
-            <div class="col-sm-12 airports witpostslid">
+            <div class="col-sm-12 airports witpostslid" style="margin-top:10px">
 
             <textarea class="form-control requirments"  name="descripe_yourself" 
-            placeholder="describe your self in one sentence" value="{{$data->descripe_yourself}}" onblur="processForm(this.form)"></textarea>
+            placeholder="describe your self in one sentence" value="{{$data->descripe_yourself}}" onblur="processForm(this.form)">{{$data->descripe_yourself}}</textarea>
               
             </div>
             <!--witpostslid-->
@@ -347,10 +412,11 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
           <!--row--> 
           
         </div>
-        
+        </div>
         <!--tab-pane-->
         
-        <div role="tabpanel" class="tab-pane nonebac" id="step-4">
+        <div id="step-4">
+        <div role="tabpanel" class="tab-pane nonebac" >
           <div class="headtop nonbord borderbox">
             <div class="stapson active"><span>3</span>
               <h4 class="personalinfo">job expectations</h4>
@@ -364,10 +430,10 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
             <div class="row">
               
               <label class="col-sm-3 airports cololabox">
-                <input type="radio" value="1" name="looking_for_job" onblur="processForm(this.form)">
+                <input type="radio" name="looking_for_job" onblur="processForm(this.form)" value="1" {{ $data->looking_for_job == '1' ? 'checked' : ''}}>
                 <span class="label-text" >yes</span> </label>
               <label class="col-sm-3 airports cololabox">
-                <input type="radio" value="0" name="looking_for_job" onblur="processForm(this.form)">
+                <input type="radio"  name="looking_for_job" onblur="processForm(this.form)" value="0" {{ $data->looking_for_job == '0' ? 'checked' : ''}}>
                 <span class="label-text">no</span> </label>
             </div>
             <!--row--> 
@@ -378,7 +444,7 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
             <select class="form-control requirments" name="job_id" id="job_id" required="" style="width: 90%;" onblur="processForm(this.form)">
               <option selected="" disabled="disabled">desired job</option>
                 @foreach(\App\Job::all() as $job)
-                  <option value="{{$job->id}}">{{$job->name}}</option>
+                   <option value="{{ $job->id }}" {{ $job->id == $data->job->id ? 'selected' : '' }}>{{ $job->name }}</option>
                 @endforeach
             </select>
           </div>
@@ -398,33 +464,43 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
           <div class="divwits">
             <select class="form-control requirments" id="currency_id" name="currency_id" required="" style="width: 90%;" onblur="processForm(this.form)">
               <option selected=""> currency</option>
-                  @foreach(\App\Currency::all() as $currency)
-                    <option value="{{$currency->id}}">{{$currency->name}}</option>
-                  @endforeach
+            @if( !is_null($data->currency ))
+  
+              @foreach(\App\Currency::all() as $Currency)
+                <option value=""></option>
+                             <option value="{{ $Currency->id }}" {{ $Currency->id == $data->currency->id ? 'selected' : '' }}>{{ $Currency->name }}</option>
+
+              @endforeach
+              @else
+              @foreach(\App\Currency::all() as $Currency)
+              <option value=""></option>
+               <option value="{{ $Currency->id }}"> {{ $Currency->name }}</option>
+@endforeach
+@endif    
                 </select>
-            </select>
+        
           </div>
           <!--divwits-->
           <div class="divwits" style="margin-bottom: 15px;">
             <select class="form-control requirments" id="prefered_location_id" name="prefered_location_id" required="" style="width: 90%;" onblur="processForm(this.form)">
-              <option selected="">where do you wish to work at ?</option>
+              
                   @foreach(\App\Country::all() as $country)
                     <option value="{{$country->id}}">{{$country->name}}</option>
                   @endforeach
                 </select>
-            </select>
+         
           </div>
           <!--divwits-->
           
           <div class="divwits" style="margin-bottom: 15px;">
-            <select class="form-control chosen-select types" name="prefered_location_ids[]" multiple="multiple" required="" style="width: 90%;" onblur="processForm(this.form)">
-              
+             
+               <select class="form-control chosen-select types" data-placeholder="you can select multicountries you wish to work at." name="prefered_location_ids[]" id="prefered_location_ids" multiple="multiple" required="" style="width: 100%;" onblur="processForm(this.form)">
                 <option value="" disabled selected>you can select multicountries you wish to work at</option>
                     @foreach(\App\Country::all() as $country)
                       <option value="{{$country->id}}">{{$country->name}}</option>
                     @endforeach
                   </select>
-            </select>
+           
           </div>
           <!--divwits-->
           
@@ -432,10 +508,7 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
           <!--divwits-->
           
           <div class="divwits">
-            <select class="form-control requirments" name="keywords[]" required="" onblur="processForm(this.form)">
-              <option selected="" style="width: 90%;" > keywords</option>
-              <option value="4" > type of position</option>
-            </select>
+          <input type="text" class="form-control requirments" name="keyword"  placeholder="keyword" value="{{$data->keyword}}" autocomplete="off"  onblur="processForm(this.form)">
           </div>
           <!--divwits-->
           
@@ -457,8 +530,9 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
           
         </div>
         <!--tab-pane-->
-        
-        <div role="tabpanel" class="tab-pane nonebac" id="step-5">
+        </div>
+        <div id="step-5">
+        <div role="tabpanel" class="tab-pane nonebac" >
           <div class="headtop nonbord borderbox">
             <div class="stapson active"><span>4</span>
               <h4 class="personalinfo">Experience</h4>
@@ -467,13 +541,14 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
           </div>
           <!--borderbox-->
           
-          <div class="divwits">
+      @if($data->user->experience->isEmpty())
+        <div class="divwits">
             <div class="row">
              
               <div class="col-sm-6 binputs">
               <input required="" type="text" style="background-color: transparent;" 
               class="form-control requirments calendar" name="start_date"
-               placeholder="from" value="{{$data->start_date}}"  onfocus="(this.type='date')"/>
+               placeholder="from" value=""  onfocus="(this.type='date')"/>
  
                
               </div>
@@ -481,7 +556,7 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
                 <div class="col-sm-6 binputs">
               <input required="" type="text" style="background-color: transparent;" 
               class="form-control requirments calendar" name="end_date" 
-              placeholder="to" value="{{$data->end_date}}"  onfocus="(this.type='date')"/>
+              placeholder="to" value=""  onfocus="(this.type='date')"/>
  
              
              
@@ -499,7 +574,7 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
           
           <div class="divwits">
             <input type="text" class="form-control requirments" 
-            name="company_name"  value="{{$data->company_name}}" placeholder="   company/family name" onblur="processForm(this.form)">
+            name="company_name"  value="" placeholder="   company/family name" onblur="processForm(this.form)">
           </div>
           <!--divwits-->
           
@@ -511,7 +586,7 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
                       <option value="{{$country->id}}">{{$country->name}}</option>
                     @endforeach
                   </select>
-            </select>
+          
           </div>
 
              <div class="divwits">
@@ -521,23 +596,119 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
                     <option value="{{$nation->id}}">{{$nation->name}}</option>
                   @endforeach
                 </select>
+            
+          </div>
+          <!--divwits-->
+          
+          <div class="divwits " style="margin-top:10px" >
+            <input type="text" class="form-control requirments" name="salarymaybe"
+            value=""  placeholder="salary may be" onblur="processForm(this.form)">
+          </div>
+          <!--divwits-->
+          
+          <div class="divwits" style="margin-top:10px">
+          <textarea class="form-control requirments" name="role" 
+          placeholder=" what is your tasks in company"    value="" onblur="processForm(this.form)"></textarea>
+ 
+          </div>
+          @else
+              <div class="divwits">
+            <div class="row">
+             
+              <div class="col-sm-6 binputs">
+              <input required="" type="text" style="background-color: transparent;" 
+              class="form-control requirments calendar" name="start_date"
+
+               placeholder="from" value=" {{isset($data->user->experience[0]->start_date) ? $data->user->experience[0]->start_date: ''}}"  onfocus="(this.type='date')"/>
+ 
+               
+              </div>
+            
+                <div class="col-sm-6 binputs">
+              <input required="" type="text" style="background-color: transparent;" 
+              class="form-control requirments calendar" name="end_date" 
+              placeholder="to" value=" {{isset($data->user->experience[0]->end_date) ? $data->user->experience[0]->end_date: ''}}"  onfocus="(this.type='date')"/>
+ 
+             
+             
+              </div>
+
+
+
+            </div>
+            <!--row--> 
+          </div>
+          <!--divwits-->
+          
+       
+          <!--divwits-->
+          
+          <div class="divwits">
+            <input type="text" class="form-control requirments" 
+            name="company_name"  value=" {{isset($data->user->experience[0]->company_name) ? $data->user->experience[0]->company_name: ''}}" placeholder="   company/family name" onblur="processForm(this.form)">
+          </div>
+          <!--divwits-->
+          
+          <div class="divwits">
+           <select class="form-control requirments" id="work_country_id" name="work_country_id" required="" style="width: 90%;" onblur="processForm(this.form)">
+             
+              <option selected=""> Countries</option>
+                 
+                             @if( !is_null($data->user->experience[0]->experincecountry ))
+  
+              @foreach(\App\Country::all() as $Country)
+                <option value=""></option>
+                             <option value="{{ $Country->id }}" {{ $Country->id == $data->user->experience[0]->experincecountry->id ? 'selected' : '' }}>{{ $Country->name }}</option>
+
+              @endforeach
+              @else
+             @foreach(\App\Country::all() as $Country)
+              <option value=""></option>
+               <option value="{{ $Country->id }}"> {{ $Country->name }}</option>
+@endforeach
+@endif   
+                  </select>
+           
+          </div>
+
+             <div class="divwits">
+          <select class="form-control requirments" name="employer_nationality_id" id="emp_nation_id" required="" style="width: 90%;" onblur="processForm(this.form)">
+              <option selected="">Employer Nationality</option>
+
+
+
+                             @if( !is_null($data->user->experience[0]->Empnationality ))
+  
+              @foreach(\App\Nationality::all() as $nation)
+                <option value=""></option>
+                             <option value="{{ $nation->id }}" {{ $nation->id == $data->user->experience[0]->Empnationality->id ? 'selected' : '' }}>{{ $nation->name }}</option>
+
+              @endforeach
+              @else
+       @foreach(\App\Nationality::all() as $nation)
+                    <option value="{{$nation->id}}">{{$nation->name}}</option>
+                  @endforeach
+@endif 
+                  @foreach(\App\Nationality::all() as $nation)
+                    <option value="{{$nation->id}}">{{$nation->name}}</option>
+                  @endforeach
+               
             </select>
           </div>
           <!--divwits-->
           
-          <div class="divwits">
-            <input type="text" class="form-control requirments" name="salary"
-            value="{{$data->salary}}"  placeholder="salary may be" onblur="processForm(this.form)">
+          <div class="divwits" style="margin-top:10px">
+            <input type="text" class="form-control requirments" name="salarymaybe"
+            value="{{isset($data->user->experience[0]->salary) ? $data->user->experience[0]->salary: ''}}"  placeholder="salary may be" onblur="processForm(this.form)">
           </div>
           <!--divwits-->
           
-          <div class="divwits">
+          <div class="divwits" style="margin-top:10px">
           <textarea class="form-control requirments" name="role" 
-          placeholder=" what is your tasks in company"    value="{{$data->role}}" onblur="processForm(this.form)"></textarea>
+          placeholder=" what is your tasks in company"    value="{{isset($data->user->experience[0]->role) ? $data->user->experience[0]->role: ''}}" onblur="processForm(this.form)">{{isset($data->user->experience[0]->role) ? $data->user->experience[0]->role: ''}}</textarea>
  
           </div>
-          <!--divwits-->
-          
+          @endif
           <div class="divwits">
             <div class="row">
               <div class="col-sm-6  stepotw">
@@ -554,8 +725,10 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
         </div>
         
         <!--tab-pane-->
-        
-        <div role="tabpanel" class="tab-pane nonebac witsteptow" id="step-6">
+        </div>
+      </div>
+        <div id="step-6">
+        <div role="tabpanel" class="tab-pane nonebac witsteptow" >
           <div class="inputbox margmadia nonmegtext nonmerg">
             <h4 class="title-con entea ">Broadcast your talent</h4>
             <h5 class="title-con entea">Introduce yourself through a video,raise your chance of getting hired fast </h5>
@@ -602,7 +775,10 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
           <div class="divwits">
             <div class="row">
               <div class="col-sm-6 clickupload"><input type="file" id="video_file" style="display: none;" name="video_file"> <a href="#" data-toggle="modal" data-target="#myMo" class="file_input largeredbtn" onblur="processForm(this.form)">Upload Video</a> </div>
-              <div class="col-sm-6 clickupload"> <a href="#" data-toggle="modal" data-target="#myModa2" class="largeredbtn" onblur="processForm(this.form)">Record Video</a> </div>
+              <div class="col-sm-6 clickupload">
+              <a href="#" data-toggle="modal" data-target="#record_video" class="largeredbtn back" onblur="processForm(this.form)"> <i class="fas fa-video" ></i> record a video</a>
+                   </div>
+              
             </div>
             <!--row--> 
             
@@ -618,7 +794,9 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
                   with each step</span> </div>
               </div>
               <div class="col-sm-2  stepotw"> <a href="#" id="step-5-back" class="largeredbtn back"> back</a> </div>
-              <div class="col-sm-2  stepotw"> <a href="#" id="step-6-next" class="largeredbtn">finish </a> </div>
+                <div class="col-sm-2  stepotw">
+              <button type="submit" data-toggle="modal" data-target="#myModa3"  class="largeredbtn"> Finsih</button>
+            </div>
             </div>
             <!--row--> 
             
@@ -628,66 +806,7 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
         </div>
         <!--tab-pane-->
         
-        <div role="tabpanel" class="tab-pane nonebac" id="step-7">
-          <div class="inputbox margmadia nonmegtext nonmerg">
-            <h4 class="title-con entea ">almost done !</h4>
-            <h5 class="title-con entea">reveiw your application</h5>
-          </div>
-          <!--nonmegtext-->
-          
-          <div class="row">
-            <div class="col-sm-8 sendvad">
-              <div class="innertabs">
-                <div class="divwits">
-                  <label class="airports cololabox personal-in">
-                    <input type="checkbox" name="checkbox">
-                    <span class="label-text">personal information</span> </label>
-                </div>
-                <!--divwits-->
-                
-                <div class="divwits">
-                  <label class="airports cololabox personal-in">
-                    <input type="checkbox" name="checkbox">
-                    <span class="label-text"> job expectations</span> </label>
-                </div>
-                <!--divwits-->
-                
-                <div class="divwits">
-                  <label class="airports cololabox personal-in">
-                    <input type="checkbox" name="checkbox">
-                    <span class="label-text"> work  expectations</span> </label>
-                </div>
-                <!--divwits-->
-                
-                <div class="divwits">
-                  <label class="airports cololabox personal-in">
-                    <input type="checkbox" name="checkbox">
-                    <span class="label-text"> upload / record video</span> </label>
-                </div>
-                <!--divwits-->
-                
-                <div class="divwits">
-                  <label class="airports cololabox personal-in">
-                    <input type="checkbox" value="true" name="agreeBox">
-                    <span class="label-text"> iagree with the <a href="#" class="termsagreements">terms & agreements</a></span> </label>
-                </div>
-                <!--divwits--> 
-                
-              </div>
-              <!--innertabs--> 
-              
-            </div>
-            <!--sendvad-->
-            
-            <div class="col-sm-4 sendvad imgwith"> <img src="/images/sendvad.png">
-              <button type="submit" data-toggle="modal" data-target="#myModa3"  class="largeredbtn"> send</button>
-            </div>
-            <!--sendvad--> 
-            
-          </div>
-          <!--row--> 
-          
-        </div>
+  </div>
         
         <!--tab-pane--> 
         
@@ -701,6 +820,65 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
   
 </section>
 <!--section-->
+
+<div id="record_video" class="modal fade record_video stream" role="dialog">
+        <div class="modal-dialog ">
+            <!-- Modal content-->
+          <div class="modal-content inpudata">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Record your Video</h4>
+                </div>
+                <div class="modal-body inpudata">
+                    <div id="container">
+                        <div class="col-sm-12" hidden>
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-3">
+                                <label class="pull-right">:<span style="color: red;">*</span> </label>
+                            </div>
+                            <div class="col-sm-4 inpudata"  >
+                                <input type="text" name="video_title" id="video_title" class="form-control">
+                            </div>
+                        </div>
+                        <div class="in-iframe">
+                          <video id="gum" autoplay muted style="width: 100%;
+                          margin:0px 0px 0px 0px;background-color:black"></video>
+                          <video id="recorded" hidden style="width: 100%;
+                          margin: 10px 10px 10px;"></video>
+</div>
+<div class="divwits">
+            <div class="row" style="Background-color:#009df4">
+            <div class="col-sm-3 record-ve" style="margin-bottom:-30px">
+                            <button class=" largeredbtn"   id="record" ><i class="fas fa-video"></i>record</button>
+                            </div>
+                            <div class="col-sm-3 record-ve">
+                            <button class=" largeredbtn"  id="play" disabled> <i class="fas fa-play"></i>play</button>
+                            </div>
+                            <div class="col-sm-3 record-ve">
+                            <button class=" largeredbtn"  id="uploadv" disabled> <i class="fas fa-upload"></i>save</button>
+                            </div>
+                            <div class="col-sm-3 record-ve">
+                            <button class=" largeredbtn"  id="download" disabled><i class="fas fa-download"></i>Download</button>
+                       
+                            </div>
+</div>
+</div>
+                        <div class="row" id="progress_v" hidden>
+                            <div id="loader">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="lading"> uploading wait please ...</div>
+
+                        </div>
+                  
+
+
 
 <div id="myModal" class="modal fade">
   <div class="modal-dialog">
@@ -745,12 +923,14 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
   </div>
 </div>
 <!--myModa2-->
-
+{!! JsValidator::formRequest('App\Http\Requests\EditFullCanRegisterFormRequest', '.formloginRe'); !!}
 
 <!--myModa3-->
 
 @endsection
 @section('scripts')
+<script type="text/javascript" src="/vendor/jsvalidation/js/jsvalidation.js"></script>
+<script src="/dist/jquery.validate.js"></script>
 <script>
   $('.clear_all').on('click',function(){
     document.getElementById('full_cand_reg').reset();
@@ -762,7 +942,111 @@ class="form-control requirments calendar" name="birthdate"  value="{{$data->birt
     $('#video_file').click();
   });
 </script>
+<script type="text/javascript">
+    $(document).ready(function(){
 
+
+
+  $("#step-2-next").click(function(){
+
+ var form = $("#full_cand_reg");
+ console.log(form.valid());
+    if (form.valid() == true){
+      current_fs = $('#step-2');
+      next_fs = $('#step-3');
+      next_fs.show(); 
+      current_fs.hide();
+    }
+  });
+ 
+       
+
+         $('#step-2-back').click(function(){
+            current_fs = $('#step-3');
+            next_fs = $('#step-2');
+            next_fs.show(); 
+            current_fs.hide();
+        });
+
+           $("#step-3-next").click(function(){
+
+ var form = $("#full_cand_reg");
+ console.log(form.valid());
+    if (form.valid() == true){
+      current_fs = $('#step-3');
+      next_fs = $('#step-4');
+      next_fs.show(); 
+      current_fs.hide();
+    }
+  });
+ 
+       
+
+         $('#step-3-back').click(function(){
+            current_fs = $('#step-4');
+            next_fs = $('#step-3');
+            next_fs.show(); 
+            current_fs.hide();
+        });
+    
+
+               $("#step-4-next").click(function(){
+
+ var form = $("#full_cand_reg");
+ console.log(form.valid());
+    if (form.valid() == true){
+      current_fs = $('#step-4');
+      next_fs = $('#step-5');
+      next_fs.show(); 
+      current_fs.hide();
+    }
+  });
+ 
+       
+
+         $('#step-4-back').click(function(){
+            current_fs = $('#step-5');
+            next_fs = $('#step-4');
+            next_fs.show(); 
+            current_fs.hide();
+        });
+
+
+                       $("#step-5-next").click(function(){
+
+ var form = $("#full_cand_reg");
+ console.log(form.valid());
+    if (form.valid() == true){
+      current_fs = $('#step-5');
+      next_fs = $('#step-6');
+      next_fs.show(); 
+      current_fs.hide();
+    }
+  });
+ 
+       
+
+         $('#step-5-back').click(function(){
+            current_fs = $('#step-6');
+            next_fs = $('#step-5');
+            next_fs.show(); 
+            current_fs.hide();
+        });
+
+  $("#step-6-next").click(function(){
+
+ var form = $("#full_cand_reg");
+ console.log(form.valid());
+    if (form.valid() == true){
+      current_fs = $('#step-6');
+      next_fs = $('#step-7');
+      next_fs.show(); 
+      current_fs.hide();
+    }
+  });
+ 
+    });
+</script>
     <script>
 
 $(document).ready(function () {
@@ -802,7 +1086,299 @@ $("#eductional_level").select2({
                    allow_single_deselect: true, 
                    search_contains:true, });
  $(".types").trigger("chosen:updated");
- 
+
+
+var mediaSource = new MediaSource();
+        mediaSource.addEventListener('sourceopen', handleSourceOpen, false);
+        var mediaRecorder;
+        var recordedBlobs;
+        var sourceBuffer;
+
+        var gumVideo = document.querySelector('video#gum');
+        var recordedVideo = document.querySelector('video#recorded');
+
+
+        var recordButton = document.querySelector('button#record');
+        var playButton = document.querySelector('button#play');
+        var downloadButton = document.querySelector('button#download');
+        recordButton.onclick = toggleRecording;
+        playButton.onclick = play;
+        downloadButton.onclick = download;
+
+        // window.isSecureContext could be used for Chrome
+        var isSecureOrigin = location.protocol === 'https:' ||
+                location.hostname === 'localhost';
+        if (!isSecureOrigin) {
+
+            var alert_content='';
+            alert_content+='getUserMedia() must be run from a secure origin: HTTPS or localhost.' +
+                    '\n\nChanging protocol to HTTPS';
+
+            $('#alert_box').append(alert_content);
+            $('#record_video').modal('hide');
+
+            location.protocol = 'HTTPS';
+        }
+
+        var constraints = {
+            audio: true,
+            video: true
+        };
+
+        var uploadfiles = document.querySelector('button#uploadv');
+        uploadfiles.onclick = uploadFile;
+        //uploadfiles.addEventListener('change', function () {
+
+        //v/ar files = this.files;
+
+        // for(var i=0; i<files.length; i++){
+
+        //    uploadFile(this.files[i]); // call the function to upload the file
+
+        //  }
+
+        //}, false);
+
+
+        function uploadFile(){
+            $('#progress_v').show();
+            var blob = new Blob(recordedBlobs, {type: 'video/webm'});
+            var fileType = blob.type.split('/')[0] || 'audio';
+            var fileName = (Math.random() * 1000).toString().replace('.', '');
+            if (fileType === 'audio') {
+                fileName += '.' + (!!navigator.mozGetUserMedia ? 'ogg' : 'wav');
+            } else {
+                fileName += '.webm';
+            }
+            
+
+            var url = window.URL.createObjectURL(blob);
+    
+            var a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.upload = 'test.webm';
+            document.body.appendChild(a);
+            // a.click();
+
+            var surl = '/StoreVideo';
+
+            var xhr = new XMLHttpRequest();
+
+            var fd = new FormData();
+
+            xhr.open("POST", surl, true);
+
+            xhr.onreadystatechange = function() {
+
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                  $('#myModalcongratulation').modal('show');
+                  
+                  //  var alert_content='';
+                  //   alert_content+=' <div class="alert alert-success alert-dismissable fade in " id="profile_alert">';
+                  //   alert_content+=' <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
+                  //   alert_content+='<strong>{{trans('ocs/registration::massages/message.success.video_uploaded')}}</strong>';
+                  //   alert_content+=' </div>';
+                  
+                    $('#record_video').modal('hide');
+                    $('#video_data').val("{{asset('/candidates/videos/')}}"+'/'+fileName);
+                    return;
+                    // Every thing ok, file uploaded
+                    console.log(xhr.responseText); // handle response.
+
+
+                }
+                else
+
+                {
+
+                }
+
+            };
+
+            fd.append(fileType + '-filename', fileName);
+            fd.append(fileType + '-blob', blob);
+            fd.append('video_title',$('#video_title').val());
+            fd.append('_token','{{csrf_token()}}');
+            xhr.send(fd);
+
+
+        }
+
+        function handleSuccess(stream) {
+
+            recordButton.disabled = false;
+            console.log('getUserMedia() got stream: ', stream);
+            window.stream = stream;
+            if (window.URL) {
+                gumVideo.src = window.URL.createObjectURL(stream);
+            }
+            else {
+                gumVideo.src = stream;
+            }
+        }
+
+        function handleError(error) {
+
+            console.log('navigator.getUserMedia error: ', error);
+        }
+        $('.record_video').on('click',function(){
+
+            navigator.mediaDevices.getUserMedia(constraints).
+                    then(handleSuccess).catch(handleError);
+
+        });
+
+        $('.stream').on('hidden.bs.modal', function () {
+
+            $('#gum').hide();
+            $('#recorded').hide();
+            recordButton.textContent = 'record';
+            if (mediaStream.getVideoTracks().length && mediaStream.getVideoTracks()[0].stop) {
+    mediaStream.getVideoTracks().forEach(function(track) {
+        track.stop();
+    });
+}
+
+
+           // stream.getVideoTracks()[0].stop();
+        });
+
+
+
+
+
+        function handleSourceOpen(event) {
+            console.log('MediaSource opened');
+            sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vp8"');
+            console.log('Source buffer: ', sourceBuffer);
+        }
+
+        recordedVideo.addEventListener('error', function(ev) {
+            console.error('MediaRecording.recordedMedia.error()');
+
+            var alert_content='';
+            alert_content+='Your browser can not play\n\n' + recordedVideo.src
+                    + '\n\n media clip. event: ' + JSON.stringify(ev);
+
+            $('#alert_box').append(alert_content);
+            $('#record_video').modal('hide');
+
+        }, true);
+
+        function handleDataAvailable(event) {
+
+            if (event.data && event.data.size > 0) {
+                recordedBlobs.push(event.data);
+            }
+        }
+
+        function handleStop(event) {
+
+            console.log('Recorder stopped: ', event);
+        }
+
+        function toggleRecording() {
+         
+
+            if (recordButton.textContent === 'record') {
+                startRecording();
+            }
+            else
+            {
+                stopRecording();
+                recordButton.textContent = 'record';
+                playButton.disabled = false;
+                downloadButton.disabled = false;
+                uploadfiles.disabled = false;
+
+
+            }
+        }
+
+        function startRecording() {
+
+
+var recorder = new window.MediaRecorder(stream);
+            $('#gum').show();
+            recordedBlobs = [];
+            var options = {mimeType: 'video/webm;'};
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+
+                console.log(options.mimeType + ' is not Supported');
+                options = {mimeType: 'video/webm;codecs=vp8'};
+                if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                    console.log(options.mimeType + ' is not Supported');
+                    options = {mimeType: 'video/webm'};
+                    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                        console.log(options.mimeType + ' is not Supported');
+                        options = {mimeType: ''};
+                    }
+                }
+            }
+
+            try
+            {
+              console.log("StartRecord");
+              mediaRecorder = new MediaRecorder(window.stream, options);
+
+            }
+
+            catch (e)
+            {
+              console.log("StartRecord Wrong");
+                console.error('Exception while creating MediaRecorder: ' + e);
+                var alert_content='';
+                alert_content+='Exception while creating MediaRecorder: '
+                        + e + '. mimeType: ' + options.mimeType;
+                $('#alert_box').append(alert_content);
+                $('#record_video').modal('hide');
+
+                return;
+            }
+            console.log('Created MediaRecorder', mediaRecorder, 'with options', options);
+            recordButton.textContent = 'Stop record';
+            playButton.disabled = true;
+            downloadButton.disabled = true;
+            uploadfiles.disabled = true;
+
+            mediaRecorder.onstop = handleStop;
+            mediaRecorder.ondataavailable = handleDataAvailable;
+            mediaRecorder.start(10); // collect 10ms of data
+            console.log('MediaRecorder started', mediaRecorder);
+        }
+
+        function stopRecording() {
+            // $('#gum').hide();
+            mediaRecorder.stop();
+            console.log('Recorded Blobs: ', recordedBlobs);
+            recordedVideo.controls = true;
+        }
+
+        function play() {
+          $('#gum').hide();
+            $('#recorded').show();
+            var superBuffer = new Blob(recordedBlobs, {type: 'video/webm'});
+            recordedVideo.src = window.URL.createObjectURL(superBuffer);
+        }
+
+        function download() {
+
+            var blob = new Blob(recordedBlobs, {type: 'video/webm'});
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'test.webm';
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(function() {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 100);
+        }
+
+
 var player = videojs("myVideo", {
     controls: true,
     width: 580,
@@ -860,23 +1436,10 @@ console.log( player.recordedData);
 
 
  });
-// function default_value($m)
-// {
-//  //var N=document.getElementById($m).innerHTML;
-//  var check = $("#"+$m).val();
 
-//     if(check !="")
-//     {
-//       alert("dddd");
-//       document.getElementById("Points").innerHTML = 5+parseInt(document.getElementById("Points").innerHTML);
-//     }
-    
- 
-
-// }
 function processForm(form) {
   
-  document.getElementById("Points").innerHTML=0;
+
   document.getElementById("Points2").innerHTML=0;
   document.getElementById("Points3").innerHTML=0;
   document.getElementById("Points4").innerHTML=0;
@@ -889,20 +1452,20 @@ if(control.value !="" && control.value !=0)
 {
 if(control.name=="logo" || control.name=="cv_path" )
 {
-  document.getElementById("Points").innerHTML = 10+parseInt(document.getElementById("Points").innerHTML);
-  document.getElementById("Points2").innerHTML = 10+parseInt(document.getElementById("Points").innerHTML);
-  document.getElementById("Points3").innerHTML = 10+parseInt(document.getElementById("Points").innerHTML);
-  document.getElementById("Points4").innerHTML = 10+parseInt(document.getElementById("Points").innerHTML);
-  document.getElementById("Points5").innerHTML = 30+parseInt(document.getElementById("Points").innerHTML);
+  
+  document.getElementById("Points2").innerHTML = 10+parseInt(document.getElementById("Points2").innerHTML);
+  document.getElementById("Points3").innerHTML = 10+parseInt(document.getElementById("Points2").innerHTML);
+  document.getElementById("Points4").innerHTML = 10+parseInt(document.getElementById("Points2").innerHTML);
+  document.getElementById("Points5").innerHTML = 30+parseInt(document.getElementById("Points2").innerHTML);
 }
 else
 {
 
-  document.getElementById("Points").innerHTML = 5+parseInt(document.getElementById("Points").innerHTML);
-  document.getElementById("Points2").innerHTML = 5+parseInt(document.getElementById("Points").innerHTML);
-  document.getElementById("Points3").innerHTML = 5+parseInt(document.getElementById("Points").innerHTML);
-  document.getElementById("Points4").innerHTML = 5+parseInt(document.getElementById("Points").innerHTML);
- document.getElementById("Points5").innerHTML = 30+parseInt(document.getElementById("Points").innerHTML);
+ 
+  document.getElementById("Points2").innerHTML = 5+parseInt(document.getElementById("Points2").innerHTML);
+  document.getElementById("Points3").innerHTML = 5+parseInt(document.getElementById("Points2").innerHTML);
+  document.getElementById("Points4").innerHTML = 5+parseInt(document.getElementById("Points2").innerHTML);
+ document.getElementById("Points5").innerHTML = 30+parseInt(document.getElementById("Points2").innerHTML);
 }
 
  }   // Do something with the control

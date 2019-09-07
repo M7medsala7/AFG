@@ -17,13 +17,14 @@ use App\Http\Requests\EditEmployerAdminFromRequests;
 class EmployerController extends Controller
 {
  
-    public function index()
+  public function index()
     {
-     $allEmployer= User::where('type','=','employer')->orderBy('created_at','DESC')->get();
+               $allEmployer=User::whereHas('EmpInfo', function ($query)  {
+    $query->orderBy('employer_profiles.created_at','DESC');
+})->get();
     return view('DashbordAdminPanel.employer.index',compact('allEmployer'));
     
     }
-
 
 
  public function deletemultipleemployer(Request $request)
@@ -31,6 +32,8 @@ class EmployerController extends Controller
 
      $ids = $request->ids;
         User::whereIn('id',explode(",",$ids))->delete();
+  EmployerProfile::whereIn('user_id',explode(",",$ids))->delete();
+         PostJob::whereIn('created_by',explode(",",$ids))->delete();
         return response()->json(['status'=>true,'message'=>"Employer deleted successfully."]);
         
     }

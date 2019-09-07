@@ -52,9 +52,10 @@ class HomeController extends Controller
       
            try
            {
+
                 if(\Auth::user())
                 {
-                    if(\Auth::user()->type=='employer')
+                    if(\Auth::user()->type=='employer' || \Auth::user()->type=='client')
                     {
                         $Packages=DB::table('package_user')
                         ->where('users_id','=',\Auth::user()->id)
@@ -112,10 +113,10 @@ class HomeController extends Controller
         try
         {
 
+
             $RecommandJobs=[];
             $CandidateInfo=\Auth::user()->CanInfo()->first();
-        
-        
+
             if (\Auth::user()->Birthday !=null)
             $age=\Auth::user()->getAge(\Auth::user()->Birthday);
             else
@@ -162,16 +163,27 @@ class HomeController extends Controller
 
             }
         
-            //dd($RecommandJobs);
+            
             if (\Request::ajax(['job']==1)) {
                 
                 return Response::json(\View::make('Arabic.Candadties.matchingjobs', array('MatchingJobs' => $MatchingJobs))->render());
             }
         
         
-        
-    
-        return view('Arabic.Candadties.CandadtiesDashboard',compact('age','Candidates','RecommandJobs','jobName','CandidateInfo'),array('MatchingJobs' => $MatchingJobs), array('Candidates' => $Candidates), array('RecommandJobs' => $RecommandJobs));
+        $count=count($RecommandJobs);
+$popo=$count;
+    if($count>=6)
+{
+$count=6;
+}
+else
+{
+$count=count($RecommandJobs);
+}
+
+
+
+        return view('Arabic.Candadties.CandadtiesDashboard',compact('count','age','popo','Candidates','RecommandJobs','jobName','CandidateInfo'),array('MatchingJobs' => $MatchingJobs), array('Candidates' => $Candidates), array('RecommandJobs' => $RecommandJobs));
     }
     catch(Exception $e) 
 
@@ -441,6 +453,8 @@ class HomeController extends Controller
     //employer dashboard
     public function employerDashboard()
     {
+      
+
         try
         {
             $employerJobs = \Auth::user()->postJobs;
@@ -463,6 +477,7 @@ class HomeController extends Controller
             ->select('cities.name  AS cityName' )
             ->where('user_id',\Auth()->user()->id)->get();
              $jobStatstics = \Auth::user()->postJobs->first();
+
              $ownCan=CandidateInfo::where('Agency_ID',\Auth::user()->id)->get();
 
              $PackagesUser=PackagesUser::join('packages','packages.id','=','package_user.packages_id')
@@ -529,9 +544,16 @@ if($PackagesUser != null || $PackagesUser != []){
         $Packageattr2=0;
         $Packageattr3=0;
                      
-     }    
+     }  
 
-            return view('employer.dashboard',compact('count','ownCan','employerJobsfor','employerJobs','Remain1','Remain2','Remain3','Packageattr1','Packageattr2','Packageattr3','PackagesUser','countrynames','citynames','employerJobsShow','jobStatstics'));
+    $allClients=User::whereHas('EmpInfo', function ($query)  {
+            $query->where('Agency_ID', \Auth::user()->id);
+            $query->where('DeletedByAgency','!=', 1);
+        })
+        ->where('type','client')->get();
+
+
+            return view('employer.dashboard',compact('count','ownCan','employerJobsfor','employerJobs','Remain1','Remain2','Remain3','Packageattr1','Packageattr2','Packageattr3','PackagesUser','countrynames','citynames','employerJobsShow','jobStatstics','allClients'));
        
         }
         catch(Exception $e) 
@@ -545,6 +567,7 @@ if($PackagesUser != null || $PackagesUser != []){
 
 
     //next top candidates
+       //next top candidates
     public function getNextTopCandidates(Request $request)
     {
 
@@ -598,7 +621,7 @@ $jobid=\App\PostJob::where('id',$request['jobId'])->select('job_id')->first();
         try
         {
             $jobId= $request['jobId'];
-            $similarJobs =\App\PostJob::where('job_id',$request['jobId'])->where('id','>',$request['post_job_id'])->get();
+            $similarJobs =\App\PostJob::where('job_id',$request['jobId'])->get();
             $similarJobs->take(6);
             $html = view('employer.load_more_j_c',compact('similarJobs'))->render();
             return ['html'=>$html,'new_last_id'=>$similarJobs->last()->id];

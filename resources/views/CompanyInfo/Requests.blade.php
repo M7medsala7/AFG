@@ -2,7 +2,11 @@
 
 @section('content')
 
-
+@if(Session::get('locale')=="Ar"|| Session::get('locale')=="ar")
+{{App::setLocale('ar')}}
+@else
+{{App::setLocale('en')}}
+@endif
 <section class="contactus">
   <div class="container">
     <div class="inner-contacts">
@@ -13,7 +17,7 @@
     </div>
 @endif
 
-      <h2 class="textcandidate conmerg">you Can submit your request </h2>
+      <h2 class="textcandidate conmerg"> {{trans('app.you_Can_submit_your_request')}} </h2>
 
 
 
@@ -23,31 +27,31 @@
    <form  action="/sendyourrequest" method="POST" class="formlogin" enctype="multipart/form-data">
         {{csrf_field()}}	 
           <div class="divwits">
-            <label class="desired" >Name</label>
-            <input type="text" class="form-control" placeholder="Your Name" name="name">
+            <label class="desired" > {{trans('app.Name')}}</label>
+            <input type="text" class="form-control" placeholder="{{trans('app.Name')}}" name="name">
           </div>
           <!--divwits-->
           
           <div class="divwits">
-            <label class="desired" >email address</label>
-            <input type="text" class="form-control" placeholder="email address" name="email" required="required">
+            <label class="desired" >  {{trans('app.email_address')}}</label>
+            <input type="text" class="form-control" placeholder="{{trans('app.email_address')}}" name="email" required="required">
           </div>
           <!--divwits-->
           
           <div class="divwits">
-            <label class="desired" >phone number</label>
-            <input type="text" class="form-control" placeholder="phone number" name="phone">
+            <label class="desired" > {{trans('app.phone_number')}}</label>
+            <input type="text" class="form-control" placeholder="{{trans('app.phone_number')}}" name="phone">
           </div>
           <!--divwits-->
           
           <div class="divwits">
-            <label class="desired" > your massage</label>
+            <label class="desired" >  {{trans('app.your_massage')}}</label>
             <textarea class="form-control" placeholder="type your message or inquiry here... " name="message"></textarea>
           </div>
           <!--divwits-->
           
           <div class="divwits mergbot">
-            <button type="submit" class="largeredbtn">submit </button>
+            <button type="submit" class="largeredbtn"> {{trans('app.submit')}}</button>
           </div>
           <!--divwits-->
           
@@ -63,10 +67,10 @@
     </div>
     <!--inner-contacts-->
     
-    <h3 class="textcandidate conmerg">Our contact </h3>
+    <h3 class="textcandidate conmerg"> {{trans('app.Our_contact')}}</h3>
     <div class="row">
       <div class="col-sm-4 contacts">
-        <div class="contacttext"> <i class="far fa-envelope"></i> <strong>email</strong><br>
+        <div class="contacttext"> <i class="far fa-envelope"></i> <strong> {{trans('app.email')}}</strong><br>
           <a >social@maidandhelper.com</a> </div>
         <!--textfooter--> 
         
@@ -74,7 +78,7 @@
       <!--//contacts-->
       
       <div class="col-sm-4 contacts">
-        <div class="contacttext"> <i class="fas fa-phone"></i> <strong>phone number</strong> <br>
+        <div class="contacttext"> <i class="fas fa-phone"></i> <strong>{{trans('app.phone_number')}}</strong> <br>
           <a > 00971556566883</a> </div>
         <!--textfooter--> 
         
@@ -82,7 +86,7 @@
       <!--//contacts-->
       
       <div class="col-sm-4 contacts">
-        <div class="contacttext"> <i class="fas fa-map-marker-alt"></i> <strong>Address</strong><br>
+        <div class="contacttext"> <i class="fas fa-map-marker-alt"></i> <strong> {{trans('app.Address')}}</strong><br>
           <p>Key Business center, Hyundai Show-Deira-Dubai, UAE</p>
         </div>
         <!--textfooter--> 

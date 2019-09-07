@@ -44,6 +44,17 @@
         {{ Session::get('flash') }}<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
     </div>
   @endif
+  @if(Session::has('flashlogin'))
+    <div class="alert alert-info">
+        you not login !!!!!!<a href="/loginEmployer">press here to login</a><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    </div>
+  @endif
+  @if(Session::has('flashcandidate'))
+    <div class="alert alert-info">
+        you are candidate register as employer before <a href="/register/employer">press here to register</a><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    </div>
+  @endif
+  
     <div class="inner-contacts">
       <h2 class="textcandidate conmerg">Our Packages</h2>
       <div class="col-sm-12 contacts">

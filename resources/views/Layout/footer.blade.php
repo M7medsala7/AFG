@@ -1,7 +1,8 @@
-<footer class="footer">
+<footer class="footer" style="">
+  <div class="container">
   <div class="container">
     <div class="textlogo"><img src="/images/logofot.png" title="Maid & Helper">
-      <p> All rights reserved. آ© 2018  Maid & Helper </p>
+      <p>{{trans('app.rights')}}. آ© 2018  Maid & Helper </p>
     </div>
     <nav class="list-inline iconfot"> <a href="https://www.facebook.com/MaidnHelper/" class="fab fa-facebook-f" title="facebook"></a>
      <a href="https://twitter.com/Maidandhelper" class="fab fa-twitter" title="twitter"></a> 
@@ -12,7 +13,7 @@
  <a href="#" class=""fab fa-whatsapp whatsapp" title="whatsapp" style="background: #03c12d"></a>--> 
       
     </nav>
-    <nav class="list-unstyled"> <a href="/aboutus"> About </a> <a href="/contact"> Contact Us </a> <a href="#"> find us on </a> </nav>
+    <nav class="list-unstyled"> <a href="/aboutus">{{trans('app.About')}}  </a> <a href="/contact">  {{trans('app.ContactUs')}} </a> <a href="#">{{trans('app.finduson')}}  </a> </nav>
   </div>
   <!--//.container--> 
   

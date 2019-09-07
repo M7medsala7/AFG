@@ -22,8 +22,7 @@ class EmpRegisterFormRequest extends FormRequest
             
          
             
-            'email'=>'required|email|unique:users|confirmed',
-
+            'email'=>'required|email|unique:users',
 
             'password'=>'required',
         ];

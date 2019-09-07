@@ -39,7 +39,7 @@ class PaymentController extends Controller
     {
     try
         {
-           
+            
             if(\Auth::user()==null)
             {
                 Session::put('payment',1);

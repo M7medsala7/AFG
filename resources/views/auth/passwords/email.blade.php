@@ -48,7 +48,7 @@
   <div class="container">
     <div class="modal-content dal-conte dal-conte2 forget">
       <h2 class="textcandidate ">forger your password ?</h2>
-      <p class="viewsdriver"> truck driver congratulations truck driver congratulations truck </p>
+      <p class="viewsdriver"> To recover your account. We will send you email to reset your password </p>
       <form method="POST" action="{{ route('password.email') }}">
       {{ csrf_field() }}
         <div class="divwitsforget">

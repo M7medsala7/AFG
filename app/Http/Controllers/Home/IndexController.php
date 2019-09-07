@@ -19,14 +19,15 @@ use App\SuccessStories;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
-
+use Mail;
+use App;
 
 
 class IndexController extends Controller
 {
    public function index()
    {
-
+   
     $TotalJob= PostJob::count();
         $TotalCandidate= CandidateInfo::count();
         $TotalVideoCvs= CandidateInfo::where('vedio_path','!=',NULL)->count();
@@ -120,6 +121,7 @@ class IndexController extends Controller
         $type = $request['type'];
  $GLOBALS['jobsIndeed'] =array();
   $GLOBALS['summary'] =array();
+   $GLOBALS['jobrequrement'] =array();
    $GLOBALS['location'] =array();
    $GLOBALS['links'] =array();
     $GLOBALS['company'] =array();
@@ -130,10 +132,11 @@ class IndexController extends Controller
    $GLOBALS['CountjobsIndeedOM'] =array();
     $GLOBALS['CountjobsIndeedSa'] =array();
     $GLOBALS['CountjobsMaidCv'] =array();
+     $GLOBALS['CountjobsUsa'] =array();
  $GLOBALS['CountjobsIndeedAE'] =array();
 
  $GLOBALS['CountjobsIndeedQA'] =array();
-
+$GLOBALS['CountjobsIndeedGulftalent']=array();
     $candidateresult=array();
         $jobtitleresult=collect();
 $candidates= collect();
@@ -143,21 +146,105 @@ $candidates= collect();
 
 
 
-$jobfor=PostJob::select('job_for')->orderByRaw('FIELD(job_for, "Family", "Company", "Agency","Jobs In KSA","Jobs In Oman","Jobs In Qatar","Jobs In UAE","Maidcv.Com","Jobs In USA")','DESC')
+$jobfor=PostJob::select('job_for')->orderByRaw('FIELD(job_for, "Family", "Company", "Agency","Jobs In KSA","Jobs In Oman","Jobs In Qatar","Jobs In UAE","Maidcv.Com","Jobs In USA","GulfTalent")','DESC')
  ->distinct('job_for')->get();
 
  if($type =="I am Candidate" )
         {
           $client = new Client();
+          
+          
+          /////gulftalent
+          
+          
+                        $gulftalent = $client->request('GET', 'https://www.gulftalent.com/jobs/search?pos_ref='.$words.'');
+
+    $gulftalent->filter('div.title')->each(function ($node) {
+  
+
+
+ array_push( $GLOBALS['jobsIndeed'],$node->text());
+
+ array_push( $GLOBALS['CountjobsIndeedGulftalent'],$node->text());
+ 
+
+array_push( $GLOBALS['job_for'],'GulfTalent');
+
+array_push( $GLOBALS['currency'],NULL);
+array_push( $GLOBALS['minsalary'],NULL);
+array_push( $GLOBALS['maxsalary'],NUll);
+   
+  
+});
+
+ $gulftalent->filter('div.company-name')->each(function ($node) {
+  
+ array_push( $GLOBALS['company'],$node->text());
+
+
+  
+});
+
+
+
+
+$gulftalent->filter('div.location')->each(function ($node) {
+  
+ array_push( $GLOBALS['location'],$node->text());
+
+
+   
+  
+});
+
+
+                  for($i=0 ;$i<count($GLOBALS['CountjobsIndeedGulftalent']);$i++)
+{
+  try
+  {
+$pageCrawler=$gulftalent->filter('div.title')->eq($i)->text();
+$link = $gulftalent->selectLink($pageCrawler)->link();
+  
+    $lin = $client->click($link );
+
+
+     $crawlergulftalent = $client->request('GET', $lin->baseHref);
+
+array_push( $GLOBALS['links'],$lin->baseHref);
+
+   $summ=$crawlergulftalent->filter('p.jgt-collapsible')->text();
+
+array_push( $GLOBALS['summary'],$summ);
+  
+ // dd("llll",$GLOBALS['summary']);
+     $jobrequrement=$crawlergulftalent->filter('p.jgt-collapsible')->text();
+
+array_push( $GLOBALS['jobrequrement'],$jobrequrement);
+
+  
+  }
+
+  catch(\InvalidArgumentException $e) 
+  {
+    array_push( $GLOBALS['links'],'Na');
+     array_push( $GLOBALS['summary'],'NA');
+     array_push( $GLOBALS['jobrequrement'],'NA');
+  }
+
+}
+
+  
+
+//////Indeeed usa
 
     $crawler = $client->request('GET', 'https://www.indeed.com/jobs?q='.$words.'&l=');
 
     $crawler->filter('h2.jobtitle a')->each(function ($node) {
         
  array_push( $GLOBALS['jobsIndeed'],$node->text());
- //dd( $GLOBALS['jobsIndeed']);
-
  
+
+array_push( $GLOBALS['CountjobsUsa'],$node->text()); 
 
 array_push( $GLOBALS['job_for'],'Jobs in USA');
 
@@ -170,7 +257,7 @@ array_push( $GLOBALS['maxsalary'],NUll);
 
 
 
-          for($i=0 ;$i<count($GLOBALS['jobsIndeed']);$i++)
+          for($i=0 ;$i<count($GLOBALS['CountjobsUsa']);$i++)
 {
   try
   {
@@ -183,14 +270,18 @@ $link = $crawler->selectLink($pageCrawler)->link();
 
      $crawlerIndeedusa = $client->request('GET', $lin->baseHref);
 array_push( $GLOBALS['links'],$lin->baseHref);
-   $summ=$crawlerIndeedusa->filter('span.summary')->text()  ;
+
+   $summ=$crawlerIndeedusa->filter('div.jobsearch-JobComponent-description ')->text()  ;
+ 
 array_push( $GLOBALS['summary'],$summ);
+
   
   }
 
   catch(\InvalidArgumentException $e) 
   {
-    array_push( $GLOBALS['links'],'Na');
+
+  
      array_push( $GLOBALS['summary'],'NA');
   }
 
@@ -202,7 +293,7 @@ array_push( $GLOBALS['summary'],$summ);
 
 
 
-          for($i=0 ;$i<count($GLOBALS['jobsIndeed']);$i++)
+          for($i=0 ;$i<count($GLOBALS['CountjobsUsa']);$i++)
 {
   try
   {
@@ -217,7 +308,7 @@ array_push( $GLOBALS['summary'],$summ);
 
 }
 
-          for($i=0 ;$i<count($GLOBALS['jobsIndeed']);$i++)
+          for($i=0 ;$i<count($GLOBALS['CountjobsUsa']);$i++)
 {
   try
   {
@@ -234,7 +325,7 @@ array_push( $GLOBALS['summary'],$summ);
 
 
 
-
+//////indeedoman
 
  $crawler2 = $client->request('GET', 'https://om.indeed.com/jobs?q='.$words.'&l=');
 
@@ -269,21 +360,23 @@ $link = $crawler2->selectLink($pageCrawler)->link();
     $lin = $client->click($link );
 
 
-
      $crawlerIndeedOm = $client->request('GET', $lin->baseHref);
 array_push( $GLOBALS['links'],$lin->baseHref);
-   $summ=$crawlerIndeedOm->filter('span.summary')->text()  ;
+   $summ=$crawlerIndeedOm->filter('jobsearch-JobComponent-description')->text()  ;
+   
+   
 array_push( $GLOBALS['summary'],$summ);
   
   }
 
   catch(\InvalidArgumentException $e) 
   {
-    array_push( $GLOBALS['links'],'Na');
+    
      array_push( $GLOBALS['summary'],'NA');
   }
 
 }
+
 
 
 
@@ -359,14 +452,14 @@ $link = $crawler3->selectLink($pageCrawler)->link();
 
      $crawlerIndeedSa = $client->request('GET', $lin->baseHref);
 array_push( $GLOBALS['links'],$lin->baseHref);
-   $summ=$crawlerIndeedSa->filter('span.summary')->text()  ;
+   $summ=$crawlerIndeedSa->filter('div.jobsearch-JobComponent-description')->text()  ;
 array_push( $GLOBALS['summary'],$summ);
   
   }
 
   catch(\InvalidArgumentException $e) 
   {
-    array_push( $GLOBALS['links'],'Na');
+ 
      array_push( $GLOBALS['summary'],'NA');
   }
 
@@ -554,14 +647,14 @@ $link = $crawler5->selectLink($pageCrawler)->link();
 
      $crawlerIndeedAE = $client->request('GET', $lin->baseHref);
 array_push( $GLOBALS['links'],$lin->baseHref);
-   $summ=$crawlerIndeedAE->filter('span.summary')->text()  ;
+   $summ=$crawlerIndeedAE->filter('div.jobsearch-JobComponent-description')->text()  ;
 array_push( $GLOBALS['summary'],$summ);
   
   }
 
   catch(\InvalidArgumentException $e) 
   {
-    array_push( $GLOBALS['links'],'Na');
+   
      array_push( $GLOBALS['summary'],'NA');
   }
 
@@ -635,7 +728,7 @@ $link = $crawler6->selectLink($pageCrawler)->link();
 
      $crawlerIndeedQa = $client->request('GET', $lin->baseHref);
 array_push( $GLOBALS['links'],$lin->baseHref);
-   $summ=$crawlerIndeedQa->filter('span.summary')->text()  ;
+   $summ=$crawlerIndeedQa->filter('div.jobsearch-JobComponent-description')->text()  ;
 array_push( $GLOBALS['summary'],$summ);
   
   }
@@ -643,7 +736,6 @@ array_push( $GLOBALS['summary'],$summ);
   catch(\InvalidArgumentException $e) 
   {
 
-    array_push( $GLOBALS['links'],'Na');
      array_push( $GLOBALS['summary'],'NA');
   }
 
@@ -684,8 +776,8 @@ array_push( $GLOBALS['summary'],$summ);
 }
 
 
-
-               //dd( $GLOBALS['jobsIndeed']);
+//dd(count($GLOBALS['jobsIndeed']) ,count($GLOBALS['links']),count($GLOBALS['location']),count($GLOBALS['company']),count($GLOBALS['summary']),count($GLOBALS['job_for']));
+             
 
 for ($i=0; $i <count( $GLOBALS['jobsIndeed']) ; $i++) { 
 $jobIds = Job::where('name','=',$GLOBALS['jobsIndeed'][$i])->first();
@@ -822,7 +914,7 @@ foreach ($Canresult as $Canresul) {
 // dd($Canresult);
 $jobtitle= CandidateInfo::search($words)->with('job')->groupBy('job_id')->get();
 
-    $candidates=$candidates->sortByDesc('vedio_path');
+    $candidates=$candidates->sortByDesc('created_at');
 
             $jobcheck=0;
 $count=count($candidates);
@@ -895,7 +987,7 @@ foreach ($Canresult as $Canresul) {
 $jobtitle= CandidateInfo::search($words)->with('job')->groupBy('job_id')->get();
 
 
-$candidates=$candidates->sortByDesc('vedio_path');
+$candidates=$candidates->sortByDesc('created_at');
 
     
             $jobcheck=0;
@@ -1004,7 +1096,7 @@ catch(Exception $e)
    
 }
 
-
+//////filtersarch
 
     public function filtersearch (Request $request)
     {
@@ -1043,8 +1135,8 @@ $experince=json_decode($request->experince);
 
   $nationality=$request->nationality;
         $skills=$request->skills;
-
-         
+ $video=$request->video;
+      // dd($video);
 if($salary != [])
 {
   
@@ -1626,7 +1718,7 @@ if($Jobtitles !=[] && $Jobtitles[0] !="all" && $employertype !=[] && $salary !=[
 if($Jobtitles ==[] && $employertype !=[] && $employertype[0] =="all" && $salary !=[]   && $country  !="0" && $experince !=[])
 {
 
-// dd('l');
+
 
 
 
@@ -1669,7 +1761,7 @@ if($Jobtitles ==[] && $employertype !=[] && $employertype[0] =="all" && $salary 
 if($Jobtitles ==[] && $employertype !=[] && $employertype[0] =="all" && $salary ==[]   && $country  !="0" && $experince !=[])
 {
 
-// dd('l');
+
 
 
 
@@ -1709,7 +1801,7 @@ if($Jobtitles ==[] && $employertype !=[] && $employertype[0] =="all" && $salary 
 if($Jobtitles ==[] && $employertype !=[] && $employertype[0] =="all" && $salary ==[]   && $country  =="0" && $experince !=[])
 {
 
-// dd('l');
+
 
 
 
@@ -3390,7 +3482,7 @@ if( $words == 'undefined')
 
 //////JobTitles With Option
 
-if( $Jobtitles !=[] && $Jobtitles[0] =="all" && $salary ==[]   && $nationality  =="0" && $skills  =="0" && $country  =="0")
+if( $Jobtitles !=[] && $Jobtitles[0] =="all" && $salary ==[]   && $nationality  =="0" && $skills  =="0" && $country  =="0"  && $video=="all")
 
 
 {
@@ -3442,7 +3534,7 @@ if( $Jobtitles !=[] && $Jobtitles[0] =="all" && $salary ==[]   && $nationality  
 }
 
 
-if(  $Jobtitles !=[] && $Jobtitles[0] =="all" && $salary ==[]   && $nationality  =="0" && $skills  =="0" && $country  !="0")
+if(  $Jobtitles !=[] && $Jobtitles[0] =="all" && $salary ==[]   && $nationality  =="0" && $skills  =="0" && $country  !="0"  && $video=="all")
 {
  
 
@@ -3493,7 +3585,7 @@ if(  $Jobtitles !=[] && $Jobtitles[0] =="all" && $salary ==[]   && $nationality 
 
 
 
-if( $Jobtitles !=[] && $Jobtitles[0] =="all" && $salary !=[]   && $nationality  =="0" && $skills  =="0" && $country=="0")
+if( $Jobtitles !=[] && $Jobtitles[0] =="all" && $salary !=[]   && $nationality  =="0" && $skills  =="0" && $country=="0"  && $video=="all")
 {
 
 
@@ -3535,7 +3627,7 @@ if( $Jobtitles !=[] && $Jobtitles[0] =="all" && $salary !=[]   && $nationality  
 
 
 
-if( $Jobtitles !=[] && $Jobtitles[0] =="all"  && $salary !=[]   && $nationality  !="0" && $skills =="0" && $country=="0")
+if( $Jobtitles !=[] && $Jobtitles[0] =="all"  && $salary !=[]   && $nationality  !="0" && $skills =="0" && $country=="0"  && $video=="all")
 {
 
 
@@ -3582,7 +3674,7 @@ if( $Jobtitles !=[] && $Jobtitles[0] =="all"  && $salary !=[]   && $nationality 
 
 }
 
-if( $Jobtitles !=[] && $Jobtitles[0] =="all" && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country=="0")
+if( $Jobtitles !=[] && $Jobtitles[0] =="all" && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country=="0"  && $video=="all")
 {
 
 
@@ -3637,7 +3729,7 @@ if( $Jobtitles !=[] && $Jobtitles[0] =="all" && $salary !=[]   && $nationality  
 
 
 
-if($Jobtitles !=[] && $Jobtitles[0] =="all"  && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country!="0")
+if($Jobtitles !=[] && $Jobtitles[0] =="all"  && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country!="0" && $video=="all")
 {
 
 
@@ -3687,7 +3779,7 @@ if($Jobtitles !=[] && $Jobtitles[0] =="all"  && $salary !=[]   && $nationality  
 }
 
 ///// jobtitles without all
-if($Jobtitles !=[] && $Jobtitles[0] !="all" && $salary ==[]   && $nationality  =="0" && $skills  =="0" && $country  =="0")
+if($Jobtitles !=[] && $Jobtitles[0] !="all" && $salary ==[]   && $nationality  =="0" && $skills  =="0" && $country  =="0"  && $video=="all")
 {
  
 
@@ -3735,7 +3827,7 @@ for ($i=0;$i<count($Jobtitles);$i++) {
 
 }
 
-if($Jobtitles !=[] && $Jobtitles[0] !="all" && $salary ==[]   && $nationality  =="0" && $skills  =="0" && $country  !="0")
+if($Jobtitles !=[] && $Jobtitles[0] !="all" && $salary ==[]   && $nationality  =="0" && $skills  =="0" && $country  !="0"  && $video=="all")
 {
  
 
@@ -3783,7 +3875,7 @@ for ($i=0;$i<count($Jobtitles);$i++) {
 
 }
 
-if($Jobtitles !=[] && $Jobtitles[0] !="all" && $salary !=[]   && $nationality  =="0" && $skills  =="0" && $country=="0")
+if($Jobtitles !=[] && $Jobtitles[0] !="all" && $salary !=[]   && $nationality  =="0" && $skills  =="0" && $country=="0"  && $video=="all")
 {
 
 
@@ -3825,7 +3917,7 @@ if($Jobtitles !=[] && $Jobtitles[0] !="all" && $salary !=[]   && $nationality  =
 
 
 
-if($Jobtitles !=[]  && $Jobtitles[0] !="all"&& $salary !=[]   && $nationality  !="0" && $skills =="0" && $country=="0")
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"&& $salary !=[]   && $nationality  !="0" && $skills =="0" && $country=="0"  && $video=="all")
 {
 
 
@@ -3872,7 +3964,7 @@ if($Jobtitles !=[]  && $Jobtitles[0] !="all"&& $salary !=[]   && $nationality  !
 
 }
 
-if($Jobtitles !=[]  && $Jobtitles[0] !="all" && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country=="0")
+if($Jobtitles !=[]  && $Jobtitles[0] !="all" && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country=="0" && $video=="all")
 {
 
 
@@ -3928,7 +4020,7 @@ if($Jobtitles !=[]  && $Jobtitles[0] !="all" && $salary !=[]   && $nationality  
 
 
 
-if($Jobtitles !=[] && $Jobtitles[0] !="all" &&  $salary !=[]   && $nationality  !="0" && $skills !="0" && $country!="0")
+if($Jobtitles !=[] && $Jobtitles[0] !="all" &&  $salary !=[]   && $nationality  !="0" && $skills !="0" && $country!="0"  && $video=="all")
 {
 
 
@@ -3990,7 +4082,7 @@ if($Jobtitles !=[] && $Jobtitles[0] !="all" &&  $salary !=[]   && $nationality  
 /////////////////////nationality with option//////////////////
 
 
-if($Jobtitles ==[] &&   $salary ==[]   && $nationality  !="0" && $skills =="0" && $country=="0")
+if($Jobtitles ==[] &&   $salary ==[]   && $nationality  !="0" && $skills =="0" && $country=="0"  && $video=="all")
 {
 
 
@@ -4026,7 +4118,7 @@ if($Jobtitles ==[] &&   $salary ==[]   && $nationality  !="0" && $skills =="0" &
 
 }
 
-if($Jobtitles ==[] &&   $salary ==[]   && $nationality  !="0" && $skills =="0" && $country !="0")
+if($Jobtitles ==[] &&   $salary ==[]   && $nationality  !="0" && $skills =="0" && $country !="0"  && $video=="all")
 {
  
 
@@ -4062,7 +4154,7 @@ if($Jobtitles ==[] &&   $salary ==[]   && $nationality  !="0" && $skills =="0" &
 
 }
 
-if($Jobtitles !=[]  && $salary ==[]   && $nationality  !="0" && $skills =="0" && $country=="0")
+if($Jobtitles !=[]  && $salary ==[]   && $nationality  !="0" && $skills =="0" && $country=="0"  && $video=="all")
 {
 
 
@@ -4106,7 +4198,7 @@ if($Jobtitles !=[]  && $salary ==[]   && $nationality  !="0" && $skills =="0" &&
 
 
 
-if($Jobtitles !=[]  && $salary !=[]   && $nationality  !="0" && $skills =="0"  && $country !="0")
+if($Jobtitles !=[]  && $salary !=[]   && $nationality  !="0" && $skills =="0"  && $country !="0"  && $video=="all")
 
 {
 
@@ -4150,7 +4242,7 @@ if($Jobtitles !=[]  && $salary !=[]   && $nationality  !="0" && $skills =="0"  &
 }
 
 
-if($Jobtitles !=[] && $salary ==[]   && $nationality  !="0" && $skills !="0" && $country !="0")
+if($Jobtitles !=[] && $salary ==[]   && $nationality  !="0" && $skills !="0" && $country !="0"  && $video=="all")
 {
 
 
@@ -4200,7 +4292,7 @@ if($Jobtitles !=[] && $salary ==[]   && $nationality  !="0" && $skills !="0" && 
 
 
 ///////////skills with option////////////
-if($Jobtitles ==[]  && $salary ==[]  && $nationality  =="0" && $skills !="0" && $country=="0")
+if($Jobtitles ==[]  && $salary ==[]  && $nationality  =="0" && $skills !="0" && $country=="0"  && $video=="all")
 {
  // dd('l');
 
@@ -4237,7 +4329,7 @@ if($Jobtitles ==[]  && $salary ==[]  && $nationality  =="0" && $skills !="0" && 
 
 }
 
-if($Jobtitles ==[]  && $salary ==[]  && $nationality  =="0" && $skills !="0" && $country!="0")
+if($Jobtitles ==[]  && $salary ==[]  && $nationality  =="0" && $skills !="0" && $country!="0"  && $video=="all")
 {
  // dd('l');
 
@@ -4274,7 +4366,7 @@ if($Jobtitles ==[]  && $salary ==[]  && $nationality  =="0" && $skills !="0" && 
 
 }
 
-if($Jobtitles !=[] &&  $salary ==[]   && $nationality  =="0" && $skills !="0" && $country=="0")
+if($Jobtitles !=[] &&  $salary ==[]   && $nationality  =="0" && $skills !="0" && $country=="0"  && $video=="all")
 
 {
 
@@ -4316,7 +4408,7 @@ if($Jobtitles !=[] &&  $salary ==[]   && $nationality  =="0" && $skills !="0" &&
 
 
 
-if($Jobtitles !=[]  && $salary !=[]   && $nationality  =="0" && $skills !="0" && $country=="0")
+if($Jobtitles !=[]  && $salary !=[]   && $nationality  =="0" && $skills !="0" && $country=="0"  && $video=="all")
 
 {
 
@@ -4359,7 +4451,7 @@ if($Jobtitles !=[]  && $salary !=[]   && $nationality  =="0" && $skills !="0" &&
 }
 
 
-if($Jobtitles ==[] && $salary ==[]   && $nationality  !="0" && $skills !="0" && $country=="0")
+if($Jobtitles ==[] && $salary ==[]   && $nationality  !="0" && $skills !="0" && $country=="0"  && $video=="all")
 
 {
 
@@ -4402,7 +4494,7 @@ if($Jobtitles ==[] && $salary ==[]   && $nationality  !="0" && $skills !="0" && 
 /////////////////////////salary flliters//////////////////
 
 
-if($Jobtitles ==[]    && $salary !=[] && $salary[0] =="all" && $nationality  =="0" && $skills =="0" && $country=="0")
+if($Jobtitles ==[]    && $salary !=[] && $salary[0] =="all" && $nationality  =="0" && $skills =="0" && $country=="0"  && $video=="all")
 
 {
   
@@ -4441,7 +4533,7 @@ if($Jobtitles ==[]    && $salary !=[] && $salary[0] =="all" && $nationality  =="
 }
 
 
-if($Jobtitles ==[]  && $salary !=[]&& $salary[0] =="all"  && $nationality  =="0" && $skills =="0" && $country!="0")
+if($Jobtitles ==[]  && $salary !=[]&& $salary[0] =="all"  && $nationality  =="0" && $skills =="0" && $country!="0"  && $video=="all")
 
 {
 
@@ -4478,7 +4570,7 @@ if($Jobtitles ==[]  && $salary !=[]&& $salary[0] =="all"  && $nationality  =="0"
 
 }
 
-if($Jobtitles !=[]   && $salary !=[] && $salary[0] =="all" && $nationality  =="0" && $skills =="0" && $country=="0")
+if($Jobtitles !=[]   && $salary !=[] && $salary[0] =="all" && $nationality  =="0" && $skills =="0" && $country=="0"  && $video=="all")
 {
 
 
@@ -4517,7 +4609,7 @@ if($Jobtitles !=[]   && $salary !=[] && $salary[0] =="all" && $nationality  =="0
 }
 
 }
-if($Jobtitles ==[]  && $salary !=[] &&  $salary[0] =="all" && $nationality  =="0" && $skills !="0" && $country="0")
+if($Jobtitles ==[]  && $salary !=[] &&  $salary[0] =="all" && $nationality  =="0" && $skills !="0" && $country="0"  && $video=="all")
 
 {
 
@@ -4561,7 +4653,7 @@ if($Jobtitles ==[]  && $salary !=[] &&  $salary[0] =="all" && $nationality  =="0
 
 
 
-if($Jobtitles !=[]    && $salary !=[] && $salary[0] =="all" && $nationality  !="0" && $skills =="0"  && $country="0")
+if($Jobtitles !=[]    && $salary !=[] && $salary[0] =="all" && $nationality  !="0" && $skills =="0"  && $country="0"  && $video=="all")
 {
 
 
@@ -4603,7 +4695,7 @@ if($Jobtitles !=[]    && $salary !=[] && $salary[0] =="all" && $nationality  !="
 }
 
 
-if($Jobtitles ==[]    && $salary !=[] && $salary[0] =="all"  && $nationality  !="0" && $skills =="0" && $country="0")
+if($Jobtitles ==[]    && $salary !=[] && $salary[0] =="all"  && $nationality  !="0" && $skills =="0" && $country="0"  && $video=="all")
 {
 
 
@@ -4646,7 +4738,7 @@ if($Jobtitles ==[]    && $salary !=[] && $salary[0] =="all"  && $nationality  !=
 
 
 
-if($Jobtitles ==[] && $salary !=[] && $salary[0] =="all" && $nationality  !="0" && $skills !="0"  && $country=="0")
+if($Jobtitles ==[] && $salary !=[] && $salary[0] =="all" && $nationality  !="0" && $skills !="0"  && $country=="0"  && $video=="all")
 {
 {
 
@@ -4687,7 +4779,7 @@ if($Jobtitles ==[] && $salary !=[] && $salary[0] =="all" && $nationality  !="0" 
 
 }
 
-if($Jobtitles !=[]  && $salary !=[] &&  $salary[0] =="all" && $nationality  =="0" && $skills !="0" && $country="0")
+if($Jobtitles !=[]  && $salary !=[] &&  $salary[0] =="all" && $nationality  =="0" && $skills !="0" && $country="0"  && $video=="all")
 
 
 
@@ -4733,7 +4825,7 @@ if($Jobtitles !=[]  && $salary !=[] &&  $salary[0] =="all" && $nationality  =="0
 
 
 ////////////////salary without all//////////////
-if($Jobtitles ==[]  && $salary !=[]  && $salary[0] !="all" && $nationality  =="0" && $skills =="0" && $country=="0")
+if($Jobtitles ==[]  && $salary !=[]  && $salary[0] !="all" && $nationality  =="0" && $skills =="0" && $country=="0"  && $video=="all")
 
 {
 
@@ -4772,7 +4864,7 @@ if($Jobtitles ==[]  && $salary !=[]  && $salary[0] !="all" && $nationality  =="0
 }
 
 
-if($Jobtitles ==[]  && $salary !=[]  && $salary[0] !="all"  && $nationality  =="0" && $skills =="0" && $country!="0")
+if($Jobtitles ==[]  && $salary !=[]  && $salary[0] !="all"  && $nationality  =="0" && $skills =="0" && $country!="0"  && $video=="all")
 
 {
 
@@ -4810,7 +4902,7 @@ if($Jobtitles ==[]  && $salary !=[]  && $salary[0] !="all"  && $nationality  =="
 
 }
 
-if($Jobtitles !=[]  && $salary !=[]  && $salary[0] !="all" && $nationality  =="0" && $skills =="0" && $country=="0")
+if($Jobtitles !=[]  && $salary !=[]  && $salary[0] !="all" && $nationality  =="0" && $skills =="0" && $country=="0"  && $video=="all")
 {
 
 
@@ -4850,7 +4942,7 @@ if($Jobtitles !=[]  && $salary !=[]  && $salary[0] !="all" && $nationality  =="0
 }
 
 }
-if($Jobtitles ==[]  && $salary !=[]   && $salary[0] !="all" && $nationality  =="0" && $skills !="0" && $country="0")
+if($Jobtitles ==[]  && $salary !=[]   && $salary[0] !="all" && $nationality  =="0" && $skills !="0" && $country="0"  && $video=="all")
 
 {
 
@@ -4897,7 +4989,7 @@ if($Jobtitles ==[]  && $salary !=[]   && $salary[0] !="all" && $nationality  =="
 
 
 
-if($Jobtitles !=[] && $salary !=[]    && $salary[0] !="all" && $nationality  !="0" && $skills =="0"  && $country="0")
+if($Jobtitles !=[] && $salary !=[]    && $salary[0] !="all" && $nationality  !="0" && $skills =="0"  && $country="0"  && $video=="all")
 {
 
 
@@ -4940,7 +5032,7 @@ if($Jobtitles !=[] && $salary !=[]    && $salary[0] !="all" && $nationality  !="
 }
 
 
-if($Jobtitles ==[]  && $salary !=[] && $salary[0] !="all"  && $nationality  !="0" && $skills =="0" && $country="0")
+if($Jobtitles ==[]  && $salary !=[] && $salary[0] !="all"  && $nationality  !="0" && $skills =="0" && $country="0"  && $video=="all")
 {
 
 
@@ -4984,7 +5076,7 @@ if($Jobtitles ==[]  && $salary !=[] && $salary[0] !="all"  && $nationality  !="0
 
 
 
-if($Jobtitles ==[]  && $salary !=[]  && $salary[0] !="all" && $nationality  !="0" && $skills !="0"  && $country=="0")
+if($Jobtitles ==[]  && $salary !=[]  && $salary[0] !="all" && $nationality  !="0" && $skills !="0"  && $country=="0"  && $video=="all")
 {
 {
 
@@ -5026,7 +5118,7 @@ if($Jobtitles ==[]  && $salary !=[]  && $salary[0] !="all" && $nationality  !="0
 
 }
 
-if($Jobtitles !=[]  && $salary !=[]  && $salary[0] !="all" && $nationality  =="0" && $skills !="0" && $country="0")
+if($Jobtitles !=[]  && $salary !=[]  && $salary[0] !="all" && $nationality  =="0" && $skills !="0" && $country="0" && $video=="all")
 
 
 
@@ -5070,7 +5162,7 @@ if($Jobtitles !=[]  && $salary !=[]  && $salary[0] !="all" && $nationality  =="0
 ////countryflliter
 
 
-if($Jobtitles ==[]  && $salary ==[]   && $nationality  =="0" && $skills =="0" && $country !="0" )
+if($Jobtitles ==[]  && $salary ==[]   && $nationality  =="0" && $skills =="0" && $country !="0" && $video=="all" )
 
 {
 
@@ -5116,7 +5208,7 @@ if($Jobtitles ==[]  && $salary ==[]   && $nationality  =="0" && $skills =="0" &&
 
 
 
-if($Jobtitles !=[]  && $salary !=[]   && $nationality  =="0" && $skills =="0" && $country !="0" )
+if($Jobtitles !=[]  && $salary !=[]   && $nationality  =="0" && $skills =="0" && $country !="0"  && $video=="all")
 
 {
 
@@ -5161,7 +5253,7 @@ if($Jobtitles !=[]  && $salary !=[]   && $nationality  =="0" && $skills =="0" &&
 
 
 
-if($Jobtitles !=[]  && $salary !=[]   && $nationality  !="0" && $skills =="0" && $country !="0" )
+if($Jobtitles !=[]  && $salary !=[]   && $nationality  !="0" && $skills =="0" && $country !="0"  && $video=="all" )
 
 {
 
@@ -5207,7 +5299,7 @@ if($Jobtitles !=[]  && $salary !=[]   && $nationality  !="0" && $skills =="0" &&
 
 
 
-if($Jobtitles !=[]  && $salary !=[]   && $nationality  =="0" && $skills !="0" && $country !="0" )
+if($Jobtitles !=[]  && $salary !=[]   && $nationality  =="0" && $skills !="0" && $country !="0"  && $video=="all" )
 
 {
 
@@ -5253,7 +5345,7 @@ if($Jobtitles !=[]  && $salary !=[]   && $nationality  =="0" && $skills !="0" &&
 }
 
 
-if($Jobtitles !=[]  && $salary ==[]   && $nationality  !="0" && $skills !="0" && $country !="0" )
+if($Jobtitles !=[]  && $salary ==[]   && $nationality  !="0" && $skills !="0" && $country !="0"  && $video=="all" )
 
 {
 
@@ -5300,7 +5392,7 @@ if($Jobtitles !=[]  && $salary ==[]   && $nationality  !="0" && $skills !="0" &&
 }
 
 
-if($Jobtitles ==[]  && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country !="0" )
+if($Jobtitles ==[]  && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country !="0"  && $video=="all")
 
 {
 
@@ -5347,7 +5439,7 @@ if($Jobtitles ==[]  && $salary !=[]   && $nationality  !="0" && $skills !="0" &&
 }
 
 
-if($Jobtitles !=[]  && $salary ==[]   && $nationality  !="0" && $skills =="0" && $country !="0" )
+if($Jobtitles !=[]  && $salary ==[]   && $nationality  !="0" && $skills =="0" && $country !="0"  && $video=="all")
 
 {
 
@@ -5390,10 +5482,3337 @@ if($Jobtitles !=[]  && $salary ==[]   && $nationality  !="0" && $skills =="0" &&
 
 
 }
+///////////
+
+//////////////////video fliters 
+
+
+
+
+
+if($Jobtitles !=[] && $Jobtitles[0] !="all"  && $salary ==[]   && $nationality  =="0" && $skills =="0" && $country =="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary !=[]   && $nationality  =="0" && $skills =="0" && $country =="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+       ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary !=[]   && $nationality  !="0" && $skills =="0" && $country =="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+       ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country =="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+       ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country !="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+       ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->where('candidate_infos.country_id',$country)
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+
+if($Jobtitles  ==[]   && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country !="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+   
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      
+       ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->where('candidate_infos.country_id',$country)
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+}
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary ==[]   && $nationality  !="0" && $skills !="0" && $country !="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->where('candidate_infos.country_id',$country)
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary !=[]   && $nationality  =="0" && $skills !="0" && $country !="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+      ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->where('candidate_infos.country_id',$country)
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary !=[]   && $nationality  !="0" && $skills =="0" && $country !="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+      ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+        ->where('candidate_infos.nationality_id',$nationality)
+      ->where('candidate_infos.country_id',$country)
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country =="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+      ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+        ->where('candidate_infos.nationality_id',$nationality)
+    
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+
+if($Jobtitles ==[]   && $salary !=[]   && $nationality  =="0" && $skills =="0" && $country =="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+   
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+      ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      
+    
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+
+ 
+
+}
+
+}
+
+
+}
+
+
+if($Jobtitles ==[]   && $salary ==[]   && $nationality  !="0" && $skills =="0" && $country =="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+   
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+  ->where('candidate_infos.nationality_id',$nationality)
+      
+    
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+
+ 
+
+}
+
+}
+
+
+}
+
+if($Jobtitles ==[]   && $salary ==[]   && $nationality  =="0" && $skills !="0" && $country =="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+   
+  
+              $CanresultCandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+
+      
+    
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+
+ 
+
+}
+
+}
+
+
+}
+
+if($Jobtitles ==[]   && $salary ==[]   && $nationality  =="0" && $skills =="0" && $country !="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+   
+  
+              $Canresult=CandidateInfo::
+    with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+
+         ->where('candidate_infos.country_id',$country)
+    
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+
+ 
+
+}
+
+}
+
+
+}
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary ==[]   && $nationality  !="0" && $skills =="0" && $country =="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+      
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary ==[]   && $nationality  =="0" && $skills !="0" && $country =="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+      
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary ==[]   && $nationality  =="0" && $skills =="0" && $country !="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+      
+       ->where('candidate_infos.country_id',$country)
+
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+
+if($Jobtitles ==[]    && $salary !=[]   && $nationality  !="0" && $skills =="0" && $country =="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      
+        ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+ 
+       ->where('candidate_infos.nationality_id',$nationality)
+
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+
+
+
+
+if($Jobtitles ==[]    && $salary !=[]   && $nationality  =="0" && $skills !="0" && $country =="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+
+      
+        ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+
+    
+
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+
+
+if($Jobtitles ==[]    && $salary !=[]   && $nationality  =="0" && $skills =="0" && $country !="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+              $Canresult=CandidateInfo::
+      with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+
+      
+        ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+
+     ->where('candidate_infos.country_id',$country)
+
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+///////
+if($Jobtitles ==[]    && $salary ==[]   && $nationality  !="0" && $skills !="0" && $country =="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+    
+      
+ ->where('candidate_infos.nationality_id',$nationality)
+    
+
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+
+
+if($Jobtitles ==[]    && $salary ==[]   && $nationality  !="0" && $skills =="0" && $country !="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+    
+      
+       ->where('candidate_infos.nationality_id',$nationality)
+       ->where('candidate_infos.country_id',$country)
+
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+
+
+if($Jobtitles ==[]    && $salary ==[]   && $nationality  =="0" && $skills !="0" && $country !="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+           $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+    
+      
+    
+       ->where('candidate_infos.country_id',$country)
+
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+
+
+if($Jobtitles ==[]   && $salary !=[] && $nationality  !="0" && $skills !="0" && $country =="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+           $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+    
+    ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+        ->where('candidate_infos.nationality_id',$nationality)
+
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+
+if($Jobtitles ==[]    && $salary !=[]   && $nationality  =="0" && $skills !="0" && $country !="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+           $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+    
+    ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+         ->where('candidate_infos.country_id',$country)
+
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+
+
+if($Jobtitles ==[]    && $salary !=[]   && $nationality  !="0" && $skills =="0" && $country !="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+           $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+    
+    ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+         ->where('candidate_infos.country_id',$country)
+ ->where('candidate_infos.nationality_id',$nationality)
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+
+
+if($Jobtitles ==[]    && $salary ==[]   && $nationality  !="0" && $skills !="0" && $country !="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+          
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+    
+ 
+         ->where('candidate_infos.country_id',$country)
+ ->where('candidate_infos.nationality_id',$nationality)
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+////with all
+
+
+if($Jobtitles !=[] && $Jobtitles[0] =="all"  && $salary ==[]   && $nationality  =="0" && $skills =="0" && $country =="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as $cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] =="all"  && $salary !=[]   && $nationality  =="0" && $skills =="0" && $country =="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+       ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+
+
+
+}
+
+if($Jobtitles !=[]  && $Jobtitles[0] =="all"  && $salary !=[]   && $nationality  !="0" && $skills =="0" && $country =="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+       ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+
+
+
+}
+
+if($Jobtitles !=[]  && $Jobtitles[0] =="all"  && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country =="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+       ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] =="all"  && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country !="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+       ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->where('candidate_infos.country_id',$country)
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+
+
+
+}
+
+
+
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] =="all"  && $salary ==[]   && $nationality  !="0" && $skills !="0" && $country !="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->where('candidate_infos.country_id',$country)
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] =="all"  && $salary !=[]   && $nationality  =="0" && $skills !="0" && $country !="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+      ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->where('candidate_infos.country_id',$country)
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] =="all"  && $salary !=[]   && $nationality  !="0" && $skills =="0" && $country !="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+      ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+        ->where('candidate_infos.nationality_id',$nationality)
+      ->where('candidate_infos.country_id',$country)
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+
+
+
+}
+
+if($Jobtitles !=[]  && $Jobtitles[0] =="all"  && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country =="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+      ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+        ->where('candidate_infos.nationality_id',$nationality)
+    
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+
+
+}
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] =="all"  && $salary ==[]   && $nationality  !="0" && $skills =="0" && $country =="0" && $video=="0" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+  
+              $Canresult=CandidateInfo::
+    with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+    
+        ->where('candidate_infos.nationality_id',$nationality)
+    
+      ->whereNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+
+
+}
+}
+
+//////withvideo
+
+
+if($Jobtitles !=[] && $Jobtitles[0] !="all"  && $salary ==[]   && $nationality  =="0" && $skills =="0" && $country =="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary !=[]   && $nationality  =="0" && $skills =="0" && $country =="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+       ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary !=[]   && $nationality  !="0" && $skills =="0" && $country =="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+       ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country =="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+       ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country !="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+       ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->where('candidate_infos.country_id',$country)
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+
+if($Jobtitles  ==[]   && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country !="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+   
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      
+       ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->where('candidate_infos.country_id',$country)
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+}
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary ==[]   && $nationality  !="0" && $skills !="0" && $country !="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->where('candidate_infos.country_id',$country)
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary !=[]   && $nationality  =="0" && $skills !="0" && $country !="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+      ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->where('candidate_infos.country_id',$country)
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary !=[]   && $nationality  !="0" && $skills =="0" && $country !="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+      ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+        ->where('candidate_infos.nationality_id',$nationality)
+      ->where('candidate_infos.country_id',$country)
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country =="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+      ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+        ->where('candidate_infos.nationality_id',$nationality)
+    
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+
+if($Jobtitles ==[]   && $salary !=[]   && $nationality  =="0" && $skills =="0" && $country =="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+   
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+      ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      
+    
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+
+ 
+
+}
+
+}
+
+
+}
+
+
+if($Jobtitles ==[]   && $salary ==[]   && $nationality  !="0" && $skills =="0" && $country =="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+   
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+  ->where('candidate_infos.nationality_id',$nationality)
+      
+    
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+
+ 
+
+}
+
+}
+
+
+}
+
+if($Jobtitles ==[]   && $salary ==[]   && $nationality  =="0" && $skills !="0" && $country =="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+   
+  
+              $CanresultCandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+
+      
+    
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+
+ 
+
+}
+
+}
+
+
+}
+
+if($Jobtitles ==[]   && $salary ==[]   && $nationality  =="0" && $skills =="0" && $country !="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+   
+  
+              $Canresult=CandidateInfo::
+    with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+
+         ->where('candidate_infos.country_id',$country)
+    
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+
+ 
+
+}
+
+}
+
+
+}
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary ==[]   && $nationality  !="0" && $skills =="0" && $country =="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+      
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary ==[]   && $nationality  =="0" && $skills !="0" && $country =="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+      
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] !="all"  && $salary ==[]   && $nationality  =="0" && $skills =="0" && $country !="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    for ($i=0;$i<count($Jobtitles);$i++) {
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      ->where('candidate_infos.job_id', $Jobtitles[$i])
+      
+       ->where('candidate_infos.country_id',$country)
+
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+}
+
+
+}
+
+
+if($Jobtitles ==[]    && $salary !=[]   && $nationality  !="0" && $skills =="0" && $country =="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+      
+        ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+ 
+       ->where('candidate_infos.nationality_id',$nationality)
+
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+
+
+
+
+if($Jobtitles ==[]    && $salary !=[]   && $nationality  =="0" && $skills !="0" && $country =="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+
+      
+        ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+
+    
+
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+
+
+if($Jobtitles ==[]    && $salary !=[]   && $nationality  =="0" && $skills =="0" && $country !="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+              $Canresult=CandidateInfo::
+      with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+
+      
+        ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+
+     ->where('candidate_infos.country_id',$country)
+
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+///////
+if($Jobtitles ==[]    && $salary ==[]   && $nationality  !="0" && $skills !="0" && $country =="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+    
+      
+ ->where('candidate_infos.nationality_id',$nationality)
+    
+
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+
+
+if($Jobtitles ==[]    && $salary ==[]   && $nationality  !="0" && $skills =="0" && $country !="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+    
+      
+       ->where('candidate_infos.nationality_id',$nationality)
+       ->where('candidate_infos.country_id',$country)
+
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+
+
+if($Jobtitles ==[]    && $salary ==[]   && $nationality  =="0" && $skills !="0" && $country !="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+           $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+    
+      
+    
+       ->where('candidate_infos.country_id',$country)
+
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+
+
+if($Jobtitles ==[]   && $salary !=[] && $nationality  !="0" && $skills !="0" && $country =="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+           $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+    
+    ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+        ->where('candidate_infos.nationality_id',$nationality)
+
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+
+if($Jobtitles ==[]    && $salary !=[]   && $nationality  =="0" && $skills !="0" && $country !="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+           $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+    
+    ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+         ->where('candidate_infos.country_id',$country)
+
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+
+
+if($Jobtitles ==[]    && $salary !=[]   && $nationality  !="0" && $skills =="0" && $country !="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+           $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+    
+    ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+         ->where('candidate_infos.country_id',$country)
+ ->where('candidate_infos.nationality_id',$nationality)
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+
+
+if($Jobtitles ==[]    && $salary ==[]   && $nationality  !="0" && $skills !="0" && $country !="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+          
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+    
+ 
+         ->where('candidate_infos.country_id',$country)
+ ->where('candidate_infos.nationality_id',$nationality)
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+////with all
+
+
+if($Jobtitles !=[] && $Jobtitles[0] =="all"  && $salary ==[]   && $nationality  =="0" && $skills =="0" && $country =="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as $cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] =="all"  && $salary !=[]   && $nationality  =="0" && $skills =="0" && $country =="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+       ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+
+
+
+}
+
+if($Jobtitles !=[]  && $Jobtitles[0] =="all"  && $salary !=[]   && $nationality  !="0" && $skills =="0" && $country =="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+       ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+
+
+
+}
+
+if($Jobtitles !=[]  && $Jobtitles[0] =="all"  && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country =="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+       ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] =="all"  && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country !="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+       ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->where('candidate_infos.country_id',$country)
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+
+
+
+}
+
+
+
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] =="all"  && $salary ==[]   && $nationality  !="0" && $skills !="0" && $country !="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+      ->where('candidate_infos.nationality_id',$nationality)
+      ->where('candidate_infos.country_id',$country)
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] =="all"  && $salary !=[]   && $nationality  =="0" && $skills !="0" && $country !="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+      ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+      ->where('candidate_infos.country_id',$country)
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+
+
+}
+
+
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] =="all"  && $salary !=[]   && $nationality  !="0" && $skills =="0" && $country !="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+  
+              $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+      ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+        ->where('candidate_infos.nationality_id',$nationality)
+      ->where('candidate_infos.country_id',$country)
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+ 
+
+}
+
+
+
+
+}
+
+if($Jobtitles !=[]  && $Jobtitles[0] =="all"  && $salary !=[]   && $nationality  !="0" && $skills !="0" && $country =="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+  
+              $Canresult=CandidateInfo::whereHas('getCandidateSkill', function($q) use($skills) {
+    $q->where('skills.id', $skills);
+      })->with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+      ->where('candidate_infos.CurrencyId',$currency)
+      ->whereBetween('candidate_infos.salary',array(reset($salaryf),last($salaryf))) 
+        ->where('candidate_infos.nationality_id',$nationality)
+    
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+
+
+}
+}
+
+
+if($Jobtitles !=[]  && $Jobtitles[0] =="all"  && $salary ==[]   && $nationality  !="0" && $skills =="0" && $country =="0" && $video=="1" )
+
+{
+
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+  
+  
+              $Canresult=CandidateInfo::
+    with('job')
+      ->with('user')
+      ->with('nationality')
+     ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+    
+        ->where('candidate_infos.nationality_id',$nationality)
+    
+      ->whereNotNull('candidate_infos.vedio_path')
+    
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+         $candidates->push($cant);
+   
+  
+  }
+
+
+}
+}
+
+
+if($Jobtitles ==[]  && $salary ==[]   && $nationality  =="0" && $skills =="0" && $country=="0" && $video=="1")
+
+{
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    
+       
+    $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+      ->with('getCandidateSkill')
+      ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+     
+      ->whereNotNull('candidate_infos.vedio_path')
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+       
+    $candidates->push($cant);
+
+  
+  }
+ 
+
+
+
+
+
+
+}
+
+}
+
+
+if($Jobtitles ==[]  && $salary ==[]   && $nationality  =="0" && $skills =="0" && $country=="0" && $video=="0")
+
+{
+
+
+
+
+
+  foreach ($resultQuery as $resultQue) {
+
+    
+       
+    $Canresult=CandidateInfo::with('job')
+      ->with('user')
+      ->with('nationality')
+      ->with('getCandidateSkill')
+      ->with('country')
+      ->where('candidate_infos.id', $resultQue->id)
+    ->whereNull('candidate_infos.vedio_path')
+
+      
+       ->get();
+
+
+  foreach ($Canresult as$cant) {
+  
+       
+    $candidates->push($cant);
+
+  
+  }
+ 
+
+
+
+
+
+
+}
+
+}
 
 //////////////////all fliters null
 
-if($Jobtitles ==[]  && $salary ==[]   && $nationality  =="0" && $skills =="0" && $country=="0")
+if($Jobtitles ==[]  && $salary ==[]   && $nationality  =="0" && $skills =="0" && $country=="0" && $video=="all")
 
 {
 
@@ -5440,7 +8859,7 @@ if($Jobtitles ==[]  && $salary ==[]   && $nationality  =="0" && $skills =="0" &&
 
 
 
-$candidates=$candidates->sortByDesc('vedio_path');
+$candidates=$candidates->sortByDesc('created_at');
 
 $count=count($candidates);
 
@@ -5480,9 +8899,169 @@ return  view('Search.searchpartial',compact('candidates','words','jobcheck','cou
 
 }
 
+public function congrats(Request $request)
+     { $MatchingJobs=[];
+       $JobName=Job::where('id',$request['job'])->first();
 
-
-
+    $JobNameLiks=Job::where('name', 'LIKE', '%'.$JobName->name.'%')->get();
  
+        foreach($JobNameLiks as $JobNameLik)
+          {
+            $MatchingJo = PostJob::where('job_id',$JobNameLik->id)->get();    
+
+          foreach ($MatchingJo as $Matching) {
+  
+               array_push($MatchingJobs, $Matching); 
+   
+  
+           } 
+
+           } 
+           $count=count($MatchingJobs);
+       
+       return view('auth.congratulation',compact('count'));
+     }
+
+
+     public function congratscan(Request $request)
+     {    $alljobCan=[];
+        $Alljobs=\App\PostJob::where('job_id',$request['job'])->select('job_id')->get();
+ 
+        foreach ($Alljobs as  $value)
+        {
+   
+           array_push($alljobCan,$value->job_id);
+       
+        }
+ 
+        $TopCandidate=\App\CandidateInfo::whereIN('job_id',$alljobCan)->get();
+      $count=$TopCandidate->count();
+   
+       return view('auth.congratscan',compact('count'));
+     }
+
+
+
+ public function share(Request $request)
+     {    $canid=$request->get('topcand');
+ $TopCandi=CandidateInfo::FindOrFail($canid);
+
+
+       return view('share.share',compact('TopCandi'));
+     }
+ 
+
+     public function sharejob(Request $request)
+     {    
+      $jobid=$request->get('job');
+  $AddJobs= PostJob::join('users','users.id','=','post_jobs.created_by')
+        ->join('jobs','jobs.id','=','post_jobs.job_id')
+        ->join('countries','countries.id','=','post_jobs.country_id')
+        ->where('post_jobs.id',$jobid)
+        
+            ->select('jobs.name AS JobName','post_jobs.job_for',
+        'users.name AS CompanyName','users.type','post_jobs.max_salary',
+        'countries.name AS CountryName','post_jobs.min_salary','post_jobs.currency_id',
+        'post_jobs.created_at AS Jobdate','post_jobs.id'
+        )
+        ->first();
+
+
+//dd(  $AddJobs);
+
+       return view('share.sharejob',compact('AddJobs'));
+     }
+
+ public function  sendemail (Request $request)
+ {
+ 
+
+  $email=$request->get('Value');
+$candidate=$request->get('candidate');
+ $RecentlyAddedJobs= PostJob::join('users','users.id','=','post_jobs.created_by')
+        ->join('jobs','jobs.id','=','post_jobs.job_id')
+        ->join('countries','countries.id','=','post_jobs.country_id')
+        ->where('job_for','family')
+        ->orderBy('post_jobs.created_at', 'DEC')->limit(3)
+        ->select('jobs.name AS JobName','post_jobs.job_for',
+        'users.name AS CompanyName','users.type','post_jobs.max_salary',
+        'countries.name AS CountryName','post_jobs.min_salary','post_jobs.currency_id',
+        'post_jobs.created_at AS Jobdate','post_jobs.id'
+        )
+        ->get();
+
+         $TopCandidate =CandidateInfo::orderBy('candidate_infos.created_at', 'DEC')->where('seen','=',1)->limit(3)->get();
+        //dd( $RecentlyAddedJobs[0]);
+for($i=0;$i<count($email)-1;$i++)
+{
+        $data=array('Email'=>$email[$i],
+          'id'=> $candidate,
+          'job'=>$RecentlyAddedJobs,
+          'candidates'=>$TopCandidate
+      );
+        
+   
+      Mail::send('emails.SendCandEmail', $data, function($message) use ($data) {
+         $message->to($data['Email'], 'Welcome')->subject
+            ('Welcome To MaidandHelper');
+         $message->from('Business@maidandhelper.com','maidandhelper');
+      });
+
+    }
+//       echo "Basic Email Sent. Check your inbox.";
+
+ return redirect()->back()->with('success', ['Email Sent']);   
+
+ }
+
+
+  public function  sendemailjob (Request $request)
+ {
+ 
+
+  $email=$request->get('Value');
+$job=$request->get('job');
+ $RecentlyAddedJobs= PostJob::join('users','users.id','=','post_jobs.created_by')
+        ->join('jobs','jobs.id','=','post_jobs.job_id')
+        ->join('countries','countries.id','=','post_jobs.country_id')
+        ->where('job_for','family')
+        ->orderBy('post_jobs.created_at', 'DEC')->limit(3)
+        ->select('jobs.name AS JobName','post_jobs.job_for',
+        'users.name AS CompanyName','users.type','post_jobs.max_salary',
+        'countries.name AS CountryName','post_jobs.min_salary','post_jobs.currency_id',
+        'post_jobs.created_at AS Jobdate','post_jobs.id'
+        )
+        ->get();
+
+         $TopCandidate =CandidateInfo::orderBy('candidate_infos.created_at', 'DEC')->where('seen','=',1)->limit(3)->get();
+        $count=count($email)-1;
+
+   for($i=0;$i<count($email)-1;$i++)
+{
+        $data=array('Email'=> $email[$i],
+          'id'=> $job,
+          'job'=>$RecentlyAddedJobs,
+          'candidates'=>$TopCandidate
+      );
+        
+  
+      Mail::send('emails.SendJobEmail', $data, function($message) use ($data) {
+         $message->to($data['Email'], 'Welcome')->subject
+            ('Welcome To MaidandHelper');
+         $message->from('Business@maidandhelper.com','maidandhelper');
+      });
 }
+  
+//       echo "Basic Email Sent. Check your inbox.";
+
+   
+        
+ 
+     
+
+ return redirect()->back()->with('success', ['Email Sent']);   
+
+ }
+}
+
 

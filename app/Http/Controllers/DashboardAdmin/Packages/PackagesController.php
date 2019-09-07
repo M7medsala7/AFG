@@ -22,15 +22,6 @@ class PackagesController extends Controller
     $Packages= Packages::all();//with('CanInfo')->where('type','=','candidate')->orderBy('created_at','DESC')->get();
     return view('DashbordAdminPanel.Packages.index',compact('Packages'));
     }
-    public function updatePackages($id)
-{
-  $Packages= Packages::FindOrFail($id);
-  $attribute= attribute::all();
-  // dd( $candidateadmin->CanInfo->CanExperince->start_date);
-   return view('DashbordAdminPanel.Packages.edit',compact('Packages','attribute'));
-}
-
-
 public function updateattrval( Request $request)
 {
 
@@ -47,6 +38,13 @@ $updateval=DB::table('package_attribute')
 ->where('attribute_id',$request['id'])
 ->update(['Valueyear'=>$request['val']]);
 return 1;
+}
+    public function updatePackages($id)
+{
+  $Packages= Packages::FindOrFail($id);
+  $attribute= attribute::all();
+  // dd( $candidateadmin->CanInfo->CanExperince->start_date);
+   return view('DashbordAdminPanel.Packages.edit',compact('Packages','attribute'));
 }
 public function packagesedit( Request $request)
 {
@@ -104,8 +102,7 @@ public function addNewattribute(Request $request)
     try
     {
        
-  
-      $name=$request['name'];
+           $name=$request['name'];
        $Value=$request['Value'];
        $Valueyear=$request['Valueyear'];
        $n=count($name);
@@ -116,12 +113,14 @@ public function addNewattribute(Request $request)
            ->where('packages_id',$request['packid'])
            ->where('attribute_id',$name[$i])
            ->first();
-          // dd($packarrtribute,$name,$request['packid']);
+          
            if($packarrtribute==null || $packarrtribute==[])
            {
               //add it
               $Packages = Packages::find($request['packid']);
               $Packages->getpackattribute()->attach($name[$i], ['Value'=>$Value[$i],'Valueyear'=>$Valueyear[$i]]);
+             $Url='/Packages/'.$request->packid.'/edit';
+             return redirect ($Url);
            }
            else
            {
@@ -131,7 +130,7 @@ public function addNewattribute(Request $request)
            }
            //
        }
-       
+    
 
       
     }

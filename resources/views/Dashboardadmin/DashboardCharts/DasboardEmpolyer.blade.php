@@ -125,7 +125,7 @@ type: "POST",
       xLabels: 'day',
   resize: true,
         hideHover: 'auto',
-        xLabelAngle: 60
+        xLabelAngle: 100
         
   });
       }

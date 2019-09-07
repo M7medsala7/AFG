@@ -19,17 +19,20 @@ class EmployerProfile extends Model
         'nationality',
         'phone',
         'coins',
+        'Agency_ID',
+        'coverphoto'
     ];
 
      public function user()
     {
         return $this->belongsTo('App\User');
     }
-
+   
      public function country()
     {
         return $this->belongsTo('App\Country','country_id');
     }
+  
 
       public function city()
     {
@@ -42,9 +45,9 @@ class EmployerProfile extends Model
 
     public function search($query,$s)
     {
-      
        return $query->where('first_name','LIKE','%'.$s.'%')
        ->orWhere('user_id','LIKE','%'.$s.'%');
     }
+    
 }
 

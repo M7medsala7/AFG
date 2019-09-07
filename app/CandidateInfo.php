@@ -15,7 +15,7 @@ class CandidateInfo extends Model
         'birthdate','visa_type','visa_expire_date','industry_id',
         'country_id','gender','martial_status','type','vedio_path',
         'cv_path','descripe_yourself','looking_for_job','coins',
-        'user_id','Agency_ID','nationality_id','salary','MaxSalary','CurrencyId','Eductionlevel',
+        'user_id','Agency_ID','nationality_id','salary','MaxSalary','CurrencyId','Eductionlevel','private','keyword'
     ];
 
     public function user()
@@ -24,6 +24,10 @@ class CandidateInfo extends Model
     }
 
     protected $appends = ['order'];
+    
+    
+    
+   
     public function getOrderAttribute()
     {
         return 0;
@@ -59,13 +63,22 @@ class CandidateInfo extends Model
     {
         return $this->belongsTo('App\CandidateExperience','user_id','user_id');
     }
+    
+    
+     public function ExperinceWork()
+    {
+       return $this->hasMany('App\CandidateExperience','user_id','user_id');
+        
+        
+        
+    }
         public function getCandidateSkill()
     {
         return $this->belongsToMany('App\Skills','user_skills','user_id','skill_id','user_id');
         
     }
 
-         public function getCandidateLang()
+     public function getCandidateLang()
     {
  return $this->belongsToMany('App\Language','user_languages','user_id','language_id','user_id')->withPivot('degree');
         
@@ -100,4 +113,29 @@ class CandidateInfo extends Model
     {
         return $this->hasOne('App\SuccessStories');
     }
+
+         public function getCandidateStaus()
+    {
+ return $this->belongsToMany('App\User','client','Can_id','Emp_id','user_id')->withPivot('AgencyStatus')
+ ;
+        
+    }
+
+       public function getCandidateClientStaus()
+    {
+ return $this->belongsToMany('App\User','SharedClient','Can_id','Client_id','Agency_id')->withPivot('AgencyStatus')
+ ;
+       
+}
+
+
+
+       public function getCandidateClientStaus2()
+    {
+ return $this->belongsToMany('App\User','SharedClient','Can_id','Client_id','Agency_id','job_id')->withPivot('AgencyStatus')
+ ;
+       
+}
+
+
 }

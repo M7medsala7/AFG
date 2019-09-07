@@ -25,8 +25,13 @@
   }
 </style>
 @section('content')
+ @if(Session::get('locale')=="Ar"|| Session::get('locale')=="ar")
+{{App::setLocale('ar')}}
+@else
+{{App::setLocale('en')}}
+@endif
 <section class="candidate-profile">
-  <h1>company profile </h1>
+  <h1> {{trans('app.company_profile')}} </h1>
 </section>
 <section class="dashboard candidate-pro">
   <div class="container">
@@ -51,9 +56,9 @@
              {{ csrf_field() }}
             <div class="row">
               <div class="col-sm-6 formcompany">
-                <label class="desired">industry</label>
+                <label class="desired"> {{trans('app.industry')}}</label>
                 <select class="form-control" name="industry_id" id="industry_id" required="">
-                  <option selected="" disabled="disabled">desired industry</option>
+                  <option selected="" disabled="disabled">{{trans('app.desired_industry')}}</option>
                     @foreach(\App\Industry::all() as $ind)
                       <option value="{{$ind->id}}" {{($company['industry_id'] == $ind['id'])?'selected':''}}>{{$ind['name']}}</option>
                     @endforeach
@@ -62,15 +67,15 @@
               <!--formcompany-->
               
               <div class="col-sm-6 formcompany">
-                <label class="desired">company size</label>
+                <label class="desired"> {{trans('app.company_size')}}</label>
                 <input type="number" name="size" value={{$company['size']}} class="form-control" placeholder="10000">
               </div>
               <!--formcompany-->
               
               <div class="col-sm-6 formcompany">
-                <label class="desired">location</label>
+                <label class="desired"> {{trans('app.desired_location')}}</label>
                 <select class="form-control" name="country_id" id="country_id" required="">
-                  <option selected="" disabled="">desired location</option>
+                  <option selected="" disabled=""> {{trans('app.desired_location')}}</option>
                    @foreach(\App\Country::all() as $country)
                       <option value="{{$country->id}}" {{($company['country_id'] == $country['id'])?'selected':''}}>{{$country['name']}}</option>
                     @endforeach
@@ -86,19 +91,19 @@
               <!--formcompany-->
               
               <div class="col-sm-12 formcompany">
-                <label class="desired">company description</label>
+                <label class="desired"> {{trans('app.company_description')}}</label>
                 <textarea name="description" value="{{$company['description']}}" class="form-control" placeholder=""></textarea>
               </div>
               <!--formcompany-->
               
               <div class="col-sm-12 formcompany">
-                <label class="desired">company website url</label>
+                <label class="desired"> {{trans('app.company_website_url')}}</label>
                 <input type="text" name="website" value="{{$company['website']}}" class="form-control" placeholder="www.site.com">
               </div>
               <!--formcompany-->
               
               <div class="col-sm-12 formcompany">
-                <label class="desired">company social links</label>
+                <label class="desired"> {{trans('app.company_social_links')}}</label>
                 <div class="row">
                   <div class="col-sm-2 sociallinks">
                     <input name="company_linkedin" type="text" class="form-control" placeholder="linknedin" value="{{$company['company_linkedin']}}">
@@ -132,9 +137,9 @@
               <!--formcompany-->
               
               <div class="col-sm-12 formcompany">
-                <label class="desired">company photo</label>
+                <label class="desired"> {{trans('app.company_photo')}}</label>
                 <div class="coverphoto"> <img class="img_prev" src="images/coverphoto.jpg">
-                  <label class="largeredbtn record"> <i class="fas fa-upload"></i> drop it heare or click to upload one
+                  <label class="largeredbtn record"> <i class="fas fa-upload"></i>  {{trans('app.drop_it')}}
                     <input type="file" name="photos[]"   onchange="readURL(this);" style="display: none;">
                   </label>
                 </div>
@@ -143,14 +148,14 @@
               <!--formcompany-->
               
               <div class="col-sm-12 formcompany">
-                <label class="desired">vedio</label>
+                <label class="desired">video</label>
                 <input type="file" name="video_path" class="form-control" placeholder="drop it heare or click to upload one" multiple />
              
               </div>
               <!--formcompany-->
               
               <div class="col-sm-4 formcompany col-sm-offset-4">
-                <button type="submit" class="largeredbtn botseve"> Save now </button>
+                <button type="submit" class="largeredbtn botseve">{{trans('app.Save_now')}}  </button>
               </div>
             </div>
             <!--row-->
@@ -177,7 +182,7 @@
 <div id="myModal" class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header"> watch demo video
+      <div class="modal-header">  {{trans('app.watch_demo_video')}}
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="textbox">

@@ -28,8 +28,9 @@
     <link rel="stylesheet" href="/AdminDashboard/assets/css/lib/chosen/chosen.min.css">
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
-
+ <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
     <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
+
 
 </head>
 <body>
@@ -76,7 +77,13 @@
     <script src="/AdminDashboard/assets/js/lib/vector-map/country/jquery.vmap.world.js"></script>
      <script src="/AdminDashboard/assets/js/lib/chosen/chosen.jquery.min.js"></script>
      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.min.js"></script>
-     
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+
+   <link  rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/css/smoothness/jquery-ui-1.10.0.custom.min.css" />
+    <script   src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/jquery-ui.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.js" ></script>
+
     <script>
         ( function ( $ ) {
             "use strict";
