@@ -24,7 +24,7 @@
         {{csrf_field()}}	 
           <div class="divwits">
             <label class="desired" >Name</label>
-            <input type="text" class="form-control" placeholder="Your Name" name="name">
+            <input type="text" class="form-control" placeholder="Your Name" name="name" required>
           </div>
           <!--divwits-->
           
@@ -36,13 +36,13 @@
           
           <div class="divwits">
             <label class="desired" >phone number</label>
-            <input type="text" class="form-control" placeholder="phone number" name="phone">
+            <input type="text" class="form-control" placeholder="phone number" name="phone" required>
           </div>
           <!--divwits-->
           
           <div class="divwits">
             <label class="desired" > your massage</label>
-            <textarea class="form-control" placeholder="type your message or inquiry here... " name="message"></textarea>
+            <textarea class="form-control" placeholder="type your message or inquiry here... " name="message" required></textarea>
           </div>
           <!--divwits-->
           

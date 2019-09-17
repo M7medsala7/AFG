@@ -55,6 +55,7 @@
         <!--employerstebs-->
         
         <div id="monthlyplans" class="tab-pane employerbox fade in active">
+        @isset($Packages)
           @foreach($Packages as $pack)
           <div class="col-sm-4 empcol">
             <div class="empcolbox">
@@ -71,9 +72,11 @@
             </div>
           </div>
           @endforeach
+          @endisset
         </div>
 
        <div id="annualplans" class="tab-pane employerbox fade ">
+       @isset($Packages)
         @foreach($Packages as $pack)
           <div class="col-sm-4 empcol">
             <div class="empcolbox">
@@ -90,6 +93,7 @@
             </div>
           </div>
           @endforeach
+          @endisset
         </div>
       <!--tab-content--> 
       

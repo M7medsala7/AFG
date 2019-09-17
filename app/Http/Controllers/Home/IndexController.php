@@ -27,14 +27,15 @@ class IndexController extends Controller
    public function index()
    {
 
-    $TotalJob= PostJob::count();
+        $TotalJob= PostJob::count();
         $TotalCandidate= CandidateInfo::count();
         $TotalVideoCvs= CandidateInfo::where('vedio_path','!=',NULL)->count();
         $TotalAnsweredQuestions= DB::table('candidate_infos')->count()*21;
- $RecentlyAddedJobsAgg= PostJob::join('users','users.id','=','post_jobs.created_by')
+
+        $RecentlyAddedJobsAgg= PostJob::join('users','users.id','=','post_jobs.created_by')
         ->join('jobs','jobs.id','=','post_jobs.job_id')
         ->join('countries','countries.id','=','post_jobs.country_id')
-->whereNotIn('job_for',['family,company,Agency'])
+        ->whereNotIn('job_for',['family,company,Agency'])
         ->orderBy('post_jobs.created_at', 'DEC')->limit(2)
         ->select('jobs.name AS JobName','post_jobs.job_for','post_jobs.job_descripton',
         'users.name AS CompanyName','users.type','post_jobs.max_salary',
@@ -42,10 +43,12 @@ class IndexController extends Controller
         'post_jobs.created_at AS Jobdate','post_jobs.id'
         )
         ->get();
+
+
         $RecentlyAddedJobsCompany= PostJob::join('users','users.id','=','post_jobs.created_by')
         ->join('jobs','jobs.id','=','post_jobs.job_id')
         ->join('countries','countries.id','=','post_jobs.country_id')
-->where('job_for','company')
+        ->where('job_for','company')
         ->orderBy('post_jobs.created_at', 'DEC')->limit(1)
         ->select('jobs.name AS JobName','post_jobs.job_for','post_jobs.job_descripton',
         'users.name AS CompanyName','users.type','post_jobs.max_salary',
@@ -53,6 +56,7 @@ class IndexController extends Controller
         'post_jobs.created_at AS Jobdate','post_jobs.id'
         )
         ->get();
+
       $RecentlyAddedJobsFamily= PostJob::join('users','users.id','=','post_jobs.created_by')
         ->join('jobs','jobs.id','=','post_jobs.job_id')
         ->join('countries','countries.id','=','post_jobs.country_id')
@@ -64,6 +68,7 @@ class IndexController extends Controller
         'post_jobs.created_at AS Jobdate','post_jobs.id'
         )
         ->get();
+        
         $SuccessStories =SuccessStories::join('users','users.id','=','success_stories.user_id')
         ->join('employer_profiles','employer_profiles.id','=','success_stories.emp_id')
        ->orderBy('success_stories.created_at', 'DEC')

@@ -111,6 +111,7 @@ class PaymentController extends Controller
                     //if monthly
                         if($Packagevalid->PackType==$type)
                         {
+                            if(isset($Packageattr)) {
                             if($Packageattr->Value >= $packagecount->total)
                             {
                                 //save Profile
@@ -128,9 +129,11 @@ class PaymentController extends Controller
                             {
                             return 2; 
                             }
+                        }
                       }
                        else
                        {
+                        if(isset($Packageattr)) {
                         if($Packageattr->Valueyear >= $packagecount->total)
                         {
                         //save Profile
@@ -148,6 +151,7 @@ class PaymentController extends Controller
                        {
                         return 2; 
                        }
+                        }
                     }
 
                 }
