@@ -182,6 +182,10 @@ class User extends Authenticatable
        return $packattribute;
    }
 
+   public function fcmtokens()
+   {
+       return $this->hasMany('App\UserDevicesToken', 'user_id');
+   }
   
 }
 

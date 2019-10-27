@@ -38,6 +38,9 @@ use Carbon\Carbon;
 use App\CandidateExperience;
 use App\NotificationsUser;
 use App\jobtoclient;
+use App\UserDevicesToken;
+use App\Events\AddNotificationToFirebaseEvent;
+
 class apicontroller extends Controller 
 {
 public $successStatus = 200;
@@ -74,6 +77,10 @@ $user=CandidateInfo::with(['country','religion','job','industry','nationality','
               
           }
 
+          // add fcm token
+          if (request('token')) {
+              UserDevicesToken::firstOrCreate(['user_id' => $user->id, 'fcm_token' => request('token')]);
+          }
           
           
             return response()->json(['user' => $user,"Message"=> "",
@@ -503,6 +510,11 @@ $input = $request->all();
         $user = User::create($input); 
         $success['token'] =  $user->createToken('MyApp')-> accessToken; 
         $success['name'] =  $user->name;
+        
+         // add fcm token
+          if (request('token')) {
+              UserDevicesToken::firstOrCreate(['user_id' => $user->id, 'fcm_token' => request('token')]);
+          }
 return response()->json(['success'=>$success], $this-> successStatus); 
     }
 /** 
@@ -3240,8 +3252,13 @@ if ($request['skill_ids'] != "")
                     $message->subject('new job is added ');
                     });
           
-                  return response()->json(['Data' => [],"Message"=> "",
-    "Success"=>true]);  
+          
+          
+          testPushNotificationEvent('poat job','New post job added');
+          
+          
+    //               return response()->json(['Data' => [],"Message"=> "",
+    // "Success"=>true]);  
             }
               
                 
@@ -3522,6 +3539,30 @@ if ($request['country_list'] != "")
              return response()->json(['user' => $user ,"Message"=> "",
                    "Success"=>true]); 
      
+         }
+         
+         
+         public function testPushNotificationEvent($title,$bodytext)
+         {
+             
+             
+               $usersTokens = User::whereHas('fcmtokens', function ($query) {
+                                        $query->whereNotNull('fcm_token');
+                                    })->get()->pluck('fcmtokens')->flatten()
+                                    ->pluck('fcm_token')
+                                    ->all();
+                                    
+                foreach($usersTokens as $userToken)
+                {
+                      event(new AddNotificationToFirebaseEvent($title,$bodytext, 'post_job',8502,$userToken ));
+                }
+
+     
+                return response()->json(['status' =>'notification sent', 
+                           "Success"=>true]); 
+        
+        
+        
          }
 
 }
